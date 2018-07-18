@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="25dp">
+    <Button android:id="@+id/suffixBtn"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="后缀名一键删除/添加"/>
+    <Button android:id="@+id/qrySuBtn"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="查询类型数量"/>
+    <Button android:id="@+id/psdBtn"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="密码本"/>
+    <Button android:id="@+id/photoBtn"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="图片遮挡"/>
+    <LinearLayout     android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:layout_gravity="bottom"
+                        android:gravity="bottom"
+                        android:paddingBottom="10dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button android:id="@+id/payBtn1"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_weight="0.5"
+                android:text="微信扫一扫"/>
+            <Button android:id="@+id/payBtn2"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_weight="0.5"
+                android:text="微信付款"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button android:id="@+id/payBtn3"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_weight="0.5"
+                android:text="支付宝扫一扫"/>
+            <Button android:id="@+id/payBtn4"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_weight="0.5"
+                android:text="支付宝付款"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+            <Button android:id="@+id/payBtn5"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_weight="0.5"
+                android:text="QQ扫一扫"/>
+            <Button android:id="@+id/payBtn6"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_weight="0.5"
+                android:text="QQ付款"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="bottom"
+            android:visibility="gone">
+            <Button android:id="@+id/payBtn7"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_weight="0.5"
+                android:text="百度钱包扫一扫"/>
+            <Button android:id="@+id/payBtn8"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_weight="0.5"
+                android:text="百度钱包付款"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="bottom"
+            android:visibility="gone">
+            <Button android:id="@+id/payBtn9"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_weight="0.5"
+                android:text="京东钱包扫一扫"/>
+            <Button android:id="@+id/payBtn10"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_weight="0.5"
+                android:text="京东钱包付款"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

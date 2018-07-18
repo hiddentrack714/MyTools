@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.track.mytools.MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textSize="30dp"
+        android:text="MyTools"
+        android:layout_marginTop="100dp"/>
+
+    <ImageView
+        android:id="@+id/fp_icon"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_marginTop="450dp"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="指纹图片"
+        android:src="@drawable/ic_fp_40px"
+        android:layout_marginEnd="30dp"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="530dp"
+        android:textSize="15dp"
+        android:text="点击Home键验证指纹" />
+    <TextView
+        android:id="@+id/warnTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="560dp"
+        android:textSize="12dp"
+        android:visibility="gone"
+        android:text=""
+        android:textColor="#FF0000"/>
+</RelativeLayout>

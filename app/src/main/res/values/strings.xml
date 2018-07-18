@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">MyTools</string>
+    <string name="title_activity_tools">ToolsActivity</string>
+</resources>
