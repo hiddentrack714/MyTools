@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
         File proFile = new File("/sdcard/UCdownloads/tools.properties");
 
         if(!proFile.exists()){
-            Log.e("su","参数文件不存在");
+            Log.e("su","参1数文件不存在");
             ToolsUntil.showToast(this, "参数文件不存在", 2000);
             return;
         }
