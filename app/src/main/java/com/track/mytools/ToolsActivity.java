@@ -40,6 +40,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        //Activity切换动画
         Transition explode = TransitionInflater.from(this).inflateTransition(R.transition.fade);
         //退出时使用
         getWindow().setExitTransition(explode);
@@ -113,6 +114,12 @@ public class ToolsActivity extends Activity implements OnClickListener{
             intent.setClass(ToolsActivity.this, PhotoShadeActivity.class);
             this.startActivity(intent);
            // this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+        }else if(v.getId() == R.id.httpBtn){
+            Log.i("su","跳转到http下载");
+            // temp = true;
+            intent.setClass(ToolsActivity.this, PhotoShadeActivity.class);
+            this.startActivity(intent);
+            // this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         }else if(v.getId() == R.id.payBtn1){
             //微信扫一扫
             String [] commods = {"am start -n com.tencent.mm/com.tencent.mm.plugin.scanner.ui.BaseScanUI"};
