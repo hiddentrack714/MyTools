@@ -1,6 +1,5 @@
-package com.track.mytools;
+package com.track.mytools.activity;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,9 +9,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import com.track.mytools.R;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by Track on 2017/2/9.

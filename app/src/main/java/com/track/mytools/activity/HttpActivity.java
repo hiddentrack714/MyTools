@@ -1,20 +1,20 @@
-package com.track.mytools;
+package com.track.mytools.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.view.View.OnClickListener;
 import android.widget.ProgressBar;
+
+import com.track.mytools.R;
+import com.track.mytools.until.ToolsUntil;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -63,6 +63,10 @@ public class HttpActivity extends Activity{
             public boolean handleMessage(Message arg0) {
                 if(arg0.arg1 == 1){
                     httpPro.setVisibility(View.INVISIBLE);
+                    httpDownBtn.setEnabled(true);
+                    httpUrl.setEnabled(true);
+                    httpThread.setEnabled(true);
+                    httpDir.setEnabled(true);
                 }
                 return false;
             }
@@ -84,6 +88,12 @@ public class HttpActivity extends Activity{
 
                 URL = URL.substring(0,URL.lastIndexOf("/")+1);
                 String flag = URL;
+
+                //开始下载，固定当前链接和按钮
+                httpDownBtn.setEnabled(false);
+                httpUrl.setEnabled(false);
+                httpThread.setEnabled(false);
+                httpDir.setEnabled(false);
 
                 //循环初始化多个线程
                 List<String> list = new ArrayList<String>();
@@ -143,7 +153,10 @@ public class HttpActivity extends Activity{
         });
     }
 
-
+    /**
+     * 多线程下载类
+     *
+     */
     static class MyThread extends Thread{
 
         private String url;
@@ -174,7 +187,7 @@ public class HttpActivity extends Activity{
         }
 
         /**
-         * +5返回
+         * 当前线程增加
          * @param str
          * @return
          */

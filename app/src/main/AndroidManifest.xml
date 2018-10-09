@@ -15,7 +15,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,31 +23,31 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ToolsActivity"
+            android:name=".activity.ToolsActivity"
             android:label="@string/title_activity_tools"
             android:theme="@android:style/Theme.Material.Light.NoActionBar.TranslucentDecor"></activity>
         <activity
-            android:name=".SuffixActivity"
+            android:name=".activity.SuffixActivity"
             android:label="SuffixActivity"
             android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
         <activity
-            android:name=".QrySuffixActivity"
+            android:name=".activity.QrySuffixActivity"
             android:label="QrySuffixActivity"
             android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
         <activity
-            android:name=".QrySuffixDetailActivity"
+            android:name=".activity.QrySuffixDetailActivity"
             android:label="QrySuffixDetailActivity"
             android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
         <activity
-            android:name=".PwdActivity"
+            android:name=".activity.PwdActivity"
             android:label="PwdActivity"
             android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
         <activity
-            android:name=".PhotoShadeActivity"
+            android:name=".activity.PhotoShadeActivity"
             android:label="PhotoShadeActivity"
             android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
         <activity
-            android:name=".HttpActivity"
+            android:name=".activity.HttpActivity"
             android:label="HttpActivity"
             android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
     </application>

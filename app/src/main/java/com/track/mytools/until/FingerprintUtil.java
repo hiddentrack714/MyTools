@@ -1,10 +1,12 @@
-package com.track.mytools;
+package com.track.mytools.until;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.hardware.fingerprint.FingerprintManager;
 import android.util.Log;
 import android.widget.TextView;
+
+import com.track.mytools.activity.MainActivity;
+import com.track.mytools.activity.ToolsActivity;
 
 /**
  * Created by Track on 2017/1/17.

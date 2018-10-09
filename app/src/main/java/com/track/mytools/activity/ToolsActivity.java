@@ -1,7 +1,5 @@
-package com.track.mytools;
+package com.track.mytools.activity;
 
-import android.app.ActivityManager;
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
@@ -13,7 +11,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.view.View;//注意view的大小写
 import android.view.View.OnClickListener;
-import android.widget.Toast;
+
+import com.track.mytools.R;
 
 import java.io.DataOutputStream;
 

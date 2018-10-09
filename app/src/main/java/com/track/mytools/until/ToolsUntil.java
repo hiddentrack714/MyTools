@@ -1,4 +1,4 @@
-package com.track.mytools;
+package com.track.mytools.until;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -16,10 +15,13 @@ import android.app.Activity;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.track.mytools.entity.ToolsEntiy;
+import com.track.mytools.activity.SuffixActivity;
+
 import java.io.FileOutputStream;
 
 /**

@@ -1,7 +1,9 @@
-package com.track.mytools;
+package com.track.mytools.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+
+import com.track.mytools.R;
 
 import java.io.DataOutputStream;
 

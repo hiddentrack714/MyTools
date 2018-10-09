@@ -1,4 +1,4 @@
-package com.track.mytools;
+package com.track.mytools.activity;
 
 import android.Manifest;
 import android.app.Activity;
@@ -7,15 +7,16 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
-import android.content.Intent;
 import android.os.CancellationSignal;
-import android.os.Handler;
 import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.track.mytools.until.FingerprintUtil;
+import com.track.mytools.R;
+import com.track.mytools.entity.ToolsEntiy;
+import com.track.mytools.until.ToolsUntil;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.Reader;
 import java.util.Properties;

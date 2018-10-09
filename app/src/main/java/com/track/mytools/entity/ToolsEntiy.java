@@ -1,4 +1,4 @@
-package com.track.mytools;
+package com.track.mytools.entity;
 
 import java.util.ArrayList;
 import java.util.List;
