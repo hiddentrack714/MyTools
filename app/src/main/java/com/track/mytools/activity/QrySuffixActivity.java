@@ -20,6 +20,7 @@ import java.util.Set;
 
 /**
  * Created by Track on 2017/1/18.
+ * 文件查询列表
  */
 
 public class QrySuffixActivity extends ListActivity {

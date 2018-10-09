@@ -16,6 +16,11 @@ import com.track.mytools.R;
 
 import java.io.DataOutputStream;
 
+/**
+ * 功能主界面
+ *
+ */
+
 
 public class ToolsActivity extends Activity implements OnClickListener{
 
