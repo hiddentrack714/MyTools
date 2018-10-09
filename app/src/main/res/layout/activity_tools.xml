@@ -20,6 +20,10 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:text="图片遮挡"/>
+    <Button android:id="@+id/httpBtn"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="http下载"/>
     <LinearLayout     android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"

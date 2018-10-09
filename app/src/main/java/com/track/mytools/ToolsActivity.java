@@ -24,6 +24,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
     private Button qrySuBtn;
     private Button psdBtn;
     private Button photoBtn;
+    private Button httpBtn;
 
     private Button payBtn1;
     private Button payBtn2;
@@ -57,6 +58,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
         qrySuBtn = (Button)findViewById(R.id.qrySuBtn);
         psdBtn = (Button)findViewById(R.id.psdBtn);
         photoBtn = (Button)findViewById(R.id.photoBtn);
+        httpBtn = (Button)findViewById(R.id.httpBtn);
 
         payBtn1 = (Button)findViewById(R.id.payBtn1);
         payBtn2 = (Button)findViewById(R.id.payBtn2);
@@ -73,6 +75,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
         qrySuBtn.setOnClickListener(this);
         psdBtn.setOnClickListener(this);
         photoBtn.setOnClickListener(this);
+        httpBtn.setOnClickListener(this);
 
         payBtn1.setOnClickListener(this);
         payBtn2.setOnClickListener(this);
@@ -117,7 +120,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
         }else if(v.getId() == R.id.httpBtn){
             Log.i("su","跳转到http下载");
             // temp = true;
-            intent.setClass(ToolsActivity.this, PhotoShadeActivity.class);
+            intent.setClass(ToolsActivity.this, HttpActivity.class);
             this.startActivity(intent);
             // this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         }else if(v.getId() == R.id.payBtn1){
@@ -170,6 +173,11 @@ public class ToolsActivity extends Activity implements OnClickListener{
 //        }
     }
 
+    /**
+     * 执行快捷命令
+     * @param commod
+     * @param toolsActivity
+     */
     public void exeCommod(String [] commod,ToolsActivity toolsActivity){
         Process process = null;
         DataOutputStream dos = null;
