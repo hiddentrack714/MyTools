@@ -129,7 +129,7 @@ public class HttpActivity extends Activity{
                     es.submit(new MyThread(list.get(i),i,map));
                 }
 
-                //下载检测
+                //下载进度检测
                 new Thread(()->{
                     boolean t = true;
                     while(t) {
@@ -173,6 +173,7 @@ public class HttpActivity extends Activity{
                 ClipData.Item item = data.getItemAt(0);
                 String content = item.getText().toString();
                 Log.i("CP",content);
+                //覆盖之前的链接
                 httpUrl.setText(content);
             }
         });

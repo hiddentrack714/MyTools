@@ -20,7 +20,7 @@
             android:id="@+id/httpCopyBtn"
             android:layout_width="150px"
             android:layout_height="130px"
-            android:text="黏贴"/>
+            android:text="复制"/>
         <Button
             android:id="@+id/httpClearBtn"
             android:layout_width="150px"
