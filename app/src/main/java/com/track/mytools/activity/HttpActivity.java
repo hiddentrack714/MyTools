@@ -73,6 +73,8 @@ public class HttpActivity extends Activity{
                     httpUrl.setEnabled(true);
                     httpThread.setEnabled(true);
                     httpDir.setEnabled(true);
+                    httpCopyBtn.setEnabled(true);
+                    httpClearBtn.setEnabled(true);
                 }
                 return false;
             }
@@ -101,6 +103,8 @@ public class HttpActivity extends Activity{
                 httpUrl.setEnabled(false);
                 httpThread.setEnabled(false);
                 httpDir.setEnabled(false);
+                httpCopyBtn.setEnabled(false);
+                httpClearBtn.setEnabled(false);
 
                 //循环初始化多个线程
                 List<String> list = new ArrayList<String>();
