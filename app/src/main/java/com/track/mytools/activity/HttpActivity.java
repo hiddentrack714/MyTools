@@ -1,6 +1,8 @@
 package com.track.mytools.activity;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -28,6 +30,8 @@ public class HttpActivity extends Activity{
      */
 
     private Button httpDownBtn;//下载按钮
+    private Button httpCopyBtn;//黏贴按钮
+    private Button httpClearBtn;//清除按钮
 
     private EditText httpUrl;//下载链接
     private EditText httpThread;//线程数量
@@ -49,6 +53,8 @@ public class HttpActivity extends Activity{
         setContentView(R.layout.activity_http);
 
         httpDownBtn = (Button)findViewById(R.id.httpDownBtn);
+        httpCopyBtn = (Button)findViewById(R.id.httpCopyBtn);
+        httpClearBtn = (Button)findViewById(R.id.httpClearBtn);
 
         httpUrl = (EditText)findViewById(R.id.httpUrl);
         httpThread = (EditText)findViewById(R.id.httpThread);
@@ -72,6 +78,7 @@ public class HttpActivity extends Activity{
             }
         });
 
+        //下载按钮
         httpDownBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,6 +156,28 @@ public class HttpActivity extends Activity{
                         }
                     }
                 } ) .start();
+            }
+        });
+
+        //黏贴剪贴板内容
+        httpCopyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //从剪贴板获得内容
+                ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                ClipData data = cm.getPrimaryClip();
+                ClipData.Item item = data.getItemAt(0);
+                String content = item.getText().toString();
+                Log.i("CP",content);
+                httpUrl.setText(content);
+            }
+        });
+
+        //清除下载链接
+        httpClearBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                httpUrl.setText("");
             }
         });
     }
