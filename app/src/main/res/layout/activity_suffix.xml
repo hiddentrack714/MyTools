@@ -10,7 +10,7 @@
         android:orientation="horizontal">
         <Button
                  android:id="@+id/suffixEditBtn"
-                 android:layout_width="wrap_content"
+                 android:layout_width="60dp"
                  android:layout_height="wrap_content"
                  android:layout_gravity="right"
                  android:text="编辑"/>
@@ -22,7 +22,7 @@
 
     <EditText
         android:id="@+id/editTextDelPath"
-        android:layout_width="260dp"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text=""
@@ -35,7 +35,8 @@
         android:layout_weight="1"
         android:text=""
         android:enabled="false"
-        android:singleLine="true"/>
+        android:singleLine="true"
+        android:layout_gravity="center"/>
     <Button
         android:id="@+id/delBtn"
         android:layout_width="60dp"
@@ -47,10 +48,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
         <EditText
             android:id="@+id/editTextAddPath"
-            android:layout_width="260dp"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
             android:text=""
             android:layout_weight="1"
@@ -63,7 +63,8 @@
             android:layout_weight="1"
             android:text=""
             android:enabled="false"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            android:layout_gravity="center"/>
         <Button
             android:id="@+id/addBtn"
             android:layout_width="60dp"
