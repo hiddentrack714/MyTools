@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 
 import com.track.mytools.R;
 import com.track.mytools.until.ToolsUntil;
@@ -38,6 +39,8 @@ public class HttpActivity extends Activity{
 
     private ProgressBar httpPro; //加载动画
 
+    private SeekBar httpSeek;//线程数量拉条
+
     private static int THREAD_NUM;
     private static String URL;
     private static String DIR_NAME;
@@ -57,6 +60,8 @@ public class HttpActivity extends Activity{
         httpUrl = (EditText)findViewById(R.id.httpUrl);
         httpThread = (EditText)findViewById(R.id.httpThread);
         httpDir = (EditText)findViewById(R.id.httpDir);
+
+        httpSeek = (SeekBar)findViewById(R.id.httpSeek);
 
         httpPro = (ProgressBar)findViewById(R.id.httpPro);
 
@@ -82,11 +87,21 @@ public class HttpActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                httpPro.setVisibility(View.VISIBLE);
-
                 Log.i("httpUrl",httpUrl.getText().toString());
                 Log.i("httpThread",httpThread.getText().toString());
                 Log.i("httpDir",httpDir.getText().toString());
+
+                if("0".equals(httpThread.getText().toString())){
+                    ToolsUntil.showToast(HttpActivity.ha,"下载线程数不能为0",3000);
+                    return;
+                }
+
+                if("".equals(httpUrl.getText().toString())){
+                    ToolsUntil.showToast(HttpActivity.ha,"下载链接不能为空",3000);
+                    return;
+                }
+
+                httpPro.setVisibility(View.VISIBLE);
 
                 URL = httpUrl.getText().toString();
                 THREAD_NUM = Integer.parseInt(httpThread.getText().toString());
@@ -175,6 +190,25 @@ public class HttpActivity extends Activity{
                 }else{
                     ToolsUntil.showToast(HttpActivity.ha,"剪贴板暂无内容",3000);
                 }
+
+            }
+        });
+
+        //线程数量拉条监听器
+        httpSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                Log.i("SEEK",progress+"");
+                httpThread.setText(progress+"");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
 
             }
         });
