@@ -12,7 +12,11 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:text="查询类型数量"/>
-    <Button android:id="@+id/psdBtn"
+    <Button android:id="@+id/httpBtn"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="http下载"/>
+    <!--<Button android:id="@+id/psdBtn"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:text="密码本"/>
@@ -20,10 +24,6 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:text="图片遮挡"/>
-    <Button android:id="@+id/httpBtn"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text="http下载"/>
     <LinearLayout     android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
@@ -111,6 +111,6 @@
                 android:text="京东钱包付款"/>
         </LinearLayout>
 
-    </LinearLayout>
+    </LinearLayout>-->
 
 </LinearLayout>
