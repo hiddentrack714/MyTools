@@ -13,7 +13,7 @@
             android:text="http连接:"/>
         <EditText
             android:id="@+id/httpUrl"
-            android:layout_width="630px"
+            android:layout_width="780px"
             android:layout_height="wrap_content"
             android:text=""/>
         <Button
@@ -21,11 +21,6 @@
             android:layout_width="150px"
             android:layout_height="130px"
             android:text="复制"/>
-        <Button
-            android:id="@+id/httpClearBtn"
-            android:layout_width="150px"
-            android:layout_height="130px"
-            android:text="清除"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

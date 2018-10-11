@@ -31,7 +31,6 @@ public class HttpActivity extends Activity{
 
     private Button httpDownBtn;//下载按钮
     private Button httpCopyBtn;//黏贴按钮
-    private Button httpClearBtn;//清除按钮
 
     private EditText httpUrl;//下载链接
     private EditText httpThread;//线程数量
@@ -54,7 +53,6 @@ public class HttpActivity extends Activity{
 
         httpDownBtn = (Button)findViewById(R.id.httpDownBtn);
         httpCopyBtn = (Button)findViewById(R.id.httpCopyBtn);
-        httpClearBtn = (Button)findViewById(R.id.httpClearBtn);
 
         httpUrl = (EditText)findViewById(R.id.httpUrl);
         httpThread = (EditText)findViewById(R.id.httpThread);
@@ -74,7 +72,6 @@ public class HttpActivity extends Activity{
                     httpThread.setEnabled(true);
                     httpDir.setEnabled(true);
                     httpCopyBtn.setEnabled(true);
-                    httpClearBtn.setEnabled(true);
                 }
                 return false;
             }
@@ -104,7 +101,6 @@ public class HttpActivity extends Activity{
                 httpThread.setEnabled(false);
                 httpDir.setEnabled(false);
                 httpCopyBtn.setEnabled(false);
-                httpClearBtn.setEnabled(false);
 
                 //循环初始化多个线程
                 List<String> list = new ArrayList<String>();
@@ -148,7 +144,7 @@ public class HttpActivity extends Activity{
                             msg.arg1 = 1;
                             HttpActivity.handler.sendMessage(msg);
                             Log.i("http","下载完成");
-                            ToolsUntil.showToast(HttpActivity.ha,"下载完成",2000);
+                            ToolsUntil.showToast(HttpActivity.ha,"下载完成",3000);
                             es.shutdown();
                         }
 
@@ -170,21 +166,19 @@ public class HttpActivity extends Activity{
                 //从剪贴板获得内容
                 ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                 ClipData data = cm.getPrimaryClip();
-                ClipData.Item item = data.getItemAt(0);
-                String content = item.getText().toString();
-                Log.i("CP",content);
-                //覆盖之前的链接
-                httpUrl.setText(content);
+                if(data != null){
+                    ClipData.Item item = data.getItemAt(0);
+                    String content = item.getText().toString();
+                    Log.i("CP",content);
+                    //覆盖之前的链接
+                    httpUrl.setText(content);
+                }else{
+                    ToolsUntil.showToast(HttpActivity.ha,"剪贴板暂无内容",3000);
+                }
+
             }
         });
 
-        //清除下载链接
-        httpClearBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                httpUrl.setText("");
-            }
-        });
     }
 
     /**
