@@ -15,12 +15,27 @@
             android:id="@+id/httpUrl"
             android:layout_width="780px"
             android:layout_height="wrap_content"
-            android:text=""/>
+            android:text=""
+            android:singleLine="true"/>
         <Button
             android:id="@+id/httpCopyBtn"
             android:layout_width="150px"
             android:layout_height="130px"
             android:text="复制"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="单一下载:"/>
+        <Switch
+            android:id="@+id/httpSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOff="off"
+            android:textOn="on"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -82,12 +97,36 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
-        <ProgressBar
-            android:id="@+id/httpPro"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="invisible"/>
+        android:layout_marginTop="10px">
+        <TextView
+            android:layout_width="80px"
+            android:layout_height="wrap_content"
+            android:text="编号"
+            android:gravity="center"/>
+        <TextView
+            android:layout_width="580px"
+            android:layout_height="wrap_content"
+            android:text="下载进度"
+            android:layout_gravity="center"
+            android:gravity="center"/>
+        <TextView
+            android:layout_width="220px"
+            android:layout_height="wrap_content"
+            android:text="文件大小(kb)"
+            android:gravity="center"/>
+        <TextView
+            android:layout_width="220px"
+            android:layout_height="wrap_content"
+            android:text="文件名称"
+            android:gravity="center"/>
     </LinearLayout>
+
+    <ListView
+        android:id="@+id/httpList"
+        android:layout_width="match_parent"
+        android:layout_height="460dp"
+        android:paddingTop="7dip"
+        android:paddingLeft="7dip"
+        android:paddingRight="7dip"
+        android:paddingBottom="7dip"/>
 </LinearLayout>

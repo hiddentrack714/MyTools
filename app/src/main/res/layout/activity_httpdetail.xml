@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!--线程编号-->
+    <TextView
+        android:id="@+id/httpDownNo"
+        android:layout_width="80px"
+        android:layout_height="wrap_content"
+        android:gravity="center"/>
+    <!--下载进度条-->
+    <ProgressBar
+        android:id="@+id/httpDownPro"
+        android:layout_width="550px"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:paddingTop="7px"/>
+    <!--文件大小-->
+    <TextView
+        android:id="@+id/httpDownSize"
+        android:layout_width="220px"
+        android:layout_height="wrap_content"
+        android:gravity="center" />
+    <!--文件名称-->
+    <TextView
+        android:id="@+id/httpDownName"
+        android:layout_width="220px"
+        android:layout_height="wrap_content"
+        android:gravity="center" />
+</LinearLayout>

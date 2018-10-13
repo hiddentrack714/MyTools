@@ -93,7 +93,6 @@ public class QrySuffixActivity extends ListActivity {
         adapter=new SimpleAdapter(this,list,R.layout.activity_suffixlist,from,to);
         //调用ListActivity的setListAdapter方法，为ListView设置适配器
         setListAdapter(adapter);
-
     }
 
     @Override

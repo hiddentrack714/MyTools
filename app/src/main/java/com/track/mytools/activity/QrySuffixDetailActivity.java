@@ -200,7 +200,6 @@ public class QrySuffixDetailActivity extends Activity {
 
                 Log.i("AllSel","-->" + SuffixMainAdapter.isSelected.size());
 
-                //if(!isAll){
                     for(int i = 0 ; i < SuffixMainAdapter.isSelected.size();i++){
 
                         if(true == SuffixMainAdapter.isSelected.get(i)){
@@ -213,9 +212,6 @@ public class QrySuffixDetailActivity extends Activity {
                         SuffixMainAdapter.isSelected.put(i,true);
                     }
 
-                  //  isAll = true;
-               // }
-
             }
         });
 
@@ -224,8 +220,6 @@ public class QrySuffixDetailActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Log.i("canelBtn","canelBtn");
-
-                //if(isAll){
 
                     for(int i = 0 ; i < SuffixMainAdapter.isSelected.size();i++){
 
@@ -237,10 +231,6 @@ public class QrySuffixDetailActivity extends Activity {
 
                         SuffixMainAdapter.isSelected.put(i,false);
                     }
-
-                  //  isAll = false;
-
-                //}
 
             }
         });
@@ -263,6 +253,7 @@ public class QrySuffixDetailActivity extends Activity {
             }
         });
 
+        //点击listview
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -347,73 +338,7 @@ public class QrySuffixDetailActivity extends Activity {
         //setListAdapter(adapter);
         lv.setAdapter(mainAdapter);
 
-//        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                pos = position;
-//                //点击后弹出提示框，是否需要删除当前
-//                AlertDialog.Builder ad = new AlertDialog.Builder(qsda);
-//                ad.setTitle("确认");
-//                ad.setMessage("确定删除[" + ToolsUntil.pathMap.get(useKey).get(pos) + "]吗?");
-//                ad.setPositiveButton("是",
-//                        new DialogInterface.OnClickListener() {
-//
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                dialog.dismiss();
-//                                Log.i("xx", "y" + ToolsUntil.pathMap.get(useKey).get(pos));
-//                                File file = new File(ToolsUntil.pathMap.get(useKey).get(pos));
-//                                file.delete();
-//                                if (!file.exists()) {
-//                                    Log.i("xx", "DEL_SUCCESS");
-//                                    ToolsUntil.showToast(qsda, "删除成功:" + ToolsUntil.pathMap.get(useKey).get(pos), 2000);
-//                                    //删除完成后，刷新当前listview
-//                                    //ToolsUntil.pathMap.get(useKey).remove(pos);
-//                                    ArrayList tempL = (ArrayList) tempList.clone();//克隆一个新的集合
-//                                    tempL.remove(pos);
-//                                    tempList.clear();
-//                                    tempList.addAll(tempL);
-//                                    adapter.notifyDataSetChanged();
-//
-//                                    //fix 删除当前的listview的集合后，还要删除之前全集合
-//                                    ToolsUntil.pathMap.get(useKey).remove(pos);
-//
-//                                    //fix 删除当前的子集合刷新后，还要刷新母集合显示的数量
-//                                    ArrayList<HashMap<String, String>> mainTempL = (ArrayList<HashMap<String, String>>) QrySuffixActivity.list.clone();//克隆一个新的集合
-//                                    for (HashMap<String, String> map : mainTempL) {
-//                                        String tempKey = map.get("typeName");
-//                                        if (key.equalsIgnoreCase(tempKey) || "合计".equalsIgnoreCase(tempKey)) {
-//                                            //找到当前后缀的数量集合
-//                                            int tempI = Integer.parseInt(map.get("typeNum"));
-//                                            Log.i("check", key + ":" + tempI);
-//                                            map.put("typeNum", (tempI - 1) + "");
-//                                            // break;
-//                                        }
-//                                    }
-//                                    QrySuffixActivity.list.clear();
-//                                    QrySuffixActivity.list.addAll(mainTempL);
-//                                    QrySuffixActivity.adapter.notifyDataSetChanged();
-//                                } else {
-//                                    Log.i("xx", "DEL_FAIL");
-//                                    ToolsUntil.showToast(qsda, "删除失败:" + ToolsUntil.pathMap.get(useKey).get(pos), 2000);
-//                                }
-//                            }
-//                        });
-//                ad.setNegativeButton("否", new DialogInterface.OnClickListener() {
-//
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.dismiss();
-//                        Log.i("xx", "n" + ToolsUntil.pathMap.get(useKey).get(pos));
-//                    }
-//                });
-//                ad.show();
-//            }
-//        });
-    }
 
-//    @Override
-//    protected void onListItemClick(ListView l, View v, int position, long id) {
-//        super.onListItemClick(l, v, position, id);
-//
-//    }
+    }
 
 }

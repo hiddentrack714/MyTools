@@ -1,23 +1,34 @@
 package com.track.mytools.activity;
 
 import android.app.Activity;
+import android.app.ListActivity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
+import android.widget.SimpleAdapter;
+import android.widget.Switch;
+import android.widget.TextView;
 
 import com.track.mytools.R;
+import com.track.mytools.adapter.HttpMainAdapter;
+import com.track.mytools.entity.HttpThreadEntity;
 import com.track.mytools.until.ToolsUntil;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,9 +48,9 @@ public class HttpActivity extends Activity{
     private EditText httpThread;//线程数量
     private EditText httpDir;//下载地址
 
-    private ProgressBar httpPro; //加载动画
-
     private SeekBar httpSeek;//线程数量拉条
+
+    private Switch httpSwitch; // 单一下载选项
 
     private static int THREAD_NUM;
     private static String URL;
@@ -49,10 +60,28 @@ public class HttpActivity extends Activity{
 
     public static Handler handler;
 
+    private static ListActivity la;
+
+    private static HttpMainAdapter hma;
+
+    private static ConcurrentHashMap<String,Object> chm = new ConcurrentHashMap<String,Object>(); //listview专用map
+
+    private static List<ConcurrentHashMap<String,Object>> l = new ArrayList<ConcurrentHashMap<String,Object>>();
+
+    private static Boolean isSingle = false; // 是否采用单文件下载标识，默认为不采用
+
+    private ListView lv;
+
+    //listview内容模板
+    private static String from [] = {"httpDownNo","httpDownPro","httpDownSize","httpDownName"};
+    private static int to [] = {R.id.httpDownNo,R.id.httpDownPro,R.id.httpDownSize,R.id.httpDownName};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_http);
+
+        lv = (ListView)findViewById(R.id.httpList);
 
         httpDownBtn = (Button)findViewById(R.id.httpDownBtn);
         httpCopyBtn = (Button)findViewById(R.id.httpCopyBtn);
@@ -61,9 +90,9 @@ public class HttpActivity extends Activity{
         httpThread = (EditText)findViewById(R.id.httpThread);
         httpDir = (EditText)findViewById(R.id.httpDir);
 
-        httpSeek = (SeekBar)findViewById(R.id.httpSeek);
+        httpSwitch = (Switch)findViewById(R.id.httpSwitch);
 
-        httpPro = (ProgressBar)findViewById(R.id.httpPro);
+        httpSeek = (SeekBar)findViewById(R.id.httpSeek);
 
         ha = this;
 
@@ -71,12 +100,23 @@ public class HttpActivity extends Activity{
             @Override
             public boolean handleMessage(Message arg0) {
                 if(arg0.arg1 == 1){
-                    httpPro.setVisibility(View.INVISIBLE);
                     httpDownBtn.setEnabled(true);
                     httpUrl.setEnabled(true);
                     httpThread.setEnabled(true);
                     httpDir.setEnabled(true);
                     httpCopyBtn.setEnabled(true);
+                }
+
+                if(arg0.arg2 ==1){
+                    HttpThreadEntity hte = (HttpThreadEntity)arg0.obj;
+
+                    View view = HttpMainAdapter.viewList.get(hte.getFileIndex());
+
+                    HttpMainAdapter.ViewHolder holder = (HttpMainAdapter.ViewHolder)view.getTag();
+
+                    holder.tvSize.setText( hte.getFileSize());
+
+                    holder.tvName.setText(hte.getFileName());
                 }
                 return false;
             }
@@ -91,6 +131,8 @@ public class HttpActivity extends Activity{
                 Log.i("httpThread",httpThread.getText().toString());
                 Log.i("httpDir",httpDir.getText().toString());
 
+                Log.i("httpSwitch",isSingle+"");
+
                 if("0".equals(httpThread.getText().toString())){
                     ToolsUntil.showToast(HttpActivity.ha,"下载线程数不能为0",3000);
                     return;
@@ -101,14 +143,17 @@ public class HttpActivity extends Activity{
                     return;
                 }
 
-                httpPro.setVisibility(View.VISIBLE);
-
                 URL = httpUrl.getText().toString();
                 THREAD_NUM = Integer.parseInt(httpThread.getText().toString());
                 DIR_NAME = httpDir.getText().toString();
 
                 URL = URL.substring(0,URL.lastIndexOf("/")+1);
                 String flag = URL;
+
+                //启动单一文件下载，只启动一个线程即可
+                if(isSingle){
+                    THREAD_NUM = 1;
+                }
 
                 //开始下载，固定当前链接和按钮
                 httpDownBtn.setEnabled(false);
@@ -119,8 +164,9 @@ public class HttpActivity extends Activity{
 
                 //循环初始化多个线程
                 List<String> list = new ArrayList<String>();
-                ConcurrentHashMap<Integer,Boolean> map = new ConcurrentHashMap<Integer,Boolean>();
+                ConcurrentHashMap<Integer,Boolean> map = new ConcurrentHashMap<Integer,Boolean>();  // 线程下载状态
                 for(int i=1 ;i<THREAD_NUM+1;i++) {
+                    ConcurrentHashMap<String,Object> listMap = new ConcurrentHashMap<String,Object>();              //线程属性
                     String temp = "";
                     if(i<10) {
                         temp = "0" + i;
@@ -128,14 +174,28 @@ public class HttpActivity extends Activity{
                         temp = i+"";
                     }
                     flag = flag + temp + ".jpg";
-                    //System.out.println(flag);
+
                     list.add(flag);
                     flag = URL;
-                    map.put(i-1, true);
+                    map.put(i-1, true); // 每个线程的初始状态都是true
+
+                    //初始化线程属性状态
+                    listMap.put("httpDownNo",i);
+                    listMap.put("httpDownPro",0);
+                    listMap.put("httpDownSize","");
+                    listMap.put("httpDownName","");
+                    l.add(listMap);
                 }
+
+                hma = new HttpMainAdapter(ha,l);
+
+                lv.setAdapter(hma);
+
+                Log.i("size",l.size()+"");
 
                 ExecutorService es = Executors.newCachedThreadPool();
 
+                //开启线程池
                 for(int i=0;i<THREAD_NUM;i++) {
                     es.submit(new MyThread(list.get(i),i,map));
                 }
@@ -149,9 +209,10 @@ public class HttpActivity extends Activity{
                             if(entry.getValue()==false) {
                                 i++;
                             }
+
                         }
 
-                        Log.i("http","下载进度检查");
+                        //Log.i("http","下载进度检查");
 
                         if(i == THREAD_NUM) {
                             t = false;
@@ -163,14 +224,9 @@ public class HttpActivity extends Activity{
                             es.shutdown();
                         }
 
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
                     }
-                } ) .start();
+                } ).start();
+
             }
         });
 
@@ -213,17 +269,32 @@ public class HttpActivity extends Activity{
             }
         });
 
+        //单一选项选择器听监听
+        httpSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    //开启
+                    isSingle = true;
+                }else {
+                   //关闭
+                    isSingle = false;
+                }
+
+            }
+        });
+
     }
 
     /**
      * 多线程下载类
-     *
+     * 在多线程下载类中只负责初始化listview，不负责更新
      */
     static class MyThread extends Thread{
 
-        private String url;
-        private int index;
-        private ConcurrentHashMap<Integer, Boolean> map;
+        private String url; //下载链接
+        private int index; // 线程编号从0开始
+        private ConcurrentHashMap<Integer, Boolean> map; //线程同步标记
 
         public MyThread(String url,int index,ConcurrentHashMap<Integer, Boolean> map) {
             this.url = url;
@@ -235,12 +306,59 @@ public class HttpActivity extends Activity{
         public void run() {
             try {
                 boolean isCon = true;
+
                 while(isCon) {
-                    isCon = ToolsUntil.down(DIR_NAME,this.url);
+
+                    HashMap<String,Object> downMap = new HashMap<String,Object>();
+
+                    downMap = ToolsUntil.down(this.url);
+
+                    //获得文件大小
+                    int fileSize = Integer.parseInt(downMap.get("fileSize").toString());
+
+                    if(fileSize == 0){
+                        //无下载文件
+                        isCon = false;
+                    }else{
+                        //有下载文件
+                        InputStream inputStream = (InputStream)downMap.get("fileStream");
+
+                        //视图已经在界面初始化渲染完成，可以更新
+                        View view = HttpMainAdapter.viewList.get(index);
+
+                        HttpMainAdapter.ViewHolder holder = (HttpMainAdapter.ViewHolder)view.getTag();
+
+                        holder.pb.setMax(fileSize);
+                        //BUG设置TEXT完成后，卡住，没办法继续，开线程更新
+                        //holder.tvName.setText("111");
+
+                        Message msg = HttpActivity.handler.obtainMessage();
+
+                        HttpThreadEntity hte = new HttpThreadEntity();
+
+                        hte.setFileIndex(index);
+                        double fileSizeDouble = Double.parseDouble(fileSize+"");
+                        hte.setFileSize(ToolsUntil.takePointTwo((fileSizeDouble / 1024)+""));
+                        hte.setFileName(this.url.substring(this.url.lastIndexOf("/") + 1));
+
+                        msg.arg2 = 1;
+                        msg.obj = hte;
+
+                        HttpActivity.handler.sendMessage(msg);
+
+                        //new ViewThread(holder.tvName,"111").start();
+
+                        //holder.tvSize.setText("222");
+
+                        //下载当前文件
+                        Log.i("DOWN",this.url);
+                        ToolsUntil.saveFile(inputStream,DIR_NAME,this.url,holder.pb);
+                        //对当前线程链接++
+                        this.url = plusNum(this.url);
+
+                    }
+
                     map.put(index, isCon);
-                    //每个线程均+5继续
-                    this.url = plusNum(this.url);
-                    //Log.i("httpName",this.url);
                 }
             } catch (IOException e) {
                 // TODO Auto-generated catch block
@@ -270,4 +388,22 @@ public class HttpActivity extends Activity{
         }
 
     }
+
+    static class ViewThread extends Thread{
+
+        private TextView tv;
+        private String content;
+
+        public ViewThread(TextView tv,String content){
+            this.tv = tv;
+            this.content = content;
+        }
+
+        @Override
+        public void run() {
+            Message msg = HttpActivity.handler.obtainMessage();
+            msg.arg2 = 1;
+        }
+    }
+
 }

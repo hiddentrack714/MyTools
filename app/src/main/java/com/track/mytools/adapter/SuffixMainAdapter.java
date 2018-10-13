@@ -34,9 +34,17 @@ public class SuffixMainAdapter extends BaseAdapter {
 
     private int initNum = 0;
 
+    /**
+     * SuffixMainAdapter构造方法
+     * @param context 上文Activity对象
+     * @param list  展示的数据集合
+     * @param layoutID  展示的layoutId
+     * @param flag
+     * @param ItemIDs
+     */
     public SuffixMainAdapter(Context context, ArrayList<HashMap<String, String>> list,
                              int layoutID, String flag[], int ItemIDs[]) {
-        Log.i("TAG", "构造方法");
+        //Log.i("TAG", "构造方法");
         this.mInflater = LayoutInflater.from(context);
         this.list = list;
         this.layoutID = layoutID;
@@ -89,7 +97,9 @@ public class SuffixMainAdapter extends BaseAdapter {
             holder = (ViewHolder) view.getTag();
             Log.i("check", "holder != null--" + position);
         }
+
         HashMap<String, String> map = list.get(position);
+
         if (map != null) {
             itemString = (String) map.get(keyString[0]);
             holder.tv.setText(itemString);

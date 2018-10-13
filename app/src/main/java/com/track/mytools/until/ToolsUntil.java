@@ -514,63 +514,93 @@ public class ToolsUntil {
     }
 
     /**
-     * http下载
-     * @param dir
+     * 检查http下载链接，获取文件大小
      * @param str
      * @throws IOException
      */
-    public static boolean down(String dir,String str) throws IOException {
+    public static HashMap<String,Object> down(String str) throws IOException {
         URL url = new URL(str);
         HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-        //设置超时间为3秒
+        //设置超时间为5秒
         conn.setConnectTimeout(5*1000);
         //防止屏蔽程序抓取而返回403错误
         conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
 
+        HashMap<String,Object> map= new HashMap<String,Object>();
+
         if(404 == conn.getResponseCode()) {
             conn.disconnect();
-            return false;
+            //404，下载的文件不存在，所以文件大小为0
+            map.put("fileSize",0);
+            return map;
         }
 
         //得到输入流
         InputStream inputStream = conn.getInputStream();
-        //获取自己数组
-        byte[] getData = readInputStream(inputStream);
+
+        //文件大小
+        int fileSize = conn.getContentLength();
+        map.put("fileSize",fileSize);
+        map.put("fileStream",inputStream);
+
+        return map;
+    }
+
+    /**
+     * 保存文件到本地，并且自我更新下载视图
+     * @param inputStream
+     * @param dir
+     * @param str
+     * @param pb
+     * @return
+     * @throws IOException
+     */
+    public static void saveFile(InputStream inputStream,String dir,String str,ProgressBar pb) throws IOException {
+        byte[] buffer = new byte[1024];
+
+        int len = 0;
+
+        int proLen = 0;
 
         //文件保存位置
         String savePath = dir;
+
         File saveDir = new File(savePath);
+        //判断文件夹是否存在
         if(!saveDir.exists()){
             saveDir.mkdir();
         }
-        File file = new File(saveDir + File.separator + str.substring(str.lastIndexOf("/")+1));
+
+        File file = new File(saveDir + File.separator + str.substring(str.lastIndexOf("/") + 1));
+
         FileOutputStream fos = new FileOutputStream(file);
-        fos.write(getData);
+
+        while((len = inputStream.read(buffer)) != -1) {
+            fos.write(buffer, 0, len);
+            proLen = proLen + len;
+            pb.setProgress(proLen);
+        }
+
+        fos.flush();
+
         if(fos!=null){
             fos.close();
         }
+
         if(inputStream!=null){
             inputStream.close();
         }
 
-        return true;
     }
 
     /**
-     * 从输入流中获取字节数组
-     * @param inputStream
+     * 取两位小数点
+     * @param str
      * @return
-     * @throws IOException
      */
-    public static  byte[] readInputStream(InputStream inputStream) throws IOException {
-        byte[] buffer = new byte[1024];
-        int len = 0;
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        while((len = inputStream.read(buffer)) != -1) {
-            bos.write(buffer, 0, len);
-        }
-        bos.close();
-        return bos.toByteArray();
+    public static String takePointTwo(String str){
+
+            return str.substring(0,str.lastIndexOf(".") + 3);
     }
 
     public static void main(String args[]){

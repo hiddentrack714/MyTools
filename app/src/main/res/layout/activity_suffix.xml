@@ -77,7 +77,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_weight="1"
-        android:layout_marginTop="100dp">
+        android:layout_marginTop="30dp">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -89,7 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            style="@android:style/Widget.ProgressBar.Horizontal"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:visibility="visible"
             android:paddingLeft="25dp"
             android:paddingRight="25dp"
