@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -99,15 +100,27 @@ public class HttpActivity extends Activity{
         handler = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message arg0) {
+                //下载结束后处理
                 if(arg0.arg1 == 1){
                     httpDownBtn.setEnabled(true);
                     httpUrl.setEnabled(true);
                     httpThread.setEnabled(true);
                     httpDir.setEnabled(true);
                     httpCopyBtn.setEnabled(true);
+
+                    ConcurrentHashMap<String,Object> chm = new ConcurrentHashMap<String,Object>();
+
+                    l.add(chm);
+
+                    hma = new HttpMainAdapter(ha,l);
+
+                    lv.setAdapter(hma);
+
+                    hma.notifyDataSetChanged();
                 }
 
-                if(arg0.arg2 ==1){
+                //单一线程下载开始之前，对线程视图的初始化
+                if(arg0.arg2 == 1){
                     HttpThreadEntity hte = (HttpThreadEntity)arg0.obj;
 
                     View view = HttpMainAdapter.viewList.get(hte.getFileIndex());
@@ -147,12 +160,14 @@ public class HttpActivity extends Activity{
                 THREAD_NUM = Integer.parseInt(httpThread.getText().toString());
                 DIR_NAME = httpDir.getText().toString();
 
-                URL = URL.substring(0,URL.lastIndexOf("/")+1);
+                URL = URL.substring(0,URL.lastIndexOf("/") + 1);
                 String flag = URL;
 
                 //启动单一文件下载，只启动一个线程即可
+                boolean threadSigle = true;
                 if(isSingle){
                     THREAD_NUM = 1;
+                    threadSigle = false;
                 }
 
                 //开始下载，固定当前链接和按钮
@@ -197,7 +212,7 @@ public class HttpActivity extends Activity{
 
                 //开启线程池
                 for(int i=0;i<THREAD_NUM;i++) {
-                    es.submit(new MyThread(list.get(i),i,map));
+                    es.submit(new MyThread(list.get(i),i,map,threadSigle));
                 }
 
                 //下载进度检测
@@ -209,7 +224,6 @@ public class HttpActivity extends Activity{
                             if(entry.getValue()==false) {
                                 i++;
                             }
-
                         }
 
                         //Log.i("http","下载进度检查");
@@ -220,7 +234,12 @@ public class HttpActivity extends Activity{
                             msg.arg1 = 1;
                             HttpActivity.handler.sendMessage(msg);
                             Log.i("http","下载完成");
+
+                            //下载完成，清空所有静态参数
+                            HttpMainAdapter.viewList.clear();
+
                             ToolsUntil.showToast(HttpActivity.ha,"下载完成",3000);
+
                             es.shutdown();
                         }
 
@@ -295,11 +314,13 @@ public class HttpActivity extends Activity{
         private String url; //下载链接
         private int index; // 线程编号从0开始
         private ConcurrentHashMap<Integer, Boolean> map; //线程同步标记
+        private boolean isSingle;
 
-        public MyThread(String url,int index,ConcurrentHashMap<Integer, Boolean> map) {
+        public MyThread(String url,int index,ConcurrentHashMap<Integer, Boolean> map,boolean isSingle) {
             this.url = url;
             this.index = index;
             this.map = map;
+            this.isSingle = isSingle;
         }
 
         @Override
@@ -346,10 +367,6 @@ public class HttpActivity extends Activity{
 
                         HttpActivity.handler.sendMessage(msg);
 
-                        //new ViewThread(holder.tvName,"111").start();
-
-                        //holder.tvSize.setText("222");
-
                         //下载当前文件
                         Log.i("DOWN",this.url);
                         ToolsUntil.saveFile(inputStream,DIR_NAME,this.url,holder.pb);
@@ -359,6 +376,10 @@ public class HttpActivity extends Activity{
                     }
 
                     map.put(index, isCon);
+
+                    if(!isSingle){
+                        isCon = false;
+                    }
                 }
             } catch (IOException e) {
                 // TODO Auto-generated catch block

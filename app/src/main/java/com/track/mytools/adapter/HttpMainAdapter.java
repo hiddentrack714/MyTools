@@ -71,6 +71,10 @@ public class HttpMainAdapter extends BaseAdapter {
 
         ConcurrentHashMap<String,Object> listMap= listData.get(position);
 
+        if(listMap.size() == 0){
+            return convertView;
+        }
+
         //初始化参数
         holder.tvNo.setText(listMap.get("httpDownNo").toString());
         holder.pb.setProgress(Integer.parseInt(listMap.get("httpDownPro").toString()));
