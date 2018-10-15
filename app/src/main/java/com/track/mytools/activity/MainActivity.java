@@ -4,13 +4,18 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
+import android.graphics.drawable.Icon;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.track.mytools.entity.ShortCutEntity;
 import com.track.mytools.until.FingerprintUtil;
 import com.track.mytools.R;
 import com.track.mytools.entity.ToolsEntiy;
@@ -19,15 +24,23 @@ import com.track.mytools.until.ToolsUntil;
 import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 public class MainActivity extends Activity {
+
     public TextView warnTitle;
+    //shortcut模块
+    private ShortcutManager shortcutManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         warnTitle = (TextView)findViewById(R.id.warnTitle);
+
         //加载初始文件
         Properties pro = new Properties();
 
@@ -53,6 +66,8 @@ public class MainActivity extends Activity {
 
         String strFilter = pro.getProperty("suFilter");
 
+        String isUseFinIdMou = pro.getProperty("isUseFinIdMou");
+
         ToolsEntiy.suFilter = new String[strFilter.split(",").length];
 
         try{
@@ -64,7 +79,25 @@ public class MainActivity extends Activity {
             return;
         }
 
-        checkFiger();
+        //是否需要开启指纹识别
+        if("y".equalsIgnoreCase(isUseFinIdMou)){
+            //开启指纹识别
+            checkFiger();
+        }else{
+            //关闭指纹识别,直接跳转到下一级
+            Intent intent = new Intent();
+            intent.setClass(this, ToolsActivity.class);
+            this.startActivity(intent);
+            this.finish();
+        }
+
+        List<ShortCutEntity> list = new ArrayList<ShortCutEntity>();
+
+        //list.add(new ShortCutEntity("后缀名删除/添加","后缀名删除/添加",SuffixActivity.class));
+        //list.add(new ShortCutEntity("查询后缀","查询后缀",QrySuffixActivity.class));
+        list.add(new ShortCutEntity("http下载","http下载",HttpActivity.class));
+
+        dynamicAddShortCut(list);
     }
 
     /**
@@ -120,6 +153,33 @@ public class MainActivity extends Activity {
             e.printStackTrace();
         }
         return properties;
+    }
+
+    /**
+     * 动态添加shortcut
+     * @param list shortcut属性
+     */
+    public void dynamicAddShortCut(List<ShortCutEntity> list){
+        List<ShortcutInfo> li = new ArrayList<ShortcutInfo>();
+        int i = 0;
+        for (ShortCutEntity sce : list){
+            ShortcutInfo shortcutInfo = new ShortcutInfo.Builder(this, "shortcut_id_like" + i)
+                    .setShortLabel(sce.getShortName())
+                    .setLongLabel(sce.getLongName())
+                    //.setIcon(Icon.createWithResource(this, R.drawable.ic_bnsports))  //默认图片
+                    //.setIntent(new Intent(this, HttpActivity.class))   error
+                    .setIntent(new Intent(Intent.ACTION_VIEW)
+                            .setClass(this, sce.getCla()))//intent必须设置action
+                    .build();
+
+            li.add(shortcutInfo);
+            i++;
+        }
+
+        ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
+
+        //这样就可以通过长按图标显示出快捷方式了
+        shortcutManager.setDynamicShortcuts(li);
     }
 
 }

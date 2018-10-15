@@ -48,6 +48,7 @@ public class HttpActivity extends Activity{
     private EditText httpUrl;//下载链接
     private EditText httpThread;//线程数量
     private EditText httpDir;//下载地址
+    private EditText httpSuff;//下载文件后缀
 
     private SeekBar httpSeek;//线程数量拉条
 
@@ -90,6 +91,7 @@ public class HttpActivity extends Activity{
         httpUrl = (EditText)findViewById(R.id.httpUrl);
         httpThread = (EditText)findViewById(R.id.httpThread);
         httpDir = (EditText)findViewById(R.id.httpDir);
+        httpSuff = (EditText)findViewById(R.id.httpSuff);
 
         httpSwitch = (Switch)findViewById(R.id.httpSwitch);
 
@@ -97,6 +99,7 @@ public class HttpActivity extends Activity{
 
         ha = this;
 
+        //线程视图复制更新
         handler = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message arg0) {
@@ -107,15 +110,11 @@ public class HttpActivity extends Activity{
                     httpThread.setEnabled(true);
                     httpDir.setEnabled(true);
                     httpCopyBtn.setEnabled(true);
+                    httpSuff.setEnabled(true);
+                    httpSeek.setEnabled(true);
 
-                    ConcurrentHashMap<String,Object> chm = new ConcurrentHashMap<String,Object>();
-
-                    l.add(chm);
-
-                    hma = new HttpMainAdapter(ha,l);
-
-                    lv.setAdapter(hma);
-
+                    //清空Listview视图
+                    l.clear();
                     hma.notifyDataSetChanged();
                 }
 
@@ -176,6 +175,11 @@ public class HttpActivity extends Activity{
                 httpThread.setEnabled(false);
                 httpDir.setEnabled(false);
                 httpCopyBtn.setEnabled(false);
+                httpSuff.setEnabled(false);
+                httpSeek.setEnabled(false);
+
+                //文件后缀名
+                String fileSuff = httpSuff.getText() + "";
 
                 //循环初始化多个线程
                 List<String> list = new ArrayList<String>();
@@ -188,7 +192,8 @@ public class HttpActivity extends Activity{
                     }else {
                         temp = i+"";
                     }
-                    flag = flag + temp + ".jpg";
+
+                    flag = flag + temp + "." + fileSuff;
 
                     list.add(flag);
                     flag = URL;
@@ -226,7 +231,7 @@ public class HttpActivity extends Activity{
                             }
                         }
 
-                        //Log.i("http","下载进度检查");
+                        Log.i("http","下载进度检查");
 
                         if(i == THREAD_NUM) {
                             t = false;
@@ -350,16 +355,14 @@ public class HttpActivity extends Activity{
                         HttpMainAdapter.ViewHolder holder = (HttpMainAdapter.ViewHolder)view.getTag();
 
                         holder.pb.setMax(fileSize);
-                        //BUG设置TEXT完成后，卡住，没办法继续，开线程更新
-                        //holder.tvName.setText("111");
 
                         Message msg = HttpActivity.handler.obtainMessage();
 
                         HttpThreadEntity hte = new HttpThreadEntity();
 
                         hte.setFileIndex(index);
-                        double fileSizeDouble = Double.parseDouble(fileSize+"");
-                        hte.setFileSize(ToolsUntil.takePointTwo((fileSizeDouble / 1024)+""));
+                        double fileSizeDouble = Double.parseDouble(fileSize + "");
+                        hte.setFileSize(ToolsUntil.takePointTwo((fileSizeDouble / 1024) + ""));
                         hte.setFileName(this.url.substring(this.url.lastIndexOf("/") + 1));
 
                         msg.arg2 = 1;
@@ -372,13 +375,13 @@ public class HttpActivity extends Activity{
                         ToolsUntil.saveFile(inputStream,DIR_NAME,this.url,holder.pb);
                         //对当前线程链接++
                         this.url = plusNum(this.url);
-
                     }
 
                     map.put(index, isCon);
 
                     if(!isSingle){
                         isCon = false;
+                        map.put(index, false);
                     }
                 }
             } catch (IOException e) {

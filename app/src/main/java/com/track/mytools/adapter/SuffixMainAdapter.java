@@ -126,7 +126,6 @@ public class SuffixMainAdapter extends BaseAdapter {
             }
         });
 
-
         holder.cb.setChecked(isSelected.get(position));
 
         return view;

@@ -61,14 +61,11 @@ public class QrySuffixActivity extends ListActivity {
         typeName = new String[listType.size()];
         typeNum = new String[listType.size()];
 
-
         for (int i = 0; i<listType.size(); i++){
             typeName[i] = listType.get(i).get("TYPE");
             typeNum[i] = listType.get(i).get("NUM");
         }
 
-//        Log.i("ch",typeName[0] +":"+ typeName[1] +":"+ typeName[2]);
-//        Log.i("ch",typeNum[0] +":"+ typeNum[1] +":"+ typeNum[2]);
         int count = 0;
 
         map=new HashMap<String,String>();       //为避免产生空指针异常，有几列就创建几个map对象
@@ -98,27 +95,8 @@ public class QrySuffixActivity extends ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        //ToolsUntil.showToast(this,"position-->" + position,2000);
         if (position > 0 && position < list.size() - 1){
-           // ToolsUntil.showToast(this,"position-->" + position,2000);
-           // ToolsUntil.showToast(this,"position-->" + list.get(position).get("typeName"),2000);
-            // Log.i("susee",list.get(position).get("typeName"));
             Log.i("susee","--->" + ToolsUntil.pathMap.get(list.get(position).get("typeName")).size());
-
-
-//            //创建一个SimpleAdapter对象
-//            ArrayList<HashMap<String,String>> tempList = new ArrayList<HashMap<String,String>>();
-//            for (String str:ToolsUntil.pathMap.get(list.get(position).get("typeName"))
-//                 ) {
-//                map=new HashMap<String,String>();       //为避免产生空指针异常，有几列就创建几个map对象
-//                map.put("typePath" ,str);
-//                tempList.add(map);
-//            }
-//            String []formDeatil = {"typePath"};
-//            int []toDeatil = {R.id.typePath};
-//            SimpleAdapter adapter=new SimpleAdapter(this,tempList,R.layout.activity_suffixdetail,formDeatil,toDeatil);
-//            //调用ListActivity的setListAdapter方法，为ListView设置适配器
-//            setListAdapter(adapter);
             Intent intent = new Intent();
             intent.putExtra("key",list.get(position).get("typeName"));
             intent.setClass(this, QrySuffixDetailActivity.class);
