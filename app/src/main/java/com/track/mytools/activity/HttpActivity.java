@@ -371,7 +371,7 @@ public class HttpActivity extends Activity{
                         HttpActivity.handler.sendMessage(msg);
 
                         //下载当前文件
-                        Log.i("DOWN",this.url);
+                        //Log.i("DOWN",this.url);
                         ToolsUntil.saveFile(inputStream,DIR_NAME,this.url,holder.pb);
                         //对当前线程链接++
                         this.url = plusNum(this.url);

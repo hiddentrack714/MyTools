@@ -93,8 +93,6 @@ public class MainActivity extends Activity {
 
         List<ShortCutEntity> list = new ArrayList<ShortCutEntity>();
 
-        //list.add(new ShortCutEntity("后缀名删除/添加","后缀名删除/添加",SuffixActivity.class));
-        //list.add(new ShortCutEntity("查询后缀","查询后缀",QrySuffixActivity.class));
         list.add(new ShortCutEntity("http下载","http下载",HttpActivity.class));
 
         dynamicAddShortCut(list);
