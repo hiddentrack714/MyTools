@@ -44,7 +44,7 @@ public class MainActivity extends Activity {
         //加载初始文件
         Properties pro = new Properties();
 
-        File proFile = new File("/sdcard/UCdownloads/tools.properties");
+        File proFile = new File("/mnt/sdcard/UCdownloads/tools.properties");
 
         if(!proFile.exists()){
             Log.e("su","参数文件不存在");
@@ -53,7 +53,7 @@ public class MainActivity extends Activity {
         }
 
         try{
-            pro = loadConfig(this,"/sdcard/UCdownloads/tools.properties");
+            pro = loadConfig(this,"/mnt/sdcard/UCdownloads/tools.properties");
         }catch(Exception e){
             Log.e("su","获取初始化文件失败...");
             ToolsUntil.showToast(this, "获取初始化文件失败...", 2000);

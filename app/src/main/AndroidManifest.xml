@@ -50,6 +50,11 @@
             android:name=".activity.HttpActivity"
             android:label="HttpActivity"
             android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
+        <activity
+            android:name=".activity.CopyActivity"
+            android:label="CopyActivity"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
+        <service android:name=".Service.CopyService"></service>
     </application>
 
 </manifest>

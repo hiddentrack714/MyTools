@@ -29,6 +29,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
     private Button psdBtn;
     private Button photoBtn;
     private Button httpBtn;
+    private Button copyBtn;
 
     private Button payBtn1;
     private Button payBtn2;
@@ -63,6 +64,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
         //psdBtn = (Button)findViewById(R.id.psdBtn);
         //photoBtn = (Button)findViewById(R.id.photoBtn);
         httpBtn = (Button)findViewById(R.id.httpBtn);
+        copyBtn = (Button)findViewById(R.id.copyBtn);
 
         //payBtn1 = (Button)findViewById(R.id.payBtn1);
         //payBtn2 = (Button)findViewById(R.id.payBtn2);
@@ -80,6 +82,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
         //psdBtn.setOnClickListener(this);
         //photoBtn.setOnClickListener(this);
         httpBtn.setOnClickListener(this);
+        copyBtn.setOnClickListener(this);
 
 //        payBtn1.setOnClickListener(this);
 //        payBtn2.setOnClickListener(this);
@@ -127,6 +130,12 @@ public class ToolsActivity extends Activity implements OnClickListener{
             Log.i("su","跳转到http下载");
             // temp = true;
             intent.setClass(ToolsActivity.this, HttpActivity.class);
+            this.startActivity(intent);
+            // this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+        }else if(v.getId() == R.id.copyBtn){
+            Log.i("su","快捷复制");
+            // temp = true;
+            intent.setClass(ToolsActivity.this, CopyActivity.class);
             this.startActivity(intent);
             // this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         }
