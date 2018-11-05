@@ -20,6 +20,10 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:text="快捷复制"/>
+    <Button android:id="@+id/ftpBtn"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="FTP下载"/>
     <!--<Button android:id="@+id/psdBtn"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"

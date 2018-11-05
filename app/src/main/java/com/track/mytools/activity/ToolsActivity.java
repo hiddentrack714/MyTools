@@ -30,6 +30,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
     private Button photoBtn;
     private Button httpBtn;
     private Button copyBtn;
+    private Button ftpBtn;
 
     private Button payBtn1;
     private Button payBtn2;
@@ -65,6 +66,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
         //photoBtn = (Button)findViewById(R.id.photoBtn);
         httpBtn = (Button)findViewById(R.id.httpBtn);
         copyBtn = (Button)findViewById(R.id.copyBtn);
+        ftpBtn = (Button)findViewById(R.id.ftpBtn);
 
         //payBtn1 = (Button)findViewById(R.id.payBtn1);
         //payBtn2 = (Button)findViewById(R.id.payBtn2);
@@ -83,6 +85,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
         //photoBtn.setOnClickListener(this);
         httpBtn.setOnClickListener(this);
         copyBtn.setOnClickListener(this);
+        ftpBtn.setOnClickListener(this);
 
 //        payBtn1.setOnClickListener(this);
 //        payBtn2.setOnClickListener(this);
@@ -136,6 +139,12 @@ public class ToolsActivity extends Activity implements OnClickListener{
             Log.i("su","快捷复制");
             // temp = true;
             intent.setClass(ToolsActivity.this, CopyActivity.class);
+            this.startActivity(intent);
+            // this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+        }else if(v.getId() == R.id.ftpBtn){
+            Log.i("su","FTP下载");
+            // temp = true;
+            intent.setClass(ToolsActivity.this, FTPActivity.class);
             this.startActivity(intent);
             // this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         }

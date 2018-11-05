@@ -8,6 +8,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -54,7 +57,13 @@
             android:name=".activity.CopyActivity"
             android:label="CopyActivity"
             android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
+        <activity
+            android:name=".activity.FTPActivity"
+            android:label="FTPActivity"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
+
         <service android:name=".Service.CopyService"></service>
+        <service android:name=".Service.FTPService"></service>
     </application>
 
 </manifest>
