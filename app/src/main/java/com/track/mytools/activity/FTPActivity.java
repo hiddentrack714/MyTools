@@ -14,6 +14,9 @@ import android.widget.TextView;
 import com.track.mytools.R;
 import com.track.mytools.Service.FTPService;
 
+/**
+ * FTP下载
+ */
 public class FTPActivity extends Activity {
 
     private EditText ftpIP;

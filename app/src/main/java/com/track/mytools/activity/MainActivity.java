@@ -8,24 +8,22 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
-import android.graphics.drawable.Icon;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.track.mytools.entity.ShortCutEntity;
-import com.track.mytools.until.FingerprintUtil;
 import com.track.mytools.R;
+import com.track.mytools.entity.ShortCutEntity;
 import com.track.mytools.entity.ToolsEntiy;
+import com.track.mytools.until.FingerprintUtil;
 import com.track.mytools.until.ToolsUntil;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -44,7 +42,7 @@ public class MainActivity extends Activity {
         //加载初始文件
         Properties pro = new Properties();
 
-        File proFile = new File("/mnt/sdcard/UCdownloads/tools.properties");
+        File proFile = new File("/sdcard/UCdownloads/tools.properties");
 
         if(!proFile.exists()){
             Log.e("su","参数文件不存在");
@@ -53,7 +51,7 @@ public class MainActivity extends Activity {
         }
 
         try{
-            pro = loadConfig(this,"/mnt/sdcard/UCdownloads/tools.properties");
+            pro = loadConfig(this,"/sdcard/UCdownloads/tools.properties");
         }catch(Exception e){
             Log.e("su","获取初始化文件失败...");
             ToolsUntil.showToast(this, "获取初始化文件失败...", 2000);

@@ -20,8 +20,6 @@ import java.io.DataOutputStream;
  * 功能主界面
  *
  */
-
-
 public class ToolsActivity extends Activity implements OnClickListener{
 
     private Button suffixBtn;

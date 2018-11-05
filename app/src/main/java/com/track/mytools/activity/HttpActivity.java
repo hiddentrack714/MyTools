@@ -4,20 +4,16 @@ import android.app.Activity;
 import android.app.ListActivity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
-import android.widget.SimpleAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -36,11 +32,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * http多线程下载
+ *
+ */
 public class HttpActivity extends Activity{
-    /**
-     * http多线程下载
-     * @param savedInstanceState
-     */
 
     private Button httpDownBtn;//下载按钮
     private Button httpCopyBtn;//黏贴按钮

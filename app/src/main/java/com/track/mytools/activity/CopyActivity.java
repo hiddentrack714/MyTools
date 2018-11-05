@@ -1,7 +1,6 @@
 package com.track.mytools.activity;
 
 import android.app.Activity;
-import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +16,9 @@ import android.widget.Switch;
 import com.track.mytools.R;
 import com.track.mytools.Service.CopyService;
 
+/**
+ * 快捷复制
+ */
 public class CopyActivity extends Activity {
 
     /**

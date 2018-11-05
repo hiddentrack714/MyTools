@@ -19,7 +19,6 @@ import com.track.mytools.until.ToolsUntil;
  * Created by Track on 2017/1/16.
  * 后缀删除/添加
  */
-
 public class SuffixActivity extends Activity {
 
     private Button addBtn;   //添加后缀按钮
