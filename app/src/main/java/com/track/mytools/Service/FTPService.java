@@ -46,7 +46,9 @@ public class FTPService extends Service {
                     Message msg = FTPActivity.handler.obtainMessage();
                     msg.arg1 = 0;
                     FTPActivity.handler.sendMessage(msg);
-                    Log.i("FTPService","文件大小:" + FTPActivity.remoteFileSize);
+                    MyThread t = new MyThread();
+                    t.start();
+                    Log.i("FTPSERVICE1","文件大小:" + FTPActivity.remoteFileSize);
                     boolean sucess = fTPUtil.downloadFile(fileName, localPath, serverPath);
                     if(sucess){
                         ToolsUntil.showToast(FTPActivity.fTPActivity,"下载成功",2000);
@@ -59,40 +61,41 @@ public class FTPService extends Service {
                     FTPActivity.handler.sendMessage(msg);
                     fTPUtil.ftpLogOut();
                 }else{
-                    Log.e("FTPSERVICE","FTP Login Fail");
+                    Log.e("FTPSERVICE2","FTP Login Fail:");
+                    ToolsUntil.showToast(FTPActivity.fTPActivity,"FTP登陆失败",2000);
                 }
             }
         }.start();
 
-        //文件下载进度检测
-        new Thread(){
-            @Override
-            public void run() {
-                Log.i("FTPSERVICE","开启下载检测");
-                try{
-                    Thread.sleep(500);
-                    while(isFinish){
-                        File file = new File(localPath + fileName);
-                        if(file.exists()){
-                            Long fileSize = file.length();
-                            Message msg = FTPActivity.handler.obtainMessage();
-                            msg.arg1 = 2;
-                            msg.obj = fileSize;
-                            FTPActivity.handler.sendMessage(msg);
-                        }
-                    }
-                }catch(Exception e){
-                    e.getStackTrace();
-                    Log.e("FTPSERVICE",e.getMessage());
-                }
-            }
-        }.start();
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    class MyThread extends Thread{
+        @Override
+        public void run() {
+            Log.i("FTPSERVICE3","开启下载检测");
+            try{
+                Thread.sleep(500);
+                while(isFinish){
+                    File file = new File(localPath + fileName);
+                    if(file.exists()){
+                        Long fileSize = file.length();
+                        Message msg = FTPActivity.handler.obtainMessage();
+                        msg.arg1 = 2;
+                        msg.obj = fileSize;
+                        FTPActivity.handler.sendMessage(msg);
+                    }
+                }
+            }catch(Exception e){
+                e.getStackTrace();
+                Log.e("FTPSERVICE4",e.getMessage());
+            }
+        }
     }
 
 }

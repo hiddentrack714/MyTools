@@ -83,7 +83,6 @@ public class FTPActivity extends Activity {
                 //初始化
                 if(arg0.arg1 == 4){
                     ftpPro.setProgress(0);
-                    //ftpProText.setText("0/0");
                     FTPService.isFinish = true;
                 }
                 return false;
