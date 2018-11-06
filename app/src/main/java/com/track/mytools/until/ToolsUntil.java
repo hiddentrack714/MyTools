@@ -1,16 +1,5 @@
 package com.track.mytools.until;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-
 import android.app.Activity;
 import android.os.Handler;
 import android.os.Message;
@@ -19,10 +8,21 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.track.mytools.entity.ToolsEntiy;
 import com.track.mytools.activity.SuffixActivity;
+import com.track.mytools.entity.HttpThreadEntity;
+import com.track.mytools.entity.ToolsEntiy;
+import com.track.mytools.exception.HttpException;
 
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Track on 2017/1/14.
@@ -555,8 +555,8 @@ public class ToolsUntil {
      * @return
      * @throws IOException
      */
-    public static void saveFile(InputStream inputStream,String dir,String str,ProgressBar pb) throws IOException {
-        byte[] buffer = new byte[1024];
+    public static boolean saveFile(InputStream inputStream, String dir, String str, ProgressBar pb, HttpThreadEntity httpThreadEntity) throws IOException,HttpException {
+        byte[] buffer = new byte[512];
 
         int len = 0;
 
@@ -579,6 +579,11 @@ public class ToolsUntil {
             fos.write(buffer, 0, len);
             proLen = proLen + len;
             pb.setProgress(proLen);
+
+            if(!httpThreadEntity.isFileBoolean()){
+                //文件下载检测超时，跳出下载方法
+                throw new HttpException("文件下载超时");
+            }
         }
 
         fos.flush();
@@ -591,6 +596,7 @@ public class ToolsUntil {
             inputStream.close();
         }
 
+        return true;
     }
 
     /**

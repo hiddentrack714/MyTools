@@ -20,8 +20,10 @@ import android.widget.TextView;
 import com.track.mytools.R;
 import com.track.mytools.adapter.HttpMainAdapter;
 import com.track.mytools.entity.HttpThreadEntity;
+import com.track.mytools.exception.HttpException;
 import com.track.mytools.until.ToolsUntil;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -45,6 +47,7 @@ public class HttpActivity extends Activity{
     private EditText httpThread;//线程数量
     private EditText httpDir;//下载地址
     private EditText httpSuff;//下载文件后缀
+    private EditText httpFailName;//下载失败文件名称
 
     private SeekBar httpSeek;//线程数量拉条
 
@@ -69,6 +72,8 @@ public class HttpActivity extends Activity{
     private static Boolean isSingle = false; // 是否采用单文件下载标识，默认为不采用
 
     private ListView lv;
+
+    public static int TIME_OUT = 25; // 单一文件下载超时最大时间限制15秒
 
     //listview内容模板
     private static String from [] = {"httpDownNo","httpDownPro","httpDownSize","httpDownName"};
@@ -126,6 +131,18 @@ public class HttpActivity extends Activity{
 
                     holder.tvName.setText(hte.getFileName());
                 }
+
+                if(arg0.arg1 == 2){
+                    String str = (String)arg0.obj;
+                    String text = httpFailName.getText().toString();
+                    if("".equals(text)){
+                        text = str;
+                    }else{
+                        text = text + "," +str;
+                    }
+                    httpFailName.setText(text);
+                }
+
                 return false;
             }
         });
@@ -180,7 +197,7 @@ public class HttpActivity extends Activity{
                 //循环初始化多个线程
                 List<String> list = new ArrayList<String>();
                 ConcurrentHashMap<Integer,Boolean> map = new ConcurrentHashMap<Integer,Boolean>();  // 线程下载状态
-                for(int i=1 ;i<THREAD_NUM+1;i++) {
+                for(int i = 1 ;i < THREAD_NUM + 1 ;i++) {
                     ConcurrentHashMap<String,Object> listMap = new ConcurrentHashMap<String,Object>();              //线程属性
                     String temp = "";
                     if(i<10) {
@@ -189,7 +206,12 @@ public class HttpActivity extends Activity{
                         temp = i+"";
                     }
 
-                    flag = flag + temp + "." + fileSuff;
+                    //URL+文件+后缀
+                    if(isSingle){
+                        flag = httpUrl.getText().toString();
+                    }else{
+                        flag = flag + temp + "." + fileSuff;
+                    }
 
                     list.add(flag);
                     flag = URL;
@@ -227,7 +249,7 @@ public class HttpActivity extends Activity{
                             }
                         }
 
-                        Log.i("http","下载进度检查");
+                        //Log.i("http","下载进度检查");
 
                         if(i == THREAD_NUM) {
                             t = false;
@@ -309,6 +331,8 @@ public class HttpActivity extends Activity{
     /**
      * 多线程下载类
      * 在多线程下载类中只负责初始化listview，不负责更新
+     * 添加该线程的自我销毁操作，超过xx秒还未下载完成，停止下载，转到下一个背书循环
+     * 将当前未下载完成的文件，标记到界面显示
      */
     static class MyThread extends Thread{
 
@@ -354,21 +378,35 @@ public class HttpActivity extends Activity{
 
                         Message msg = HttpActivity.handler.obtainMessage();
 
+                        long startTime = System.currentTimeMillis();//文件起始下载时间
+
                         HttpThreadEntity hte = new HttpThreadEntity();
 
                         hte.setFileIndex(index);
-                        double fileSizeDouble = Double.parseDouble(fileSize + "");
-                        hte.setFileSize(ToolsUntil.takePointTwo((fileSizeDouble / 1024) + ""));
+                        hte.setFileSize(fileSize + "");
                         hte.setFileName(this.url.substring(this.url.lastIndexOf("/") + 1));
+                        hte.setFileStartTime(startTime);
+                        hte.setFileBoolean(true);
 
                         msg.arg2 = 1;
                         msg.obj = hte;
 
                         HttpActivity.handler.sendMessage(msg);
 
+                        //下载时间检测任务开启
+                        //new TimeThread(fileSize,DIR_NAME,hte,this.url).start();
                         //下载当前文件
-                        //Log.i("DOWN",this.url);
-                        ToolsUntil.saveFile(inputStream,DIR_NAME,this.url,holder.pb);
+                        try{
+                            ToolsUntil.saveFile(inputStream,DIR_NAME,this.url,holder.pb,hte);
+                        }catch(HttpException e){
+                            ToolsUntil.showToast(HttpActivity.ha,DIR_NAME+"下载失败",3000);
+                            //String httpFail =  httpFailName.getText();
+                            Message msg1 = HttpActivity.handler.obtainMessage();
+                            msg1.arg1 = 2;
+                            msg1.obj = DIR_NAME;
+                            HttpActivity.handler.sendMessage(msg1);
+                        }
+
                         //对当前线程链接++
                         this.url = plusNum(this.url);
                     }
@@ -423,6 +461,43 @@ public class HttpActivity extends Activity{
         public void run() {
             Message msg = HttpActivity.handler.obtainMessage();
             msg.arg2 = 1;
+        }
+    }
+
+    /**
+     * 文件下载时间检测
+     * 超过定制时间后，停止下载
+     */
+    static class TimeThread extends Thread{
+
+        private int fileSize;
+        private String filePath;
+        private HttpThreadEntity hte;
+        private String url;
+
+        private boolean isContinue = true;
+
+        public TimeThread(int fileSize,String filePath,HttpThreadEntity hte,String url){
+            this.fileSize = fileSize;
+            this.filePath = filePath;
+            this.hte = hte;
+            this.url = url;
+        }
+
+        @Override
+        public void run() {
+            try{
+                Thread.sleep(TIME_OUT * 1000);
+                String fileName = filePath + File.separator + url.substring(url.lastIndexOf("/") + 1);
+                File file = new File(fileName);
+                if(file.length() < fileSize){
+                    //实际下载文件小于预计大小，下载失败，停止下载
+                    hte.setFileBoolean(false);
+                    Log.e("HTTPACTIVITY1",fileName + "下载失败");
+                }
+            }catch(Exception e){
+                Log.e("HTTPACTIVITY1",e.getMessage());
+            }
         }
     }
 

@@ -1,9 +1,11 @@
 package com.track.mytools.entity;
 
 public class HttpThreadEntity {
-    private int fileIndex;
-    private String fileSize;
-    private String fileName;
+    private int fileIndex;          //线程编号
+    private String fileSize;        //文件大小
+    private String fileName;        //文件名称
+    private long fileStartTime;   //文件下载起始时间
+    private boolean fileBoolean;
 
     public int getFileIndex() {
         return fileIndex;
@@ -27,5 +29,21 @@ public class HttpThreadEntity {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public long getFileStartTime() {
+        return fileStartTime;
+    }
+
+    public void setFileStartTime(long fileStartTime) {
+        this.fileStartTime = fileStartTime;
+    }
+
+    public boolean isFileBoolean() {
+        return fileBoolean;
+    }
+
+    public void setFileBoolean(boolean fileBoolean) {
+        this.fileBoolean = fileBoolean;
     }
 }
