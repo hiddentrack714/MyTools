@@ -1,10 +1,13 @@
 package com.track.mytools.activity;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,6 +44,10 @@ public class FTPActivity extends Activity {
 
     public static String ftpVal[] = new String[7];
 
+    public static NotificationManager notificationManager;
+
+    public static NotificationCompat.Builder mBuilder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,12 +82,16 @@ public class FTPActivity extends Activity {
                 }
                 //下载完成，停止服务
                 if(arg0.arg1 == 1){
+                    Log.i("FTPActivity1","下载完成");
                     stopService(intent);
                 }
                 //进度条更新
                 if(arg0.arg1 == 2){
                     ftpPro.setProgress(Integer.parseInt(arg0.obj+""));
                     ftpProText.setText(viewText);
+
+                    mBuilder.setProgress(Integer.parseInt(remoteFileSize),Integer.parseInt(arg0.obj+""),false);
+                    notificationManager.notify(0x3,mBuilder.build());
                 }
 
                 //初始化
@@ -118,6 +129,9 @@ public class FTPActivity extends Activity {
                 FTPActivity.handler.sendMessage(msg);
 
                 startService(intent);
+
+                notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
             }
         });
     }

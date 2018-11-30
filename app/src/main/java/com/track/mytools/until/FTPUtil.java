@@ -138,8 +138,7 @@ public class FTPUtil {
      * @param remoteDownLoadPath remoteFileName所在的路径
      * */
 
-    public boolean downloadFile(String remoteFileName, String localDires,
-                                String remoteDownLoadPath) {
+    public boolean downloadFile(String remoteFileName, String localDires, String remoteDownLoadPath) {
         String strFilePath = localDires + remoteFileName;
         BufferedOutputStream outStream = null;
         boolean success = false;
