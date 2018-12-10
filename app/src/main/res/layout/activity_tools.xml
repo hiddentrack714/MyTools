@@ -24,6 +24,10 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:text="FTP下载"/>
+    <Button android:id="@+id/wifiBtn"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="Wifi密码"/>
     <!--<Button android:id="@+id/psdBtn"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"

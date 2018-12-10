@@ -29,6 +29,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
     private Button httpBtn;
     private Button copyBtn;
     private Button ftpBtn;
+    private Button wifiBtn;
 
     private Button payBtn1;
     private Button payBtn2;
@@ -65,6 +66,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
         httpBtn = (Button)findViewById(R.id.httpBtn);
         copyBtn = (Button)findViewById(R.id.copyBtn);
         ftpBtn = (Button)findViewById(R.id.ftpBtn);
+        wifiBtn = (Button)findViewById(R.id.wifiBtn);
 
         //payBtn1 = (Button)findViewById(R.id.payBtn1);
         //payBtn2 = (Button)findViewById(R.id.payBtn2);
@@ -84,6 +86,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
         httpBtn.setOnClickListener(this);
         copyBtn.setOnClickListener(this);
         ftpBtn.setOnClickListener(this);
+        wifiBtn.setOnClickListener(this);
 
 //        payBtn1.setOnClickListener(this);
 //        payBtn2.setOnClickListener(this);
@@ -143,6 +146,12 @@ public class ToolsActivity extends Activity implements OnClickListener{
             Log.i("su","FTP下载");
             // temp = true;
             intent.setClass(ToolsActivity.this, FTPActivity.class);
+            this.startActivity(intent);
+            // this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+        }else if(v.getId() == R.id.wifiBtn){
+            Log.i("su","Wifi密码");
+            // temp = true;
+            intent.setClass(ToolsActivity.this, WifiActivity.class);
             this.startActivity(intent);
             // this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         }
