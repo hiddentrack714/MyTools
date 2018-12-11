@@ -23,13 +23,10 @@ import java.util.List;
  */
 public class WifiActivity extends Activity {
 
-    //listview内容模板
-    private static String from [] = {"wifiSSid","wifiPssword"};
-    private static int to [] = {R.id.wifiSSid,R.id.wifiPassword};
-
     private static int i = -1;
     private static HashMap<String ,String> map;//密码集合
     private static List<HashMap<String, String>> l;//密码键值对
+    private static List<HashMap<String, String>> tempL;//临时密码键值对
 
     private static WifiMainAdapter wma;
 
@@ -45,6 +42,7 @@ public class WifiActivity extends Activity {
         try {
             Process process = null;
             l = new ArrayList<HashMap<String, String>>();
+            tempL = new ArrayList<HashMap<String, String>>();
             DataInputStream dataInputStream = null;
             DataOutputStream dataOutputStream = null;
             process = Runtime.getRuntime().exec("su");
@@ -59,17 +57,22 @@ public class WifiActivity extends Activity {
             while ((str = r.readLine()) != null) {
                 if ("network={".equals(str)) {
                     i = 0;
-                    map = new HashMap<String, String>();
+                    map = new HashMap<String, String>(); //有效wifi密码
                 } else if ("}".equals(str)) {
-                    l.add(map);
+                    if(null!=map.get("ssid") && null!=map.get("passwrd")){
+                        //Log.i("WifiActivity_LOG1","->" +map.get("ssid")+":"+map.get("passwrd")+"<-");
+                        l.add(map);
+                    }else{
+                        tempL.add(map);
+                    }
                     i = -1;
                 } else if (i >= 0) {
                     if (str.indexOf("ssid=\"") > -1) {
-                        str = str.substring(str.indexOf("ssid=\\\"") + 8, str.lastIndexOf("\""));
+                        str = str.trim().substring(str.indexOf("ssid=\\\"") + 7, str.lastIndexOf("\"") - 1);
                         map.put("ssid", str);
                         //Log.i("ssid",str);
                     } else if (str.indexOf("psk") > -1) {
-                        str = str.substring(str.indexOf("ssid=\\\"") + 7, str.lastIndexOf("\""));
+                        str = str.trim().substring(str.indexOf("ssid=\\\"") + 6, str.lastIndexOf("\"") - 1);
                         map.put("passwrd", str);
                         //Log.i("passwrd",str);
                     }
@@ -82,6 +85,14 @@ public class WifiActivity extends Activity {
         }
 
         lv = (ListView)findViewById(R.id.wifiList);
+
+        HashMap<String, String> tempMap = new HashMap<String, String>(); //有效和无效密码的分割符
+        tempMap.put("ssid","----------------------------");
+        tempMap.put("passwrd","---------------无效密码------------------------------------------------");
+
+        l.add(tempMap);
+
+        l.addAll(tempL);
 
         wma = new WifiMainAdapter(ha,l);
 
