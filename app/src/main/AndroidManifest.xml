@@ -66,6 +66,10 @@
             android:name=".activity.WifiActivity"
             android:label="FTPActivity"
             android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
+        <activity
+            android:name=".activity.LanActivity"
+            android:label="LanActivity"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
 
         <service android:name=".Service.CopyService"></service>
         <service android:name=".Service.FTPService"></service>

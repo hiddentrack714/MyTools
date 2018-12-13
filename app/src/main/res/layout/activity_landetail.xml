@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!--主机名-->
+    <TextView
+        android:id="@+id/lanName"
+        android:layout_width="250px"
+        android:layout_height="wrap_content"
+        android:gravity="center" />
+    <!--IP-->
+    <TextView
+        android:id="@+id/lanIP"
+        android:layout_width="350px"
+        android:layout_height="wrap_content"
+        android:gravity="center" />
+    <!--Mac-->
+    <TextView
+        android:id="@+id/lanMac"
+        android:layout_width="450px"
+        android:layout_height="wrap_content"
+        android:gravity="center" />
+</LinearLayout>

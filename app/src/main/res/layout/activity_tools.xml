@@ -28,6 +28,10 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:text="Wifi密码"/>
+    <Button android:id="@+id/lanBtn"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="局域网设备"/>
     <!--<Button android:id="@+id/psdBtn"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
