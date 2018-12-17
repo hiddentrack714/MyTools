@@ -1,20 +1,18 @@
 package com.track.mytools.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.Activity;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.view.View;//注意view的大小写
-import android.view.View.OnClickListener;
 
 import com.track.mytools.R;
-
-import java.io.DataOutputStream;
 
 /**
  * 功能主界面
@@ -31,6 +29,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
     private Button ftpBtn;
     private Button wifiBtn;
     private Button lanBtn;
+    private Button nlBtn;
 
     private Button payBtn1;
     private Button payBtn2;
@@ -69,6 +68,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
         ftpBtn = (Button)findViewById(R.id.ftpBtn);
         wifiBtn = (Button)findViewById(R.id.wifiBtn);
         lanBtn = (Button)findViewById(R.id.lanBtn);
+        nlBtn = (Button)findViewById(R.id.nlBtn);
 
         //payBtn1 = (Button)findViewById(R.id.payBtn1);
         //payBtn2 = (Button)findViewById(R.id.payBtn2);
@@ -90,6 +90,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
         ftpBtn.setOnClickListener(this);
         wifiBtn.setOnClickListener(this);
         lanBtn.setOnClickListener(this);
+        nlBtn.setOnClickListener(this);
 
 //        payBtn1.setOnClickListener(this);
 //        payBtn2.setOnClickListener(this);
@@ -157,11 +158,16 @@ public class ToolsActivity extends Activity implements OnClickListener{
             intent.setClass(ToolsActivity.this, WifiActivity.class);
             this.startActivity(intent);
             // this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-        }
-        else if(v.getId() == R.id.lanBtn){
+        }else if(v.getId() == R.id.lanBtn){
             Log.i("su","局域网设备");
             // temp = true;
             intent.setClass(ToolsActivity.this, LanActivity.class);
+            this.startActivity(intent);
+            // this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+        }else if(v.getId() == R.id.nlBtn){
+            Log.i("su","支付宝获取能量");
+            // temp = true;
+            intent.setClass(ToolsActivity.this,NLActivity.class);
             this.startActivity(intent);
             // this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         }
@@ -213,43 +219,6 @@ public class ToolsActivity extends Activity implements OnClickListener{
 //        }else{
 //            ToolsUntil.showToast(this,"制作中....",1000);
 //        }
-    }
-
-    /**
-     * 执行快捷命令
-     * @param commod
-     * @param toolsActivity
-     */
-    public void exeCommod(String [] commod,ToolsActivity toolsActivity){
-        Process process = null;
-        DataOutputStream dos = null;
-        for(int i = 0 ;i < commod.length ; i++){
-            try {
-                process = Runtime.getRuntime().exec("su");
-                dos = new DataOutputStream(process.getOutputStream());
-                dos.writeBytes(commod[i] + "\n");
-                dos.writeBytes("exit\n");
-                dos.flush();
-                process.waitFor();
-//                while(true){
-//                    ActivityManager activityManager=(ActivityManager) getSystemService(ACTIVITY_SERVICE);
-//                    String runningActivity=activityManager.getRunningTasks(1).get(0).topActivity.getClassName();
-//                    Log.i("nowActivity",runningActivity);
-//                }
-//              Thread.sleep(3000);
-            } catch (Exception e) {
-                // return false;
-            } finally {
-                try {
-                    if (dos != null) {
-                        dos.close();
-                    }
-                    process.destroy();
-                } catch (Exception e) {
-                }
-            }
-        }
-
     }
 
 }

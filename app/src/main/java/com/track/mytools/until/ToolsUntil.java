@@ -13,6 +13,7 @@ import com.track.mytools.entity.HttpThreadEntity;
 import com.track.mytools.entity.ToolsEntiy;
 import com.track.mytools.exception.HttpException;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -607,6 +608,42 @@ public class ToolsUntil {
     public static String takePointTwo(String str){
 
             return str.substring(0,str.lastIndexOf(".") + 3);
+    }
+
+    /**
+     * 执行快捷命令
+     * @param commod
+     */
+    public static void exeCommod(String [] commod){
+        Process process = null;
+        DataOutputStream dos = null;
+        for(int i = 0 ;i < commod.length ; i++){
+            try {
+                process = Runtime.getRuntime().exec("su");
+                dos = new DataOutputStream(process.getOutputStream());
+                dos.writeBytes(commod[i] + "\n");
+                dos.writeBytes("exit\n");
+                dos.flush();
+                process.waitFor();
+//                while(true){
+//                    ActivityManager activityManager=(ActivityManager) getSystemService(ACTIVITY_SERVICE);
+//                    String runningActivity=activityManager.getRunningTasks(1).get(0).topActivity.getClassName();
+//                    Log.i("nowActivity",runningActivity);
+//                }
+//              Thread.sleep(3000);
+            } catch (Exception e) {
+                // return false;
+            } finally {
+                try {
+                    if (dos != null) {
+                        dos.close();
+                    }
+                    process.destroy();
+                } catch (Exception e) {
+                }
+            }
+        }
+
     }
 
     public static void main(String args[]){
