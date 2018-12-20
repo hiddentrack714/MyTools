@@ -23,7 +23,6 @@ public class ToolsActivity extends Activity implements OnClickListener{
     private Button suffixBtn;
     private Button qrySuBtn;
     private Button psdBtn;
-    private Button photoBtn;
     private Button httpBtn;
     private Button copyBtn;
     private Button ftpBtn;
@@ -35,12 +34,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
     private Button payBtn2;
     private Button payBtn3;
     private Button payBtn4;
-    private Button payBtn5;
-    private Button payBtn6;
-    private Button payBtn7;
-    private Button payBtn8;
-    private Button payBtn9;
-    private Button payBtn10;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,12 +67,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
         //payBtn2 = (Button)findViewById(R.id.payBtn2);
         //payBtn3 = (Button)findViewById(R.id.payBtn3);
         //payBtn4 = (Button)findViewById(R.id.payBtn4);
-        //payBtn5 = (Button)findViewById(R.id.payBtn5);
-        //payBtn6 = (Button)findViewById(R.id.payBtn6);
-        //payBtn7 = (Button)findViewById(R.id.payBtn7);
-        //payBtn8 = (Button)findViewById(R.id.payBtn8);
-        //payBtn9 = (Button)findViewById(R.id.payBtn9);
-        //payBtn10 = (Button)findViewById(R.id.payBtn10);
+
 
         suffixBtn.setOnClickListener(this);
         qrySuBtn.setOnClickListener(this);
@@ -94,12 +83,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
 //        payBtn2.setOnClickListener(this);
 //        payBtn3.setOnClickListener(this);
 //        payBtn4.setOnClickListener(this);
-//        payBtn5.setOnClickListener(this);
-//        payBtn6.setOnClickListener(this);
-//        payBtn7.setOnClickListener(this);
-//        payBtn8.setOnClickListener(this);
-//        payBtn9.setOnClickListener(this);
-//        payBtn10.setOnClickListener(this);
+
     }
 
     @Override
@@ -144,7 +128,6 @@ public class ToolsActivity extends Activity implements OnClickListener{
         }
 
 
-
 //        else if(v.getId() == R.id.payBtn1){
 //            //微信扫一扫
 //            String [] commods = {"am start -n com.tencent.mm/com.tencent.mm.plugin.scanner.ui.BaseScanUI"};
@@ -161,31 +144,6 @@ public class ToolsActivity extends Activity implements OnClickListener{
 //            //支付宝付款
 //            String [] commods = {"am start -n com.eg.android.AlipayGphone/com.alipay.mobile.onsitepay9.payer.OspTabHostActivity"};
 //           exeCommod(commods, this);
-//        }else if(v.getId() == R.id.payBtn5){
-//            //QQ扫一扫
-//            String [] commods = {"am start -n com.tencent.mobileqq/com.tencent.biz.qrcode.activity.ScannerActivity"};
-//            exeCommod(commods, this);
-//        }else if(v.getId() == R.id.payBtn6){
-//            //QQ付款
-//            String [] commods = {"am start -n com.tencent.mobileqq/cooperation.qwallet.plugin.QWalletPluginProxyActivity"};
-//            exeCommod(commods, this);
-//        }else if(v.getId() == R.id.payBtn7){
-//            //百度钱包扫一扫
-//            String [] commods = {"am start -n com.baidu.wallet/com.baidu.wallet.qrcodescanner.QRScanCodeActivity"};
-//            exeCommod(commods, this);
-//        }else if(v.getId() == R.id.payBtn8){
-//            //百度钱包付款
-//           // Log.i("baidu","百度钱包付款");
-//            String [] commods = {"am start -n com.baidu.wallet/com.baidu.wallet.home.MainActivity","am start -n com.baidu.wallet/com.baidu.wallet.scancode.ui.ShowCodeActivity"};
-//            exeCommod(commods, this);
-//        }else if(v.getId() == R.id.payBtn9){
-//            //京东钱包扫一扫
-//            String [] commods = {"am start -n com.wangyin.payment/com.zxing.activity.CaptureActivity"};
-//            exeCommod(commods, this);
-//        }else if(v.getId() == R.id.payBtn10){
-//            //京东钱包付款
-//            String [] commods = {"am start -n com.wangyin.payment/com.wangyin.payment.paymentcode.ui.PaymentCodeActivity"};
-//            exeCommod(commods, this);
 //        }
 
     }
