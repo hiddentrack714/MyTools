@@ -3,6 +3,7 @@ package com.track.mytools.activity;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,6 +17,10 @@ import android.widget.TextView;
 
 import com.track.mytools.R;
 import com.track.mytools.Service.FTPService;
+import com.track.mytools.dao.ToolsDao;
+import com.track.mytools.entity.FTPEntity;
+
+import java.util.HashMap;
 
 /**
  * FTP下载
@@ -32,7 +37,8 @@ public class FTPActivity extends Activity {
 
     private ProgressBar ftpPro;
 
-    private Button ftpDownBtn;
+    private Button ftpDownBtn;  //下载
+    private Button ftpUpdBtn;   //修改
 
     public static Handler handler;
 
@@ -48,6 +54,8 @@ public class FTPActivity extends Activity {
 
     public static NotificationCompat.Builder mBuilder;
 
+    private static boolean isUpd = false; // 是否修改中
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,12 +70,24 @@ public class FTPActivity extends Activity {
         ftpFileName = (EditText)findViewById(R.id.ftpFileName);
 
         ftpDownBtn = (Button)findViewById(R.id.ftpDownBtn);
+        ftpUpdBtn = (Button)findViewById(R.id.ftpUpdBtn);
 
         ftpPro = (ProgressBar)findViewById(R.id.ftpPro);
 
         ftpProText = (TextView)findViewById(R.id.ftpProText);
 
         fTPActivity = this;
+
+        SQLiteDatabase sdb = ToolsDao.getDatabase();
+
+        HashMap<String,Object> map = ToolsDao.qryTable(sdb,FTPEntity.class).get(0);
+
+        ftpIP.setText(map.get("ftpIP").toString());
+        ftpPORT.setText(map.get("ftpPORT").toString());
+        ftpUser.setText(map.get("ftpUser").toString());
+        ftpServerPath.setText(map.get("ftpServerPath").toString());
+        ftpLocalPath.setText(map.get("ftpLocalPath").toString());
+        ftpPassword.setText(map.get("ftpPassword").toString());
 
         Intent intent = new Intent(FTPActivity.this,FTPService.class);
 
@@ -132,6 +152,51 @@ public class FTPActivity extends Activity {
 
                 notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
+            }
+        });
+
+        ftpUpdBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isUpd == false){
+                    //修改中
+                    ftpIP.setEnabled(true);
+                    ftpPORT.setEnabled(true);
+                    ftpUser.setEnabled(true);
+                    ftpServerPath.setEnabled(true);
+                    ftpLocalPath.setEnabled(true);
+                    ftpPassword.setEnabled(true);
+
+                    isUpd = true;
+
+                    ftpUpdBtn.setText("完成");
+
+                }else{
+                    //完成修改
+                    ftpIP.setEnabled(false);
+                    ftpPORT.setEnabled(false);
+                    ftpUser.setEnabled(false);
+                    ftpServerPath.setEnabled(false);
+                    ftpLocalPath.setEnabled(false);
+                    ftpPassword.setEnabled(false);
+
+                    isUpd = false;
+
+                    SQLiteDatabase sdb = ToolsDao.getDatabase();
+
+                    HashMap<String,Object> dataMap = new HashMap<String,Object>();
+
+                    dataMap.put("ftpIP",ftpIP.getText().toString());
+                    dataMap.put("ftpPORT",ftpPORT.getText().toString());
+                    dataMap.put("ftpUser",ftpUser.getText().toString());
+                    dataMap.put("ftpServerPath",ftpServerPath.getText().toString());
+                    dataMap.put("ftpLocalPath",ftpLocalPath.getText().toString());
+                    dataMap.put("ftpPassword",ftpPassword.getText().toString());
+                    dataMap.put("id",map.get("id"));
+
+                    ToolsDao.saveOrUpdIgnoreExsit(sdb,dataMap,FTPEntity.class);
+                    ftpUpdBtn.setText("修改");
+                }
             }
         });
     }

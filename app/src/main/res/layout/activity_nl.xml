@@ -15,7 +15,7 @@
             android:id="@+id/nlX"
             android:layout_width="250px"
             android:layout_height="wrap_content"
-            android:text="668"/>
+            android:enabled="false"/>
         <TextView
             android:layout_width="180px"
             android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
             android:id="@+id/nlY"
             android:layout_width="250px"
             android:layout_height="wrap_content"
-            android:text="634"/>
+            android:enabled="false"/>
     </LinearLayout>
 
     <LinearLayout
@@ -38,7 +38,7 @@
             android:id="@+id/ballX"
             android:layout_width="250px"
             android:layout_height="wrap_content"
-            android:text="363"/>
+            android:enabled="false"/>
         <TextView
             android:layout_width="150px"
             android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
             android:id="@+id/ballY"
             android:layout_width="250px"
             android:layout_height="wrap_content"
-            android:text="694"/>
+            android:enabled="false"/>
     </LinearLayout>
 
     <LinearLayout
@@ -61,7 +61,7 @@
             android:id="@+id/nlHour"
             android:layout_width="120px"
             android:layout_height="wrap_content"
-            android:text="7"
+            android:enabled="false"
             android:gravity="center"/>
         <TextView
             android:layout_width="50px"
@@ -71,7 +71,7 @@
             android:id="@+id/nlMinute"
             android:layout_width="120px"
             android:layout_height="wrap_content"
-            android:text="12"
+            android:enabled="false"
             android:gravity="center"/>
         <TextView
             android:layout_width="50px"
@@ -103,7 +103,7 @@
             android:id="@+id/nlClick"
             android:layout_width="120px"
             android:layout_height="wrap_content"
-            android:text="50"
+            android:enabled="false"
             android:gravity="center"/>
         <TextView
             android:layout_width="80px"
@@ -149,6 +149,17 @@
             android:layout_height="wrap_content"
             android:text="秒"/>
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    <Button
+            android:id="@+id/nlUpdBtn"
+            android:layout_marginTop="20px"
+            android:layout_width="150px"
+            android:layout_height="wrap_content"
+            android:text="修改"
+            android:layout_gravity="center"/>
     <Button
         android:id="@+id/nlStartBtn"
         android:layout_marginTop="20px"
@@ -156,4 +167,5 @@
         android:layout_height="wrap_content"
         android:text="开启服务"
         android:layout_gravity="center"/>
+    </LinearLayout>
 </LinearLayout>

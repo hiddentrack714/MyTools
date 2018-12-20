@@ -49,10 +49,6 @@
             android:label="PwdActivity"
             android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
         <activity
-            android:name=".activity.PhotoShadeActivity"
-            android:label="PhotoShadeActivity"
-            android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
-        <activity
             android:name=".activity.HttpActivity"
             android:label="HttpActivity"
             android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>

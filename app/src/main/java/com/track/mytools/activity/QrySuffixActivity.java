@@ -2,6 +2,7 @@ package com.track.mytools.activity;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,7 +10,8 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import com.track.mytools.R;
-import com.track.mytools.entity.ToolsEntiy;
+import com.track.mytools.dao.ToolsDao;
+import com.track.mytools.entity.SuffixEntity;
 import com.track.mytools.until.ToolsUntil;
 
 import java.util.ArrayList;
@@ -39,23 +41,27 @@ public class QrySuffixActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_suffixmain);
-        Log.i("nowActivity","In QrySuffixActivity....");
+
         //创建ArrayList对象；
         list=new ArrayList<HashMap<String,String>>();
         //将数据存放进ArrayList对象中，数据安排的结构是，ListView的一行数据对应一个HashMap对象，
         //HashMap对象，以列名作为键，以该列的值作为Value，将各列信息添加进map中，然后再把每一列对应
         //的map对象添加到ArrayList中
 
-        ToolsUntil.list.clear();  //初始化
+        SuffixActivity.list.clear();  //初始化
 
-        Set<Map.Entry<String,List<String>>> tempSet = ToolsUntil.pathMap.entrySet();
+        Set<Map.Entry<String,List<String>>> tempSet = SuffixActivity.pathMap.entrySet();
 
-        for (Map.Entry<String,List<String>> entry:tempSet
-             ) {
+        for (Map.Entry<String,List<String>> entry:tempSet) {
             entry.getValue().clear();
         }
 
-        List<HashMap<String,String>> listType = ToolsUntil.qrySuffixNum(ToolsEntiy.path);
+        SQLiteDatabase sdb = ToolsDao.getDatabase();
+        HashMap<String,Object> dataMap = ToolsDao.qryTable(sdb,SuffixEntity.class).get(0);
+
+        SuffixActivity.preMethod(dataMap.get("suffixFilter").toString(),dataMap.get("suffixType").toString());
+
+        List<HashMap<String,String>> listType = ToolsUntil.qrySuffixNum(dataMap.get("suffixPath").toString(),dataMap.get("suffixType").toString());
 
         Log.i("ch","后缀类型数量:" + listType.size());
         typeName = new String[listType.size()];
@@ -70,7 +76,7 @@ public class QrySuffixActivity extends ListActivity {
 
         map=new HashMap<String,String>();       //为避免产生空指针异常，有几列就创建几个map对象
         map.put("typeName", "当前目录:");
-        map.put("typeNum", ToolsEntiy.path);
+        map.put("typeNum", dataMap.get("suffixPath").toString());
         list.add(map);
 
         for(int j=0; j<listType.size(); j++){
@@ -96,7 +102,7 @@ public class QrySuffixActivity extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         if (position > 0 && position < list.size() - 1){
-            Log.i("susee","--->" + ToolsUntil.pathMap.get(list.get(position).get("typeName")).size());
+            Log.i("susee","--->" + SuffixActivity.pathMap.get(list.get(position).get("typeName")).size());
             Intent intent = new Intent();
             intent.putExtra("key",list.get(position).get("typeName"));
             intent.setClass(this, QrySuffixDetailActivity.class);

@@ -2,76 +2,74 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_marginLeft="20px">
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        android:orientation="horizontal">
-        <Button
-                 android:id="@+id/suffixEditBtn"
-                 android:layout_width="60dp"
-                 android:layout_height="wrap_content"
-                 android:layout_gravity="right"
-                 android:text="编辑"/>
-    </LinearLayout>
-<LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
-
-    <EditText
-        android:id="@+id/editTextDelPath"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text=""
-        android:enabled="false"
-        android:singleLine="true"/>
-    <EditText
-        android:id="@+id/editTextDelType"
-        android:layout_width="48dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text=""
-        android:enabled="false"
-        android:singleLine="true"
-        android:layout_gravity="center"/>
-    <Button
-        android:id="@+id/delBtn"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="删除"/>
-</LinearLayout>
-<LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <EditText
-            android:id="@+id/editTextAddPath"
-            android:layout_width="320dp"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="150px"
             android:layout_height="wrap_content"
-            android:text=""
-            android:layout_weight="1"
+            android:text="目录:"/>
+        <EditText
+            android:id="@+id/suffixPath"
+            android:layout_width="900px"
+            android:layout_height="wrap_content"
             android:enabled="false"
             android:singleLine="true"/>
-        <EditText
-            android:id="@+id/editTextAddType"
-            android:layout_width="48dp"
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="150px"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text=""
+            android:text="后缀:"/>
+        <EditText
+            android:id="@+id/suffixType"
+            android:layout_width="150px"
+            android:layout_height="wrap_content"
             android:enabled="false"
-            android:singleLine="true"
+            android:singleLine="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="150px"
+            android:layout_height="wrap_content"
+            android:text="过滤:"/>
+        <EditText
+            android:id="@+id/suffixFilter"
+            android:layout_width="900px"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:singleLine="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/suffixEditBtn"
+            android:layout_width="150px"
+            android:layout_height="wrap_content"
+            android:text="修改"
             android:layout_gravity="center"/>
         <Button
-            android:id="@+id/addBtn"
-            android:layout_width="60dp"
+            android:id="@+id/suffixDelBtn"
+            android:layout_width="400px"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="添加"/>
+            android:text="删除后缀"/>
+        <Button
+            android:id="@+id/suffixAddBtn"
+            android:layout_width="400px"
+            android:layout_height="wrap_content"
+            android:text="添加后缀"/>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -85,7 +83,7 @@
             android:layout_gravity="center"
             android:gravity="center_horizontal"/>
         <ProgressBar
-            android:id="@+id/suffixPro"
+            android:id="@+id/suffixProBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

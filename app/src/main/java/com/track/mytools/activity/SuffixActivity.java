@@ -1,6 +1,7 @@
 package com.track.mytools.activity;
 
 import android.app.Activity;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,8 +13,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.track.mytools.R;
-import com.track.mytools.entity.ToolsEntiy;
+import com.track.mytools.dao.ToolsDao;
+import com.track.mytools.entity.SuffixEntity;
 import com.track.mytools.until.ToolsUntil;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Track on 2017/1/16.
@@ -21,46 +27,60 @@ import com.track.mytools.until.ToolsUntil;
  */
 public class SuffixActivity extends Activity {
 
-    private Button addBtn;   //添加后缀按钮
-    private Button delBtn;   //删除后缀按钮
-    private ToolsUntil tu;
-    private ProgressBar proBar;   //进度条
+    private Button suffixAddBtn;   //添加后缀按钮
+    private Button suffixDelBtn;   //删除后缀按钮
     private Button suffixEditBtn;   //编辑按钮
-    private EditText editTextAddPath;
-    private EditText editTextDelPath;
-    private EditText editTextAddType;
-    private EditText editTextDelType;
-    private String fianlPath;
-    private String fianlType;
-    private TextView viewPercent;
+
+    private EditText suffixPath;  //后缀删除的目录控件
+    private EditText suffixType;  //需要删除的后缀控件
+    private EditText suffixFilter;  //过滤的后缀控件
+
+    private String fianlPath; //后缀删除的目录
+    private String fianlType; //需要删除的后缀
+
+    private ProgressBar suffixProBar;   //进度条
+    private TextView viewPercent; // 百分比显示
+
     private Activity nowActivity;
 
     public static Handler handler;
 
+    public static String[] suffixArrayFilter;   //过滤的后缀名数组
+
+    private static boolean isUpd = false; //是否在修改中
+
+    public static int dealFileNum = 0;   //处理文件总数量
+    public static int finshFileNum = 0;  //处理完成的数量
+    public static List<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
+    public static HashMap<String,List<String>> pathMap = new HashMap<String,List<String>>();  //不同对应文件的数量
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("su", "进入SuffixActivity。。。。。。。。。。。。。。。。。");
+
         setContentView(R.layout.activity_suffix);
-        addBtn = (Button) findViewById(R.id.addBtn);
-        delBtn = (Button) findViewById(R.id.delBtn);
-        proBar = (ProgressBar) findViewById(R.id.suffixPro);
+
+        suffixAddBtn = (Button) findViewById(R.id.suffixAddBtn);
+        suffixDelBtn = (Button) findViewById(R.id.suffixDelBtn);
         suffixEditBtn = (Button) findViewById(R.id.suffixEditBtn);
-        editTextAddPath = (EditText) findViewById(R.id.editTextAddPath);
-        editTextDelPath = (EditText) findViewById(R.id.editTextDelPath);
-        editTextAddType = (EditText) findViewById(R.id.editTextAddType);
-        editTextDelType = (EditText) findViewById(R.id.editTextDelType);
+
+        suffixPath = (EditText) findViewById(R.id.suffixPath);
+        suffixType = (EditText) findViewById(R.id.suffixType);
+        suffixFilter = (EditText) findViewById(R.id.suffixFilter);
+
+        suffixProBar = (ProgressBar) findViewById(R.id.suffixProBar);
         viewPercent = (TextView) findViewById(R.id.viewPercent);
 
-        editTextAddPath.setText(ToolsEntiy.path);
+        SQLiteDatabase sdb = ToolsDao.getDatabase();
+        HashMap<String,Object> map = ToolsDao.qryTable(sdb,SuffixEntity.class).get(0);
 
-        editTextDelPath.setText(ToolsEntiy.path);
+        suffixPath.setText(map.get("suffixPath").toString());
+        suffixType.setText(map.get("suffixType").toString());
+        suffixFilter.setText(map.get("suffixFilter").toString());
 
-        editTextAddType.setText(ToolsEntiy.type);
+        String strFilter = suffixFilter.getText().toString();
 
-        editTextDelType.setText(ToolsEntiy.type);
-
-        tu = new ToolsUntil(this);
+        preMethod(strFilter,suffixType.getText().toString());
 
         nowActivity = this;
 
@@ -69,160 +89,147 @@ public class SuffixActivity extends Activity {
             @Override
             public boolean handleMessage(Message arg0) {
                 //接受到另一个线程的Message，拿到它的参数，这个参数代表了进度
-                //pb.setProgress(arg0.arg1);
-                //tvPersent.setText(arg0.arg1 + "%");
-                //pb.setSecondaryProgress(arg0.arg1 + 10);
-                proBar.setProgress(arg0.arg1);
+                suffixProBar.setProgress(arg0.arg1);
                 viewPercent.setText((String) arg0.obj);
                 return false;
             }
         });
 
-        addBtn.setOnClickListener(new View.OnClickListener() {
+        //添加后缀按键监听
+        suffixAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //开启进度条
-                // proBar.setVisibility(View.VISIBLE);
+                suffixProBar.setProgress(0);
 
-                proBar.setProgress(0);
+                fianlPath = suffixPath.getText() + "";  //获取最终地址
 
-                fianlPath = editTextAddPath.getText() + "";  //获取最终地址
-
-                fianlType = editTextAddType.getText() + "";  //获取最终后缀
+                fianlType = suffixType.getText() + "";  //获取最终后缀
 
                 //开始添加, 1,首先获取数量，2，然后在开始遍历添加
 
-                ToolsUntil.finshFileNum = 1;
+                finshFileNum = 1;
 
-                ToolsUntil.dealFileNum = 0;
-
-                ToolsEntiy.errorSuList.clear();
+                dealFileNum = 0;
 
                 ToolsUntil.countNum(fianlPath, fianlType, 1);   //获取待处理文件的数量
 
-                viewPercent.setText("0/" + ToolsUntil.dealFileNum);
+                viewPercent.setText("0/" + dealFileNum);
 
-                Log.i("su", "待处理文件数量:" + ToolsUntil.dealFileNum);
+                Log.i("su", "待处理文件数量:" + dealFileNum);
 
-                if (ToolsUntil.dealFileNum == 0) {
+                if (dealFileNum == 0) {
                     ToolsUntil.showToast(nowActivity, "暂无可操作文件", 1000);
                     return;
                 }
 
-                proBar.setMax(ToolsUntil.dealFileNum);  //设置进度条最大数量
+                suffixProBar.setMax(dealFileNum);  //设置进度条最大数量
 
-                //handler = new Handler();
-                //启动子现成处理删除操作
-                // handler.post(add_runable);
-                //关闭进度条
-                //  proBar.setVisibility(View.GONE);
-                Thread t1 = new Thread(add_runable);
-                t1.start();
+                new Thread(){
+                    @Override
+                    public void run() {
+                        try{
+                            ToolsUntil.addSuffix(fianlPath, fianlType, suffixProBar, viewPercent);
 
+                            ToolsUntil.showToast(nowActivity, "后缀添加完成!", 5000);
+                        }catch(Exception e){
+
+                        }
+                    }
+                }.start();
             }
         });
 
-        delBtn.setOnClickListener(new View.OnClickListener() {
+        //删除后缀按键监听
+        suffixDelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                // proBar.setVisibility(View.VISIBLE);
+                suffixProBar.setProgress(0);
 
-                proBar.setProgress(0);
+                fianlPath = suffixPath.getText() + "";  //获取最终位置
 
-                fianlPath = editTextDelPath.getText() + "";  //获取最终位置
+                fianlType = suffixType.getText() + "";  //获取最终后缀
 
-                fianlType = editTextDelType.getText() + "";  //获取最终后缀
+                finshFileNum = 1;
 
-                ToolsUntil.finshFileNum = 1;
-
-                ToolsUntil.dealFileNum = 0;
-
-                ToolsEntiy.errorSuList.clear();
+                dealFileNum = 0;
 
                 ToolsUntil.countNum(fianlPath, fianlType, 0);
 
-                viewPercent.setText("0/" + ToolsUntil.dealFileNum);
+                viewPercent.setText("0/" + dealFileNum);
 
-                Log.i("su", "待处理文件数量:" + ToolsUntil.dealFileNum);
+                Log.i("su", "待处理文件数量:" + dealFileNum);
 
-                if (ToolsUntil.dealFileNum == 0) {
+                if (dealFileNum == 0) {
                     ToolsUntil.showToast(nowActivity, "暂无可操作文件", 1000);
                     return;
                 }
 
-                proBar.setMax(ToolsUntil.dealFileNum);  //设置进度条最大数量
+                suffixProBar.setMax(dealFileNum);  //设置进度条最大数量
 
-                //handler = new Handler();
+                new Thread(){
+                    @Override
+                    public void run() {
+                        try {
+                            ToolsUntil.delSuffix(fianlPath, fianlType, suffixProBar, viewPercent);
 
-                //handler.post(del_runable);
+                            ToolsUntil.showToast(nowActivity, "后缀删除完成!", 5000);
+                        }catch(Exception e){
 
-                //  proBar.setVisibility(View.GONE);
-
-                Thread t1 = new Thread(del_runable);
-                t1.start();
-
-
+                        }
+                    }
+                }.start();
             }
         });
 
+        //修改按钮监听
         suffixEditBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (editTextAddPath.isEnabled() == false && editTextDelPath.isEnabled() == false) {
-                    //失效状态 ->编辑状态
-                    editTextAddPath.setEnabled(true);
-                    editTextDelPath.setEnabled(true);
-                    editTextAddType.setEnabled(true);
-                    editTextDelType.setEnabled(true);
+                if (isUpd == false) {
+                    //失效状态
+                    suffixPath.setEnabled(true);
+                    suffixType.setEnabled(true);
+                    suffixFilter.setEnabled(true);
+                    isUpd = true;
                     suffixEditBtn.setText("完成");
                 } else {
                     //编辑状态
-                    editTextAddPath.setEnabled(false);
-                    editTextDelPath.setEnabled(false);
-                    editTextAddType.setEnabled(false);
-                    editTextDelType.setEnabled(false);
-                    suffixEditBtn.setText("编辑");
-                }
+                    suffixPath.setEnabled(false);
+                    suffixType.setEnabled(false);
+                    suffixFilter.setEnabled(false);
+                    isUpd = false;
+                    SQLiteDatabase sdb = ToolsDao.getDatabase();
 
+                    HashMap<String,Object> dataMap = new HashMap<String,Object>();
+                    dataMap.put("suffixPath",suffixPath.getText().toString());
+                    dataMap.put("suffixType",suffixType.getText().toString());
+                    dataMap.put("suffixFilter",suffixFilter.getText().toString());
+                    dataMap.put("id",map.get("id"));
+
+                    ToolsDao.saveOrUpdIgnoreExsit(sdb,dataMap,SuffixEntity.class);
+                    suffixEditBtn.setText("修改");
+                }
             }
         });
     }
 
-    Runnable del_runable = new Runnable() {
-        public void run() {
-            tu.delSuffix(fianlPath, fianlType, proBar, viewPercent);
-
-            ToolsUntil.showToast(nowActivity, "后缀删除完成,失败数量:" + ToolsEntiy.errorSuList.size(), 5000);
-
-            if (ToolsEntiy.errorSuList.size() > 0) {
-                StringBuffer sb = new StringBuffer();
-                sb.append("失败文件目录\n");
-                for (String str : ToolsEntiy.errorSuList) {
-                    sb.append(str + "\n");
-                }
-
-                ToolsUntil.showToast(nowActivity, sb.toString(), 9000);
-            }
+    /**
+     * 前置方法
+     * @param suffixType
+     * @param strFilter
+     */
+    public static void preMethod(String strFilter,String suffixType){
+        suffixArrayFilter = new String[strFilter.split(",").length];
+        for (int i = 0; i < strFilter.split(",").length; i++) {
+            suffixArrayFilter[i] = strFilter.split(",")[i];
+            List<String> list = new ArrayList<String>();
+            pathMap.put(suffixArrayFilter[i],list);//占位
         }
-    };
-
-    Runnable add_runable = new Runnable() {
-        public void run() {
-            tu.addSuffix(fianlPath, fianlType, proBar, viewPercent);
-
-            ToolsUntil.showToast(nowActivity, "后缀添加完成,失败数量:" + ToolsEntiy.errorSuList.size(), 5000);
-
-            if (ToolsEntiy.errorSuList.size() > 0) {
-                StringBuffer sb = new StringBuffer();
-                sb.append("失败文件目录\n");
-                for (String str : ToolsEntiy.errorSuList) {
-                    sb.append(str + "\n");
-                }
-
-                ToolsUntil.showToast(nowActivity, sb.toString(), 9000);
-            }
-        }
-    };
-
+        List<String> list = new ArrayList<String>();
+        pathMap.put(suffixType,list);
+        List<String> list1 = new ArrayList<String>();
+        pathMap.put("未知",list1);
+    }
 }

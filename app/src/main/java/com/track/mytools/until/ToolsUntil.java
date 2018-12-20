@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import com.track.mytools.activity.SuffixActivity;
 import com.track.mytools.entity.HttpThreadEntity;
-import com.track.mytools.entity.ToolsEntiy;
 import com.track.mytools.exception.HttpException;
 
 import java.io.DataOutputStream;
@@ -30,33 +29,7 @@ import java.util.Set;
  */
 
 public class ToolsUntil {
-    public SuffixActivity suffixActivity;
-    public static int dealFileNum = 0;   //处理文件总数量
-    public static int finshFileNum = 0;  //处理完成的数量
-    public static int errorFileNum = 0;  //处理失败的数量
-    public static List<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
-    public static HashMap<String,List<String>> pathMap = new HashMap<String,List<String>>();
 
-    static {
-        List<String> templist = new ArrayList<String>();
-        for (String str : ToolsEntiy.suFilter
-                ) {
-            templist.add(str);
-        }
-
-        templist.add(ToolsEntiy.type);
-        for (String str:templist
-             ) {
-            List<String> list = new ArrayList<String>();
-            pathMap.put(str,list);//占位
-        }
-        List<String> list = new ArrayList<String>();
-        pathMap.put("未知",list);
-    }
-
-    public ToolsUntil(SuffixActivity suffixActivity){
-        this.suffixActivity = suffixActivity;
-    }
 
     /**
      * 删除后缀
@@ -66,70 +39,42 @@ public class ToolsUntil {
      * @param viewPercent 进度条数字
      * @return
      */
-    public boolean delSuffix(String filePath,String suType, ProgressBar proBar, TextView viewPercent){
+    public static void delSuffix(String filePath,String suType, ProgressBar proBar, TextView viewPercent){
         File rootFile = new File(filePath);
-        // Toast.makeText(mainActivity, "路径:" +  filePath + ",删除后缀类型:" + suType, Toast.LENGTH_SHORT).show();
-        //Log.i("su","删除后缀");
-        //Log.i("su","开始检查路径:" + filePath);
-      //  int startNum = 1;
+
         if(rootFile.isDirectory()){
-           // Log.i("su","当前文件是目录");
             File [] file =  rootFile.listFiles();
-            //Log.i("su","开始迭代根目录");
-           // Log.i("su","文件数量:" + file.length);
             for (File chFile:file) {
                 if(chFile.isDirectory()){
-                    // delSuffix(String filePath,String suType);
-                   // Log.i("su","文件夹名:" + chFile.getName());
                     delSuffix(chFile.getAbsolutePath(),suType,proBar,viewPercent);
                 }else{
-                    //Log.i("su","文件名:" + chFile.getName());
                     int pointNum = chFile.getName().split("\\.").length;
                     if (suType.equalsIgnoreCase(chFile.getName().split("\\.")[pointNum - 1])){
-                        //类型相同，开始修改后缀
-                        //fix 20170116 增加对多“.”名称的支持
-                       // Log.i("su","--->" + chFile.getAbsolutePath());
                         String newPath = chFile.getAbsolutePath().substring(0,chFile.getAbsolutePath().lastIndexOf("."));
-                       // Log.i("su","新文件名:" + newPath);
+
                         if(chFile.renameTo(new File(newPath))){
-                            //break;
                             File finishFile = new File(newPath);
-                            if(finishFile.exists()){
-                                //删除成功
-                                Log.i("su","当前进度:" + finshFileNum);
-                                //proBar.setProgress(finshFileNum);
-                                //viewPercent.setText(finshFileNum + "/" + dealFileNum);
+                            //删除成功
+                            Log.i("su","当前进度:" + SuffixActivity.finshFileNum);
 
-                                Message msg = SuffixActivity.handler.obtainMessage();
-                                 //将进度值作为消息的参数包装进去
-                                msg.arg1 = finshFileNum ;
-                                 //将消息发送给主线程的Handler
-                                msg.obj = finshFileNum + "/" + dealFileNum;
+                            Message msg = SuffixActivity.handler.obtainMessage();
+                             //将进度值作为消息的参数包装进去
+                            msg.arg1 = SuffixActivity.finshFileNum ;
+                             //将消息发送给主线程的Handler
+                            msg.obj = SuffixActivity.finshFileNum + "/" + SuffixActivity.dealFileNum;
 
-                                SuffixActivity.handler.sendMessage(msg);
+                            SuffixActivity.handler.sendMessage(msg);
 
-                                finshFileNum ++;
-                            }else{
-                                //删除失败
-                                errorFileNum++;
-                                Log.e("error","删除失败:" + newPath);
-                                ToolsEntiy.errorSuList.add(newPath);
-                            }
+                            SuffixActivity.finshFileNum ++;
                         }else{
-                            ToolsEntiy.errorSuList.add(newPath);
-                            errorFileNum++;
                             continue;
                         }
                     }
                 }
             }
         }else{
-            //Toast.makeText(mainActivity, "路径有误", Toast.LENGTH_SHORT).show();
             Log.i("su","当前路径不是目录");
         }
-        //proBar.setVisibility(View.GONE);
-        //ToolsUntil.showToast(suffixActivity, "后缀删除完成...", 1000);
-        return true;
     }
 
     /**
@@ -140,64 +85,32 @@ public class ToolsUntil {
      * @param viewPercent 进度条数字
      * @return
      */
-    public boolean addSuffix(String filePath, String suType, ProgressBar proBar, TextView viewPercent){
+    public static void addSuffix(String filePath, String suType, ProgressBar proBar, TextView viewPercent){
         File rootFile = new File(filePath);
-        // Toast.makeText(mainActivity, "路径:" +  filePath + ",删除后缀类型:" + suType, Toast.LENGTH_SHORT).show();
-        //int startNum = 1;
-       // Log.i("suu","初始进度:" + proBar.getProgress());
-        //Log.i("su","添加后缀");
-        //Log.i("su","开始检查路径:" + filePath);
         if(rootFile.isDirectory()){
-           // Log.i("su","当前文件是目录");
             File [] file =  rootFile.listFiles();
-           // Log.i("su","开始迭代根目录");
-           // Log.i("su","文件数量:" + file.length);
             for (File chFile:file) {
                 if(chFile.isDirectory()){
-                    // delSuffix(String filePath,String suType);
-                   // Log.i("su","文件夹名:" + chFile.getName());
                     addSuffix(chFile.getAbsolutePath(),suType, proBar, viewPercent);
                 }else{
-                  //  Log.i("su","文件名:" + chFile.getName());
-                    //fix 20170116 增加对多“.”名称的支持,目录下文件全部添加后缀
-                    //fix 20170117 对于已经添加后缀名的文文件，不再添加
-                    //fix 20170118 增加后缀过滤，对于已经有后缀的非选定的后缀，不再增加
-
-                    //检查当前文件时是否含有"."
-                    //1,带"."----检测后缀是否是过滤选定的后缀，不是的话添加，是的话过滤
-                    //2,不带.----直接添加后缀
-
                     if(chFile.getName().indexOf(".") == -1){
                         //不包含.直接添加后缀
                         File newFile = new File(chFile.getAbsolutePath() + "." + suType);
                         if(chFile.renameTo(newFile)){
                             //修改进度条
-                            //File finshFile = new File(chFile.getAbsolutePath() + "." + suType);
-                            if(newFile.exists()){
-                                Log.i("su","当前进度:" + finshFileNum);
-                                //proBar.setProgress(finshFileNum);
-                                //viewPercent.setText(finshFileNum + "/" + dealFileNum);
 
-                                Message msg = SuffixActivity.handler.obtainMessage();
-                                //将进度值作为消息的参数包装进去
-                                msg.arg1 = finshFileNum ;
-                                //将消息发送给主线程的Handler
-                                msg.obj = finshFileNum + "/" + dealFileNum;
+                            Log.i("su","当前进度:" + SuffixActivity.finshFileNum);
 
-                                SuffixActivity.handler.sendMessage(msg);
+                            Message msg = SuffixActivity.handler.obtainMessage();
+                            //将进度值作为消息的参数包装进去
+                            msg.arg1 = SuffixActivity.finshFileNum ;
+                            //将消息发送给主线程的Handler
+                            msg.obj = SuffixActivity.finshFileNum + "/" + SuffixActivity.dealFileNum;
 
+                            SuffixActivity.handler.sendMessage(msg);
 
-                                finshFileNum ++;
-                              //  Log.i("newFile","--->" + newFile.getAbsolutePath());
-                            }else{
-                                errorFileNum++;
-                                Log.e("error","添加失败:" + newFile.getAbsolutePath());
-                                ToolsEntiy.errorSuList.add(newFile.getAbsolutePath());
-                            }
+                            SuffixActivity.finshFileNum ++;
                         }else{
-                            Log.e("fail","失败:" + newFile.getAbsolutePath());
-                            ToolsEntiy.errorSuList.add(newFile.getAbsolutePath());
-                            errorFileNum++;
                             continue;
                         }
                     }else{
@@ -210,59 +123,30 @@ public class ToolsUntil {
                                 //修改进度条
                                 File finshFile = new File(chFile.getAbsolutePath() + "." + suType);
 
-                                if(finshFile.exists()){
-                                    Log.i("name",finshFile.getAbsolutePath());
-                                    Log.i("su","当前进度:" + finshFileNum);
-                                    //proBar.setProgress(finshFileNum);
-                                    //viewPercent.setText(finshFileNum + "/" + dealFileNum);
+                                Log.i("name",finshFile.getAbsolutePath());
+                                Log.i("su","当前进度:" + SuffixActivity.finshFileNum);
 
-                                    Message msg = SuffixActivity.handler.obtainMessage();
-                                    //将进度值作为消息的参数包装进去
-                                    msg.arg1 = finshFileNum ;
-                                    //将消息发送给主线程的Handler
-                                    msg.obj = finshFileNum + "/" + dealFileNum;
+                                Message msg = SuffixActivity.handler.obtainMessage();
+                                //将进度值作为消息的参数包装进去
+                                msg.arg1 = SuffixActivity.finshFileNum ;
+                                //将消息发送给主线程的Handler
+                                msg.obj = SuffixActivity.finshFileNum + "/" + SuffixActivity.dealFileNum;
 
-                                    SuffixActivity.handler.sendMessage(msg);
+                                SuffixActivity.handler.sendMessage(msg);
 
-                                    finshFileNum ++;
-                                }else{
-                                    Log.e("error","添加失败:" + chFile.getAbsolutePath() + "." + suType);
-                                    ToolsEntiy.errorSuList.add(chFile.getAbsolutePath() + "." + suType);
-                                    errorFileNum++;
-                                }
+                                SuffixActivity.finshFileNum ++;
+
                             }else{
-                                errorFileNum++;
-                                ToolsEntiy.errorSuList.add(chFile.getAbsolutePath() + "." + suType);
                                 continue;
                             }
                         }
                     }
 
-
-//                    String suNow = chFile.getName().substring(chFile.getName().lastIndexOf(".") + 1);   //找到目前的后缀
-//                    if(!suType.equalsIgnoreCase(suNow)){
-//                        //已经有后缀的文件名，不改变
-//                       // Log.i("su","新文件名:" + chFile.getAbsolutePath() + "." + suType);
-//                        if(chFile.renameTo(new File(chFile.getAbsolutePath() + "." + suType))){
-//                            //修改进度条
-//                            Log.i("su","当前进度:" + finshFileNum);
-//                            proBar.setProgress(finshFileNum);
-//                            viewPercent.setText(finshFileNum + "/" + dealFileNum);
-//                            finshFileNum ++;
-//                        }else{
-//                            continue;
-//                        }
-//                    }
                 }
             }
         }else{
-            //Toast.makeText(mainActivity, "路径有误", Toast.LENGTH_SHORT).show();
             Log.i("su","当前路径不是目录");
         }
-        //Log.i("suu","终始进度:" + proBar.getProgress());
-        //proBar.setVisibility(View.GONE);
-        //ToolsUntil.showToast(suffixActivity, "后缀添加完成...", 1000);
-        return true;
     }
 
     /**
@@ -295,13 +179,9 @@ public class ToolsUntil {
      */
     public static int countNum(String filePath, String suType, int aod){
         File rootFile = new File(filePath);
-       // Log.i("su","开始检查路径:" + filePath);
-        //int fileNum = 0;
         if(rootFile.isDirectory()){
            // Log.i("su1","当前文件是目录");
             File [] file =  rootFile.listFiles();
-           // Log.i("su1","开始迭代根目录");
-            //Log.i("su1","文件数量:" + file.length);
             for (File chFile:file) {
                 if(chFile.isDirectory()){
                     countNum(chFile.getAbsolutePath(),suType, aod);
@@ -311,7 +191,7 @@ public class ToolsUntil {
                         String suNow = chFile.getName().substring(chFile.getName().lastIndexOf(".") + 1);
                         if(suType.equalsIgnoreCase(suNow)){
                            // Log.i("su1","数量+1:" + dealFileNum);
-                            dealFileNum ++;
+                            SuffixActivity.dealFileNum ++;
                         }
                     }else{
                         //fix 20170118 增加对于有“.”，且后缀名不为过滤文件的检测
@@ -319,15 +199,13 @@ public class ToolsUntil {
                        // Log.i("check",suNow);
                         if((!suType.equalsIgnoreCase(suNow) && checkFilter(suNow)) || chFile.getName().lastIndexOf(".") == -1){
                            // Log.i("su1","数量+1:" + dealFileNum);
-                            dealFileNum ++;
+                            SuffixActivity.dealFileNum ++;
                         }
                     }
                 }
             }
-        }else{
-          //  Log.i("su1","当前路径不是目录");
         }
-        return dealFileNum;
+        return SuffixActivity.dealFileNum;
     }
 
     /**
@@ -337,9 +215,8 @@ public class ToolsUntil {
      */
     public static boolean checkFilter(String suNow){
         Boolean tempBoolean = true;
-        for (String suStr: ToolsEntiy.suFilter) {
+        for (String suStr: SuffixActivity.suffixArrayFilter) {
             if(suStr.equalsIgnoreCase(suNow)){
-                //tempNum++;
                 //找到相同后缀，直接跳出检测
                 Log.i("su2","找到过滤后缀:" + suStr);
                 tempBoolean = false;
@@ -355,16 +232,18 @@ public class ToolsUntil {
      * @param filePath
      * @return
      */
-    public static List<HashMap<String,String>> qrySuffixNum(String filePath){
+    public static List<HashMap<String,String>> qrySuffixNum(String filePath,String suffixType){
 
         File rootFile = new File(filePath);
+
         if(rootFile.isDirectory()){
-            Log.i("su1","当前文件是目录");
+
             File [] file =  rootFile.listFiles();
-            Log.i("su1","开始迭代根目录");
+
             for (File chFile:file) {
                 if(chFile.isDirectory()){
-                    qrySuffixNum(chFile.getAbsolutePath());
+                    //如果是文件夹，则继续该方法递归迭代
+                    qrySuffixNum(chFile.getAbsolutePath(),suffixType);
                 }else{
                     //获取当前文件的后缀名
                     String fileName = chFile.getName();
@@ -372,24 +251,16 @@ public class ToolsUntil {
                         //带后缀
                         //bug,对于非常用后缀，显示异常
                         String suType = fileName.substring(fileName.lastIndexOf(".") + 1,fileName.length());
-                        //fix 检测当前文件的后缀是否在常用后缀中，如果不在，则为位置文件
+                        //fix 检测当前文件的后缀是否在常用后缀中，如果不在，则为未知文件
                         boolean temp = false;
-
-                        //String [] cloneArray = ToolsEntiy.suFilter.clone();
 
                         List<String> templist = new ArrayList<String>();
 
-                        for (String str : ToolsEntiy.suFilter
-                             ) {
+                        for (String str : SuffixActivity.suffixArrayFilter) {
                             templist.add(str);
                         }
 
-                        templist.add(ToolsEntiy.type);
-
-//                        String [] cloneArray = (String[])templist.toArray();
-                       // cloneArray[cloneArray.length - 1] = ToolsEntiy.type;
-                       // Log.i("su6",cloneArray.length + ":" + ToolsEntiy.suFilter.length);
-                        //cloneArray[cloneArray.length] = ToolsEntiy.type;
+                        templist.add(suffixType);
 
                         for (String str:templist){
                             if (str.equalsIgnoreCase(suType)){
@@ -399,8 +270,9 @@ public class ToolsUntil {
                                 break;
                             }
                         }
+
                         if(temp){
-                            HashMap<String,Object> map = checkTypeIn(list,suType);
+                            HashMap<String,Object> map = checkTypeIn(SuffixActivity.list,suType);
 
                             Log.i("xxxxxxxx",fileName +"---"+map.get("FLAG"));
 
@@ -408,56 +280,56 @@ public class ToolsUntil {
                                 //已存在，直接拿出来+1,在塞回去
                                 Log.i("ch","更新:" + suType);
                                 int listNo = Integer.parseInt(map.get("NO")+"");
-                                int nowNum = Integer.parseInt(list.get(listNo).get("NUM")) + 1;
+                                int nowNum = Integer.parseInt(SuffixActivity.list.get(listNo).get("NUM")) + 1;
                                 Log.i("ch",suType+"更新后:" + nowNum);
-                                list.get(listNo).put("NUM",nowNum+"");
+                                SuffixActivity.list.get(listNo).put("NUM",nowNum+"");
                             }else{
                                 //还不存在,新建MAP
                                 Log.i("ch","新建:" + suType.toLowerCase());
                                 HashMap<String,String> newMap = new  HashMap<String,String>();
                                 newMap.put("TYPE",suType.toLowerCase());
                                 newMap.put("NUM",1+"");
-                                list.add(newMap);
+                                SuffixActivity.list.add(newMap);
                             }
-                            List<String> val =  pathMap.get(suType.toLowerCase());
+                            List<String> val =  SuffixActivity.pathMap.get(suType.toLowerCase());
                             val.add(chFile.getAbsolutePath());
                         }else{
                             //未知文件
-                            HashMap<String,Object> map = checkTypeIn(list,"未知");
+                            HashMap<String,Object> map = checkTypeIn(SuffixActivity.list,"未知");
                             if((boolean) map.get("FLAG")){
                                 //存在
                                 int listNo = Integer.parseInt(map.get("NO")+"");
-                                int nowNum = Integer.parseInt(list.get(listNo).get("NUM")) + 1;
+                                int nowNum = Integer.parseInt(SuffixActivity.list.get(listNo).get("NUM")) + 1;
                                 Log.i("ch","未知.更新后:" + nowNum);
-                                list.get(listNo).put("NUM",nowNum+"");
+                                SuffixActivity.list.get(listNo).put("NUM",nowNum+"");
                             }else{
                                 //不存在
                                 HashMap<String,String> newMap = new  HashMap<String,String>();
                                 newMap.put("TYPE","未知");
                                 newMap.put("NUM",1+"");
-                                list.add(newMap);
+                                SuffixActivity.list.add(newMap);
                             }
-                            List<String> val =  pathMap.get("未知");
+                            List<String> val =  SuffixActivity.pathMap.get("未知");
                             val.add(chFile.getAbsolutePath());
                         }
 
                     }else{
                       //不带后缀
-                        HashMap<String,Object> map = checkTypeIn(list,"未知");
+                        HashMap<String,Object> map = checkTypeIn(SuffixActivity.list,"未知");
                         if((boolean) map.get("FLAG")){
                             //存在
                             int listNo = Integer.parseInt(map.get("NO")+"");
-                            int nowNum = Integer.parseInt(list.get(listNo).get("NUM")) + 1;
+                            int nowNum = Integer.parseInt(SuffixActivity.list.get(listNo).get("NUM")) + 1;
                             Log.i("ch","更新后:" + nowNum);
-                            list.get(listNo).put("NUM",nowNum+"");
+                            SuffixActivity.list.get(listNo).put("NUM",nowNum+"");
                         }else{
                             //不存在
                             HashMap<String,String> newMap = new  HashMap<String,String>();
                             newMap.put("TYPE","未知");
                             newMap.put("NUM",1+"");
-                            list.add(newMap);
+                            SuffixActivity.list.add(newMap);
                         }
-                        List<String> val =  pathMap.get("未知");
+                        List<String> val =  SuffixActivity.pathMap.get("未知");
                         val.add(chFile.getAbsolutePath());
                     }
                 }
@@ -466,9 +338,7 @@ public class ToolsUntil {
             Log.i("su1","当前路径不是目录");
         }
 
-
-
-        return list;
+        return SuffixActivity.list;
     }
 
     /**
@@ -644,9 +514,5 @@ public class ToolsUntil {
             }
         }
 
-    }
-
-    public static void main(String args[]){
-        System.out.print("11111111111");
     }
 }

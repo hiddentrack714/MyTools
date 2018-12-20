@@ -3,6 +3,7 @@ package com.track.mytools.activity;
 import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -15,6 +16,10 @@ import android.widget.Switch;
 
 import com.track.mytools.R;
 import com.track.mytools.Service.CopyService;
+import com.track.mytools.dao.ToolsDao;
+import com.track.mytools.entity.CopyEntity;
+
+import java.util.HashMap;
 
 /**
  * 快捷复制
@@ -29,6 +34,7 @@ public class CopyActivity extends Activity {
     private Switch copySwitch; // 单一下载选项
 
     private Button copyUseBtn; // 服务启动/关闭按钮
+    private Button copyUpdBtn; //修改
 
     public static EditText copyPhoneFile; //手机端保存文件
     public static EditText copyPCIP; // PC端IP
@@ -48,6 +54,8 @@ public class CopyActivity extends Activity {
 
     public static ClipboardManager cm;
 
+    private static boolean isUpd = false; //判断是否修改中
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,8 +72,13 @@ public class CopyActivity extends Activity {
         copyPortLayout = (LinearLayout)findViewById(R.id.copyPortLayout);
 
         copyUseBtn = (Button)findViewById(R.id.copyUseBtn);
+        copyUpdBtn = (Button)findViewById(R.id.copyUpdBtn);
 
         cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+
+        SQLiteDatabase sdb = ToolsDao.getDatabase();
+        HashMap<String,Object> map =  ToolsDao.qryTable(sdb,CopyEntity.class).get(0);
+        copyPhoneFile.setText(map.get("copyPhoneFile").toString());
 
         //复制模式监听
         copySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
@@ -108,6 +121,34 @@ public class CopyActivity extends Activity {
                     stopService(intent);
                     copyUseBtn.setText("开启服务");
                 }
+            }
+        });
+
+        //修改按钮监听
+        copyUpdBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isUpd ==false){
+                    //修改中
+                    copyPhoneFile.setEnabled(true);
+
+                    isUpd = true;
+                    copyUpdBtn.setText("完成");
+                }else{
+                   //修改完成
+                    copyPhoneFile.setEnabled(false);
+
+                    SQLiteDatabase sdb =  ToolsDao.getDatabase();
+                    HashMap<String,Object> dataMap = new HashMap<String,Object>();
+                    dataMap.put("copyPhoneFile",copyPhoneFile.getText().toString());
+                    Log.i("1111111111",(String)map.get("id"));
+                    dataMap.put("id",map.get("id"));
+                    ToolsDao.saveOrUpdIgnoreExsit(sdb,dataMap,CopyEntity.class);
+
+                    isUpd = false;
+                    copyUpdBtn.setText("修改");
+                }
+
             }
         });
 

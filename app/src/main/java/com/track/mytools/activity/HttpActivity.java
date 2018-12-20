@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ListActivity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,11 +20,12 @@ import android.widget.TextView;
 
 import com.track.mytools.R;
 import com.track.mytools.adapter.HttpMainAdapter;
+import com.track.mytools.dao.ToolsDao;
+import com.track.mytools.entity.HttpEntity;
 import com.track.mytools.entity.HttpThreadEntity;
 import com.track.mytools.exception.HttpException;
 import com.track.mytools.until.ToolsUntil;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -42,12 +44,12 @@ public class HttpActivity extends Activity{
 
     private Button httpDownBtn;//下载按钮
     private Button httpCopyBtn;//黏贴按钮
+    private Button httpUpdBtn; //修改按钮
 
     private EditText httpUrl;//下载链接
     private EditText httpThread;//线程数量
     private EditText httpDir;//下载地址
     private EditText httpSuff;//下载文件后缀
-    private EditText httpFailName;//下载失败文件名称
 
     private SeekBar httpSeek;//线程数量拉条
 
@@ -73,11 +75,7 @@ public class HttpActivity extends Activity{
 
     private ListView lv;
 
-    public static int TIME_OUT = 25; // 单一文件下载超时最大时间限制15秒
-
-    //listview内容模板
-    private static String from [] = {"httpDownNo","httpDownPro","httpDownSize","httpDownName"};
-    private static int to [] = {R.id.httpDownNo,R.id.httpDownPro,R.id.httpDownSize,R.id.httpDownName};
+    private static boolean isUpd = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +86,7 @@ public class HttpActivity extends Activity{
 
         httpDownBtn = (Button)findViewById(R.id.httpDownBtn);
         httpCopyBtn = (Button)findViewById(R.id.httpCopyBtn);
+        httpUpdBtn = (Button)findViewById(R.id.httpUpdBtn);
 
         httpUrl = (EditText)findViewById(R.id.httpUrl);
         httpThread = (EditText)findViewById(R.id.httpThread);
@@ -99,6 +98,13 @@ public class HttpActivity extends Activity{
         httpSeek = (SeekBar)findViewById(R.id.httpSeek);
 
         ha = this;
+
+        SQLiteDatabase sdb = ToolsDao.getDatabase();
+        HashMap<String,Object> map = ToolsDao.qryTable(sdb,HttpEntity.class).get(0);
+
+        httpThread.setText(map.get("httpThread").toString());
+        httpDir.setText(map.get("httpDir").toString());
+        httpSuff.setText(map.get("httpSuff").toString());
 
         //线程视图复制更新
         handler = new Handler(new Handler.Callback() {
@@ -130,17 +136,6 @@ public class HttpActivity extends Activity{
                     holder.tvSize.setText( hte.getFileSize());
 
                     holder.tvName.setText(hte.getFileName());
-                }
-
-                if(arg0.arg1 == 2){
-                    String str = (String)arg0.obj;
-                    String text = httpFailName.getText().toString();
-                    if("".equals(text)){
-                        text = str;
-                    }else{
-                        text = text + "," +str;
-                    }
-                    httpFailName.setText(text);
                 }
 
                 return false;
@@ -326,6 +321,43 @@ public class HttpActivity extends Activity{
             }
         });
 
+        //修改按钮监听
+        httpUpdBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isUpd == false){
+
+                    httpThread.setEnabled(true);
+                    httpDir.setEnabled(true);
+                    httpSuff.setEnabled(true);
+
+                    isUpd = true;
+
+                    httpUpdBtn.setText("完成");
+                }else{
+
+                    httpThread.setEnabled(false);
+                    httpDir.setEnabled(false);
+                    httpSuff.setEnabled(false);
+
+                    HashMap<String,Object> dataMap = new HashMap<String,Object>();
+
+                    dataMap.put("httpThread",httpThread.getText().toString());
+                    dataMap.put("httpDir",httpDir.getText().toString());
+                    dataMap.put("httpSuff",httpSuff.getText().toString());
+                    dataMap.put("id",map.get("id"));
+
+                    SQLiteDatabase sdb = ToolsDao.getDatabase();
+
+                    ToolsDao.saveOrUpdIgnoreExsit(sdb,dataMap,HttpEntity.class);
+
+                    isUpd = false;
+
+                    httpUpdBtn.setText("修改");
+                }
+            }
+        });
+
     }
 
     /**
@@ -393,8 +425,6 @@ public class HttpActivity extends Activity{
 
                         HttpActivity.handler.sendMessage(msg);
 
-                        //下载时间检测任务开启
-                        //new TimeThread(fileSize,DIR_NAME,hte,this.url).start();
                         //下载当前文件
                         try{
                             ToolsUntil.saveFile(inputStream,DIR_NAME,this.url,holder.pb,hte);
@@ -461,43 +491,6 @@ public class HttpActivity extends Activity{
         public void run() {
             Message msg = HttpActivity.handler.obtainMessage();
             msg.arg2 = 1;
-        }
-    }
-
-    /**
-     * 文件下载时间检测
-     * 超过定制时间后，停止下载
-     */
-    static class TimeThread extends Thread{
-
-        private int fileSize;
-        private String filePath;
-        private HttpThreadEntity hte;
-        private String url;
-
-        private boolean isContinue = true;
-
-        public TimeThread(int fileSize,String filePath,HttpThreadEntity hte,String url){
-            this.fileSize = fileSize;
-            this.filePath = filePath;
-            this.hte = hte;
-            this.url = url;
-        }
-
-        @Override
-        public void run() {
-            try{
-                Thread.sleep(TIME_OUT * 1000);
-                String fileName = filePath + File.separator + url.substring(url.lastIndexOf("/") + 1);
-                File file = new File(fileName);
-                if(file.length() < fileSize){
-                    //实际下载文件小于预计大小，下载失败，停止下载
-                    hte.setFileBoolean(false);
-                    Log.e("HTTPACTIVITY1",fileName + "下载失败");
-                }
-            }catch(Exception e){
-                Log.e("HTTPACTIVITY1",e.getMessage());
-            }
         }
     }
 

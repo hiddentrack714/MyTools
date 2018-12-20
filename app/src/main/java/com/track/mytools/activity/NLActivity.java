@@ -2,6 +2,7 @@ package com.track.mytools.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,11 +19,13 @@ import android.widget.EditText;
 
 import com.track.mytools.R;
 import com.track.mytools.Service.NLService;
+import com.track.mytools.dao.ToolsDao;
 import com.track.mytools.entity.NLEntity;
 import com.track.mytools.until.ToolsUntil;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  *
@@ -42,6 +45,7 @@ public class NLActivity extends Activity {
     private EditText nlMinute;   //分
     private CheckBox nlCheck;    //是否是收获日当天
     private EditText nlClick;    //能量球点击次数
+    private Button nlUpdBtn;  //修改按钮
 
     private EditText nlDiffHour;
     private EditText nlDiffMinute;
@@ -49,6 +53,7 @@ public class NLActivity extends Activity {
 
     private static boolean isStart = false; // 服务是否启动
     private static boolean isNow;   // 是否是成熟日当天
+    private static boolean isUpd= false;   // 是否修改中
 
     private int hourInt;
     private int minuteInt;
@@ -76,7 +81,7 @@ public class NLActivity extends Activity {
 
         setContentView(R.layout.activity_nl);
 
-        lightNum = getScreenBrightness();
+        lightNum = getScreenBrightness(); //获取屏幕亮度
 
         nlX = (EditText)findViewById(R.id.nlX);
         nlY = (EditText)findViewById(R.id.nlY);
@@ -86,11 +91,23 @@ public class NLActivity extends Activity {
         nlCheck  = (CheckBox)findViewById(R.id.nlCheck);
         ballX = (EditText)findViewById(R.id.ballX);
         ballY = (EditText)findViewById(R.id.ballY);
-        nlClick = (EditText)findViewById(R.id.ballY);
+        nlClick = (EditText)findViewById(R.id.nlClick);
+        nlUpdBtn = (Button)findViewById(R.id.nlUpdBtn);
 
         nlDiffHour = (EditText)findViewById(R.id.nlDiffHour);
         nlDiffMinute = (EditText)findViewById(R.id.nlDiffMinute);
         nlDiffSecond = (EditText)findViewById(R.id.nlDiffSecond);
+
+        SQLiteDatabase sdb = ToolsDao.getDatabase();
+        HashMap<String,Object> map =  ToolsDao.qryTable(sdb,NLEntity.class).get(0);
+
+        nlX.setText(map.get("nlX").toString());
+        nlY.setText(map.get("nlY").toString());
+        ballX.setText(map.get("ballX").toString());
+        ballY.setText(map.get("ballY").toString());
+        nlHour.setText(map.get("nlHour").toString());
+        nlMinute.setText(map.get("nlMinute").toString());
+        nlClick.setText(map.get("nlClick").toString());
 
         handler = new Handler(){
             @Override
@@ -166,18 +183,6 @@ public class NLActivity extends Activity {
 
                         isStart = true;
 
-                        nlX.setEnabled(false); //只读模式
-
-                        nlY.setEnabled(false); //只读模式
-
-                        ballX.setEnabled(false); //只读模式
-
-                        ballY.setEnabled(false); //只读模式
-
-                        nlHour.setEnabled(false); //只读模式
-
-                        nlMinute.setEnabled(false); //只读模式
-
                         //4,降低屏幕亮度
                         setScreenBrightness(0);
                     }
@@ -196,6 +201,21 @@ public class NLActivity extends Activity {
 
                     isStart = false;
 
+                    stopService(intentService);
+
+                    NLService.handlerTime.removeCallbacks(NLService.myThread);
+
+                    setScreenBrightness(lightNum);
+                }
+            }
+        });
+
+        //修改按键监听
+        nlUpdBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isUpd == false){
+                    //准备修改
                     nlX.setEnabled(true); //取消只读模式
 
                     nlY.setEnabled(true); //取消只读模式
@@ -208,11 +228,46 @@ public class NLActivity extends Activity {
 
                     nlMinute.setEnabled(true); //取消只读模式
 
-                    stopService(intentService);
+                    nlClick.setEnabled(true); //取消只读模式
 
-                    NLService.handlerTime.removeCallbacks(NLService.myThread);
+                    nlUpdBtn.setText("完成");
 
-                    setScreenBrightness(lightNum);
+                    isUpd = true;
+                }else{
+                    //修改完成
+                    nlX.setEnabled(false); //只读模式
+
+                    nlY.setEnabled(false); //只读模式
+
+                    ballX.setEnabled(false); //只读模式
+
+                    ballY.setEnabled(false); //只读模式
+
+                    nlHour.setEnabled(false); //只读模式
+
+                    nlMinute.setEnabled(false); //只读模式
+
+                    nlClick.setEnabled(false); //只读模式
+
+                    nlUpdBtn.setText("修改");
+
+                    isUpd = false;
+
+                    //更新数据库
+                    SQLiteDatabase sdb = ToolsDao.getDatabase();
+
+                    HashMap<String,Object> dataMap = new HashMap<String,Object>();
+
+                    dataMap.put("nlX",nlX.getText().toString());
+                    dataMap.put("nlY",nlY.getText().toString());
+                    dataMap.put("ballX",ballX.getText().toString());
+                    dataMap.put("ballY",ballY.getText().toString());
+                    dataMap.put("nlHour",nlHour.getText().toString());
+                    dataMap.put("nlMinute",nlMinute.getText().toString());
+                    dataMap.put("nlClick",nlClick.getText().toString());
+                    dataMap.put("id",map.get("id"));
+
+                    ToolsDao.saveOrUpdIgnoreExsit(sdb,dataMap,NLEntity.class);
                 }
             }
         });

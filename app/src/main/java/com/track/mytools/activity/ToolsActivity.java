@@ -61,8 +61,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
 
         suffixBtn = (Button)findViewById(R.id.suffixBtn);
         qrySuBtn = (Button)findViewById(R.id.qrySuBtn);
-        //psdBtn = (Button)findViewById(R.id.psdBtn);
-        //photoBtn = (Button)findViewById(R.id.photoBtn);
+        psdBtn = (Button)findViewById(R.id.psdBtn);
         httpBtn = (Button)findViewById(R.id.httpBtn);
         copyBtn = (Button)findViewById(R.id.copyBtn);
         ftpBtn = (Button)findViewById(R.id.ftpBtn);
@@ -83,8 +82,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
 
         suffixBtn.setOnClickListener(this);
         qrySuBtn.setOnClickListener(this);
-        //psdBtn.setOnClickListener(this);
-        //photoBtn.setOnClickListener(this);
+        psdBtn.setOnClickListener(this);
         httpBtn.setOnClickListener(this);
         copyBtn.setOnClickListener(this);
         ftpBtn.setOnClickListener(this);
@@ -107,70 +105,46 @@ public class ToolsActivity extends Activity implements OnClickListener{
     @Override
     public void onClick(View v) {
         Intent intent = new Intent();
-       // boolean temp = false;
         if(v.getId() == R.id.suffixBtn){
             Log.i("su","跳转到后缀删添");
-           // temp = true;
             intent.setClass(ToolsActivity.this, SuffixActivity.class);
             this.startActivity(intent);
-           // this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         }else if(v.getId() == R.id.qrySuBtn){
             Log.i("su","跳转到后缀列表");
-           // temp = true;
             intent.setClass(ToolsActivity.this, QrySuffixActivity.class);
             this.startActivity(intent);
-           // this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-        }
-//        else if(v.getId() == R.id.psdBtn){
-//            Log.i("su","跳转到密码本");
-//            //temp = true;
-//            intent.setClass(ToolsActivity.this, PwdActivity.class);
-//            this.startActivity(intent);
-//          //  this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-//        }else if(v.getId() == R.id.photoBtn){
-//            Log.i("su","跳转到图片遮挡");
-//           // temp = true;
-//            intent.setClass(ToolsActivity.this, PhotoShadeActivity.class);
-//            this.startActivity(intent);
-//           // this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-//        }
-        else if(v.getId() == R.id.httpBtn){
+        }else if(v.getId() == R.id.psdBtn){
+            Log.i("su","跳转到密码本");
+            intent.setClass(ToolsActivity.this, PwdActivity.class);
+            this.startActivity(intent);
+        }else if(v.getId() == R.id.httpBtn){
             Log.i("su","跳转到http下载");
-            // temp = true;
             intent.setClass(ToolsActivity.this, HttpActivity.class);
             this.startActivity(intent);
-            // this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         }else if(v.getId() == R.id.copyBtn){
             Log.i("su","快捷复制");
-            // temp = true;
             intent.setClass(ToolsActivity.this, CopyActivity.class);
             this.startActivity(intent);
-            // this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         }else if(v.getId() == R.id.ftpBtn){
             Log.i("su","FTP下载");
-            // temp = true;
             intent.setClass(ToolsActivity.this, FTPActivity.class);
             this.startActivity(intent);
-            // this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         }else if(v.getId() == R.id.wifiBtn){
             Log.i("su","Wifi密码");
-            // temp = true;
             intent.setClass(ToolsActivity.this, WifiActivity.class);
             this.startActivity(intent);
-            // this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         }else if(v.getId() == R.id.lanBtn){
             Log.i("su","局域网设备");
-            // temp = true;
             intent.setClass(ToolsActivity.this, LanActivity.class);
             this.startActivity(intent);
-            // this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         }else if(v.getId() == R.id.nlBtn){
             Log.i("su","支付宝获取能量");
-            // temp = true;
             intent.setClass(ToolsActivity.this,NLActivity.class);
             this.startActivity(intent);
-            // this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         }
+
+
+
 //        else if(v.getId() == R.id.payBtn1){
 //            //微信扫一扫
 //            String [] commods = {"am start -n com.tencent.mm/com.tencent.mm.plugin.scanner.ui.BaseScanUI"};
@@ -214,11 +188,6 @@ public class ToolsActivity extends Activity implements OnClickListener{
 //            exeCommod(commods, this);
 //        }
 
-//        if(temp){
-//            this.startActivity(intent);
-//        }else{
-//            ToolsUntil.showToast(this,"制作中....",1000);
-//        }
     }
 
 }

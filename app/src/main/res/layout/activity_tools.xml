@@ -36,15 +36,13 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:text="支付宝获取能量"/>
-    <!--<Button android:id="@+id/psdBtn"
+    <Button android:id="@+id/psdBtn"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:text="密码本"/>
-    <Button android:id="@+id/photoBtn"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text="图片遮挡"/>
-    <LinearLayout     android:layout_width="match_parent"
+
+
+    <!--<LinearLayout   android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
                         android:layout_gravity="bottom"

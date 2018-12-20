@@ -47,8 +47,6 @@ public class QrySuffixDetailActivity extends Activity {
     private ListView lv;
     public static int position;
 
-    //public static boolean isAll = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,8 +97,8 @@ public class QrySuffixDetailActivity extends Activity {
                                     //先删除的文件，然后一次删除，避免，删除第一个后，刷新list导致的角标改变
 
                                     if(value){
-                                        Log.i("allDel", "Name:-" + allKey + "-" + ToolsUntil.pathMap.get(useKey).get(allKey));
-                                        File file = new File(ToolsUntil.pathMap.get(useKey).get(allKey));
+                                        Log.i("allDel", "Name:-" + allKey + "-" + SuffixActivity.pathMap.get(useKey).get(allKey));
+                                        File file = new File(SuffixActivity.pathMap.get(useKey).get(allKey));
                                         file.delete();
                                         if (!file.exists()) {
                                             Log.i("xx", "DEL_SUCCESS");
@@ -123,7 +121,7 @@ public class QrySuffixDetailActivity extends Activity {
                                             tempDelSize++;
                                         } else {
                                             Log.i("xx", "DEL_FAIL");
-                                            ToolsUntil.showToast(qsda, "删除失败:" + ToolsUntil.pathMap.get(useKey).get(pos), 2000);
+                                            ToolsUntil.showToast(qsda, "删除失败:" + SuffixActivity.pathMap.get(useKey).get(pos), 2000);
                                         }
                                     }
                                 }
@@ -151,7 +149,7 @@ public class QrySuffixDetailActivity extends Activity {
                                      ) {
                                     Log.i("删除","-->"+i);
                                     tempL.remove(i);
-                                    ToolsUntil.pathMap.get(useKey).remove(i);
+                                    SuffixActivity.pathMap.get(useKey).remove(i);
                                     //删除选择的checkbox
                                     View view = lv.getChildAt(i);
                                     if(view != null){
@@ -184,11 +182,10 @@ public class QrySuffixDetailActivity extends Activity {
 
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        Log.i("xx", "n" + ToolsUntil.pathMap.get(useKey).get(pos));
+                        Log.i("xx", "n" + SuffixActivity.pathMap.get(useKey).get(pos));
                     }
                 });
                 ad.show();
-
             }
         });
 
@@ -211,7 +208,6 @@ public class QrySuffixDetailActivity extends Activity {
 
                         SuffixMainAdapter.isSelected.put(i,true);
                     }
-
             }
         });
 
@@ -261,18 +257,18 @@ public class QrySuffixDetailActivity extends Activity {
                 //点击后弹出提示框，是否需要删除当前
                 AlertDialog.Builder ad = new AlertDialog.Builder(qsda);
                 ad.setTitle("确认");
-                ad.setMessage("确定删除[" + ToolsUntil.pathMap.get(useKey).get(pos) + "]吗?");
+                ad.setMessage("确定删除[" + SuffixActivity.pathMap.get(useKey).get(pos) + "]吗?");
                 ad.setPositiveButton("是",
                         new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                Log.i("xx", "y" + ToolsUntil.pathMap.get(useKey).get(pos));
-                                File file = new File(ToolsUntil.pathMap.get(useKey).get(pos));
+                                Log.i("xx", "y" + SuffixActivity.pathMap.get(useKey).get(pos));
+                                File file = new File(SuffixActivity.pathMap.get(useKey).get(pos));
                                 file.delete();
                                 if (!file.exists()) {
                                     Log.i("xx", "DEL_SUCCESS");
-                                    ToolsUntil.showToast(qsda, "删除成功:" + ToolsUntil.pathMap.get(useKey).get(pos), 2000);
+                                    ToolsUntil.showToast(qsda, "删除成功:" + SuffixActivity.pathMap.get(useKey).get(pos), 2000);
                                     //删除完成后，刷新当前listview
                                     //ToolsUntil.pathMap.get(useKey).remove(pos);
                                     ArrayList tempL = (ArrayList) tempList.clone();//克隆一个新的集合
@@ -282,7 +278,7 @@ public class QrySuffixDetailActivity extends Activity {
                                     mainAdapter.notifyDataSetChanged();
 
                                     //fix 删除当前的listview的集合后，还要删除之前全集合
-                                    ToolsUntil.pathMap.get(useKey).remove(pos);
+                                    SuffixActivity.pathMap.get(useKey).remove(pos);
 
                                     //fix 删除当前的子集合刷新后，还要刷新母集合显示的数量
                                     ArrayList<HashMap<String, String>> mainTempL = (ArrayList<HashMap<String, String>>) QrySuffixActivity.list.clone();//克隆一个新的集合
@@ -301,7 +297,7 @@ public class QrySuffixDetailActivity extends Activity {
                                     QrySuffixActivity.adapter.notifyDataSetChanged();
                                 } else {
                                     Log.i("xx", "DEL_FAIL");
-                                    ToolsUntil.showToast(qsda, "删除失败:" + ToolsUntil.pathMap.get(useKey).get(pos), 2000);
+                                    ToolsUntil.showToast(qsda, "删除失败:" + SuffixActivity.pathMap.get(useKey).get(pos), 2000);
                                 }
                             }
                         });
@@ -309,7 +305,7 @@ public class QrySuffixDetailActivity extends Activity {
 
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        Log.i("xx", "n" + ToolsUntil.pathMap.get(useKey).get(pos));
+                        Log.i("xx", "n" + SuffixActivity.pathMap.get(useKey).get(pos));
                     }
                 });
                 ad.show();
@@ -324,7 +320,7 @@ public class QrySuffixDetailActivity extends Activity {
         key = intent.getStringExtra("key");
         useKey = key;
         tempList = new ArrayList<HashMap<String, String>>();
-        for (String str : ToolsUntil.pathMap.get(key)
+        for (String str : SuffixActivity.pathMap.get(key)
                 ) {
             map = new HashMap<String, String>();       //为避免产生空指针异常，有几列就创建几个map对象
             map.put("typePath", str);
@@ -332,13 +328,11 @@ public class QrySuffixDetailActivity extends Activity {
         }
         String[] formDeatil = {"typePath"};
         int[] toDeatil = {R.id.typePath};
-//        adapter = new SimpleAdapter(this, tempList, R.layout.activity_suffixdetail, formDeatil, toDeatil);
+
         mainAdapter = new SuffixMainAdapter(this, tempList, R.layout.activity_suffixdetail, formDeatil, toDeatil);
         //调用ListActivity的setListAdapter方法，为ListView设置适配器
-        //setListAdapter(adapter);
+
         lv.setAdapter(mainAdapter);
-
-
     }
 
 }

@@ -41,7 +41,7 @@
             android:id="@+id/copyPhoneFile"
             android:layout_width="850px"
             android:layout_height="wrap_content"
-            android:text="/sdcard/UCdownloads/copy.txt"
+            android:enabled="false"
             android:singleLine="true"/>
     </LinearLayout>
     <LinearLayout
@@ -81,11 +81,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/copyUpdBtn"
+            android:layout_width="150px"
+            android:layout_height="wrap_content"
+            android:text="修改"/>
         <Button
             android:id="@+id/copyUseBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="700px"
             android:layout_height="wrap_content"
             android:text="开启服务"/>
     </LinearLayout>

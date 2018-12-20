@@ -1,42 +1,36 @@
 package com.track.mytools.activity;
 
-import android.app.ListActivity;
+import android.app.Activity;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
 import com.track.mytools.R;
+import com.track.mytools.adapter.PwdMainAdapter;
+import com.track.mytools.dao.ToolsDao;
+import com.track.mytools.entity.PwdEntity;
+import com.track.mytools.until.ToolsUntil;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Track on 2017/2/9.
  * 密码记录本
  */
 
-public class PwdActivity extends ListActivity {
-    String[] from={"pwdName","pwdAccount","pwdPsd"};              //这里是ListView显示内容每一列的列名
-    int[] to={R.id.pwdName,R.id.pwdAccount,R.id.pwdPsd};   //这里是ListView显示每一列对应的list_item中控件的id
+public class PwdActivity extends Activity {
 
     private Button pwdAddBtn;  //添加
-   // private Button pwdChangeBtn;//保存
-   // private Button pwdSaveBtn;//修改
-    private ListView listView;
+    private Button pwdSaveBtn;//保存
+    private ListView pwdList;
 
-    private EditText pwdName;
-    private EditText pwdAccount;
-    private EditText pwdPsd;
+    public static PwdActivity pwdActivity;
 
-    public static SimpleAdapter adapter;
-
-    private PwdActivity pwdActivity;
-
-    public static ArrayList<HashMap<String,String>> list=null;
+    public static List<HashMap<String,Object>> qryList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,91 +38,56 @@ public class PwdActivity extends ListActivity {
         setContentView(R.layout.activity_pwdmain);
 
         pwdAddBtn = (Button)findViewById(R.id.pwdAddBtn);
-       //pwdChangeBtn = (Button)findViewById(R.id.pwdChangeBtn);
-        //pwdSaveBtn = (Button)findViewById(R.id.pwdSaveBtn);
+        pwdSaveBtn = (Button)findViewById(R.id.pwdSaveBtn);
 
-        pwdName = (EditText)findViewById(R.id.pwdName);
-        pwdAccount = (EditText)findViewById(R.id.pwdAccount);
-        pwdPsd = (EditText)findViewById(R.id.pwdPsd);
+        pwdList = (ListView)findViewById(R.id.pwdList);
 
         pwdActivity = this;
 
-        list = new ArrayList<HashMap<String,String>>();
-        HashMap<String,String> map = new HashMap<String,String>();
-        map.put("pwdName","民生银行");
-        map.put("pwdAccount","6226221202493281");
-        map.put("pwdPsd","186714");
-        list.add(map);
+        SQLiteDatabase sdb = ToolsDao.getDatabase();
 
-       // List list = new ArrayList();
-        adapter = new SimpleAdapter(this,list,R.layout.activity_pwddetail,from,to);
-        //调用ListActivity的setListAdapter方法，为ListView设置适配器
-        setListAdapter(adapter);
+        List<HashMap<String,Object>> qryList = ToolsDao.qryTable(sdb,PwdEntity.class);
+
+        PwdMainAdapter.viewList.clear();
+
+        PwdMainAdapter pma = new PwdMainAdapter(pwdActivity,qryList);
+
+        pwdList.setAdapter(pma);
 
         //点击添加密码区域
         pwdAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("pwd","pwdAddBtn");
-                HashMap<String,String> map = new HashMap<String,String>();
-                map.put("pwdName","          ");
-                map.put("pwdAccount","                ");
-                map.put("pwdPsd","                ");
-               // list.add(map);
-
-                ArrayList tempL = (ArrayList)list.clone();
-                list.clear();
-                tempL.add(map);
-                list.addAll(tempL);
-                adapter.notifyDataSetChanged();
+                HashMap<String,Object> map = new HashMap<String,Object>();
+                map.put("pwdName","");
+                map.put("pwdAccount","");
+                map.put("pwdPsd","");
+                qryList.add(map);
+                pma.notifyDataSetChanged();
             }
         });
 
-//        //点击修改密码
-//        pwdChangeBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.i("pwd","pwdChangeBtn");
-//            }
-//        });
-//
-//        //点击保存修改的密码
-//        pwdSaveBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.i("pwd","pwdSaveBtn");
-//            }
-//        });
 
-//        pwdName.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                    Log.i("pwd","1");
-//            }
-//        });
-//
-//        pwdAccount.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.i("pwd","2");
-//            }
-//        });
-//
-//        pwdPsd.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.i("pwd","3");
-//            }
-//        });
+        //点击保存修改的密码
+        pwdSaveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("pwd","pwdSaveBtn");
+                SQLiteDatabase sdb = ToolsDao.getDatabase();
 
+                for(int i=0 ;i<qryList.size();i++){
+                    if((boolean)PwdMainAdapter.viewList.get(i).get("changeIng") == true){
+                        ToolsUntil.showToast(pwdActivity,"还有未保存的修改!",3000);
+                        break;
+                    }
+                    ToolsDao.saveOrUpdIgnoreExsit(sdb,qryList.get(i),PwdEntity.class);
+                    Log.i("PwdActivity",qryList.get(i).toString());
+                }
 
-
-    }
-
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        Log.i("check",position + "");
+                ToolsUntil.showToast(pwdActivity,"保存完成!",3000);
+            }
+        });
     }
 
 }

@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.track.mytools.R;
 import com.track.mytools.entity.ShortCutEntity;
-import com.track.mytools.entity.ToolsEntiy;
 import com.track.mytools.until.FingerprintUtil;
 import com.track.mytools.until.ToolsUntil;
 
@@ -56,26 +55,8 @@ public class MainActivity extends Activity {
             Log.e("su","获取初始化文件失败...");
             ToolsUntil.showToast(this, "获取初始化文件失败...", 2000);
         }
-        //Log.i("su","根目录:类型->" + pro.getProperty("path") + ":" + pro.getProperty("type"));
-
-        ToolsEntiy.path = pro.getProperty("path");
-
-        ToolsEntiy.type = pro.getProperty("type");
-
-        String strFilter = pro.getProperty("suFilter");
 
         String isUseFinIdMou = pro.getProperty("isUseFinIdMou");
-
-        ToolsEntiy.suFilter = new String[strFilter.split(",").length];
-
-        try{
-        for (int i = 0; i < strFilter.split(",").length; i++) {
-            ToolsEntiy.suFilter[i] = strFilter.split(",")[i];
-            Log.i("init",ToolsEntiy.suFilter[i]);
-        }}catch(Exception e){
-            Log.e("error","过滤后缀解析失败");
-            return;
-        }
 
         //是否需要开启指纹识别
         if("y".equalsIgnoreCase(isUseFinIdMou)){
