@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.track.mytools.R;
 import com.track.mytools.dao.ToolsDao;
 import com.track.mytools.entity.SuffixEntity;
-import com.track.mytools.until.ToolsUntil;
+import com.track.mytools.until.ToolsUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -112,14 +112,14 @@ public class SuffixActivity extends Activity {
 
                 dealFileNum = 0;
 
-                ToolsUntil.countNum(fianlPath, fianlType, 1);   //获取待处理文件的数量
+                ToolsUtil.countNum(fianlPath, fianlType, 1);   //获取待处理文件的数量
 
                 viewPercent.setText("0/" + dealFileNum);
 
                 Log.i("su", "待处理文件数量:" + dealFileNum);
 
                 if (dealFileNum == 0) {
-                    ToolsUntil.showToast(nowActivity, "暂无可操作文件", 1000);
+                    ToolsUtil.showToast(nowActivity, "暂无可操作文件", 1000);
                     return;
                 }
 
@@ -129,9 +129,9 @@ public class SuffixActivity extends Activity {
                     @Override
                     public void run() {
                         try{
-                            ToolsUntil.addSuffix(fianlPath, fianlType, suffixProBar, viewPercent);
+                            ToolsUtil.addSuffix(fianlPath, fianlType, suffixProBar, viewPercent);
 
-                            ToolsUntil.showToast(nowActivity, "后缀添加完成!", 5000);
+                            ToolsUtil.showToast(nowActivity, "后缀添加完成!", 5000);
                         }catch(Exception e){
 
                         }
@@ -155,14 +155,14 @@ public class SuffixActivity extends Activity {
 
                 dealFileNum = 0;
 
-                ToolsUntil.countNum(fianlPath, fianlType, 0);
+                ToolsUtil.countNum(fianlPath, fianlType, 0);
 
                 viewPercent.setText("0/" + dealFileNum);
 
                 Log.i("su", "待处理文件数量:" + dealFileNum);
 
                 if (dealFileNum == 0) {
-                    ToolsUntil.showToast(nowActivity, "暂无可操作文件", 1000);
+                    ToolsUtil.showToast(nowActivity, "暂无可操作文件", 1000);
                     return;
                 }
 
@@ -172,9 +172,9 @@ public class SuffixActivity extends Activity {
                     @Override
                     public void run() {
                         try {
-                            ToolsUntil.delSuffix(fianlPath, fianlType, suffixProBar, viewPercent);
+                            ToolsUtil.delSuffix(fianlPath, fianlType, suffixProBar, viewPercent);
 
-                            ToolsUntil.showToast(nowActivity, "后缀删除完成!", 5000);
+                            ToolsUtil.showToast(nowActivity, "后缀删除完成!", 5000);
                         }catch(Exception e){
 
                         }

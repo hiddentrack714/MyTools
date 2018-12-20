@@ -11,7 +11,7 @@ import android.util.Log;
 import com.track.mytools.R;
 import com.track.mytools.activity.FTPActivity;
 import com.track.mytools.until.FTPUtil;
-import com.track.mytools.until.ToolsUntil;
+import com.track.mytools.until.ToolsUtil;
 
 import java.io.File;
 
@@ -68,9 +68,9 @@ public class FTPService extends Service {
                     boolean sucess = fTPUtil.downloadFile(fileName, localPath, serverPath);
 
                     if(sucess){
-                        ToolsUntil.showToast(FTPActivity.fTPActivity,"下载成功",2000);
+                        ToolsUtil.showToast(FTPActivity.fTPActivity,"下载成功",2000);
                     }else{
-                        ToolsUntil.showToast(FTPActivity.fTPActivity,"下载失败",2000);
+                        ToolsUtil.showToast(FTPActivity.fTPActivity,"下载失败",2000);
                     }
 
                     isFinish = false; // 下载完成，停止进度检测
@@ -80,7 +80,7 @@ public class FTPService extends Service {
                     fTPUtil.ftpLogOut();
                 }else{
                     Log.e("FTPSERVICE2","FTP Login Fail:");
-                    ToolsUntil.showToast(FTPActivity.fTPActivity,"FTP登陆失败",2000);
+                    ToolsUtil.showToast(FTPActivity.fTPActivity,"FTP登陆失败",2000);
                 }
             }
         }.start();

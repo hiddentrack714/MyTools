@@ -21,7 +21,7 @@ import com.track.mytools.R;
 import com.track.mytools.Service.NLService;
 import com.track.mytools.dao.ToolsDao;
 import com.track.mytools.entity.NLEntity;
-import com.track.mytools.until.ToolsUntil;
+import com.track.mytools.until.ToolsUtil;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -172,7 +172,7 @@ public class NLActivity extends Activity {
 
                     if(diffTime <= 0){
                         //差值计算错误；
-                        ToolsUntil.showToast(NLActivity.this,"时间差值计算错误",3000);
+                        ToolsUtil.showToast(NLActivity.this,"时间差值计算错误",3000);
                     }else{
                         //2,开启服务
                         intentService = new Intent(NLActivity.this,NLService.class);

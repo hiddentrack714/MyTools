@@ -1,17 +1,13 @@
 package com.track.mytools.Service;
 
-import android.app.Activity;
 import android.app.Service;
 import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.track.mytools.activity.CopyActivity;
-import com.track.mytools.activity.HttpActivity;
-import com.track.mytools.until.ToolsUntil;
 
 import java.io.File;
 import java.io.FileWriter;

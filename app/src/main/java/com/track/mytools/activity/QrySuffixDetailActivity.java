@@ -14,7 +14,7 @@ import android.widget.SimpleAdapter;
 
 import com.track.mytools.R;
 import com.track.mytools.adapter.SuffixMainAdapter;
-import com.track.mytools.until.ToolsUntil;
+import com.track.mytools.until.ToolsUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -66,8 +66,8 @@ public class QrySuffixDetailActivity extends Activity {
                 Log.i("smdBtn","smdBtn");
 
                 //先检查是否有选中的cb
-                if(!ToolsUntil.checkCB(SuffixMainAdapter.isSelected)){
-                    ToolsUntil.showToast(qsda,"还没有选中的文件",2000);
+                if(!ToolsUtil.checkCB(SuffixMainAdapter.isSelected)){
+                    ToolsUtil.showToast(qsda,"还没有选中的文件",2000);
                     return;
                 }
 
@@ -121,7 +121,7 @@ public class QrySuffixDetailActivity extends Activity {
                                             tempDelSize++;
                                         } else {
                                             Log.i("xx", "DEL_FAIL");
-                                            ToolsUntil.showToast(qsda, "删除失败:" + SuffixActivity.pathMap.get(useKey).get(pos), 2000);
+                                            ToolsUtil.showToast(qsda, "删除失败:" + SuffixActivity.pathMap.get(useKey).get(pos), 2000);
                                         }
                                     }
                                 }
@@ -135,7 +135,7 @@ public class QrySuffixDetailActivity extends Activity {
                                     if(value){
                                         //tempL.remove(allKey);
                                         daoList.add(allKey);
-                                        //ToolsUntil.pathMap.get(useKey).remove(allKey);
+                                        //ToolsUtil.pathMap.get(useKey).remove(allKey);
                                     }
                                 }
 
@@ -268,9 +268,9 @@ public class QrySuffixDetailActivity extends Activity {
                                 file.delete();
                                 if (!file.exists()) {
                                     Log.i("xx", "DEL_SUCCESS");
-                                    ToolsUntil.showToast(qsda, "删除成功:" + SuffixActivity.pathMap.get(useKey).get(pos), 2000);
+                                    ToolsUtil.showToast(qsda, "删除成功:" + SuffixActivity.pathMap.get(useKey).get(pos), 2000);
                                     //删除完成后，刷新当前listview
-                                    //ToolsUntil.pathMap.get(useKey).remove(pos);
+                                    //ToolsUtil.pathMap.get(useKey).remove(pos);
                                     ArrayList tempL = (ArrayList) tempList.clone();//克隆一个新的集合
                                     tempL.remove(pos);
                                     tempList.clear();
@@ -297,7 +297,7 @@ public class QrySuffixDetailActivity extends Activity {
                                     QrySuffixActivity.adapter.notifyDataSetChanged();
                                 } else {
                                     Log.i("xx", "DEL_FAIL");
-                                    ToolsUntil.showToast(qsda, "删除失败:" + SuffixActivity.pathMap.get(useKey).get(pos), 2000);
+                                    ToolsUtil.showToast(qsda, "删除失败:" + SuffixActivity.pathMap.get(useKey).get(pos), 2000);
                                 }
                             }
                         });

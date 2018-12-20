@@ -24,7 +24,7 @@ import com.track.mytools.dao.ToolsDao;
 import com.track.mytools.entity.HttpEntity;
 import com.track.mytools.entity.HttpThreadEntity;
 import com.track.mytools.exception.HttpException;
-import com.track.mytools.until.ToolsUntil;
+import com.track.mytools.until.ToolsUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -154,12 +154,12 @@ public class HttpActivity extends Activity{
                 Log.i("httpSwitch",isSingle+"");
 
                 if("0".equals(httpThread.getText().toString())){
-                    ToolsUntil.showToast(HttpActivity.ha,"下载线程数不能为0",3000);
+                    ToolsUtil.showToast(HttpActivity.ha,"下载线程数不能为0",3000);
                     return;
                 }
 
                 if("".equals(httpUrl.getText().toString())){
-                    ToolsUntil.showToast(HttpActivity.ha,"下载链接不能为空",3000);
+                    ToolsUtil.showToast(HttpActivity.ha,"下载链接不能为空",3000);
                     return;
                 }
 
@@ -256,7 +256,7 @@ public class HttpActivity extends Activity{
                             //下载完成，清空所有静态参数
                             HttpMainAdapter.viewList.clear();
 
-                            ToolsUntil.showToast(HttpActivity.ha,"下载完成",3000);
+                            ToolsUtil.showToast(HttpActivity.ha,"下载完成",3000);
 
                             es.shutdown();
                         }
@@ -281,7 +281,7 @@ public class HttpActivity extends Activity{
                     //覆盖之前的链接
                     httpUrl.setText(content);
                 }else{
-                    ToolsUntil.showToast(HttpActivity.ha,"剪贴板暂无内容",3000);
+                    ToolsUtil.showToast(HttpActivity.ha,"剪贴板暂无内容",3000);
                 }
 
             }
@@ -389,7 +389,7 @@ public class HttpActivity extends Activity{
 
                     HashMap<String,Object> downMap = new HashMap<String,Object>();
 
-                    downMap = ToolsUntil.down(this.url);
+                    downMap = ToolsUtil.down(this.url);
 
                     //获得文件大小
                     int fileSize = Integer.parseInt(downMap.get("fileSize").toString());
@@ -427,9 +427,9 @@ public class HttpActivity extends Activity{
 
                         //下载当前文件
                         try{
-                            ToolsUntil.saveFile(inputStream,DIR_NAME,this.url,holder.pb,hte);
+                            ToolsUtil.saveFile(inputStream,DIR_NAME,this.url,holder.pb,hte);
                         }catch(HttpException e){
-                            ToolsUntil.showToast(HttpActivity.ha,DIR_NAME+"下载失败",3000);
+                            ToolsUtil.showToast(HttpActivity.ha,DIR_NAME+"下载失败",3000);
                             //String httpFail =  httpFailName.getText();
                             Message msg1 = HttpActivity.handler.obtainMessage();
                             msg1.arg1 = 2;

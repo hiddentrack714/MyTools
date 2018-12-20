@@ -9,7 +9,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.track.mytools.activity.NLActivity;
-import com.track.mytools.until.ToolsUntil;
+import com.track.mytools.until.ToolsUtil;
 
 import java.io.DataOutputStream;
 import java.io.OutputStream;
@@ -78,7 +78,7 @@ public class NLService extends Service implements Runnable {
             //1,打开支付宝
             Log.i("NLService2", "打开支付宝");
             String commod[] = {"am start -n com.eg.android.AlipayGphone/com.eg.android.AlipayGphone.AlipayLogin"};
-            ToolsUntil.exeCommod(commod);
+            ToolsUtil.exeCommod(commod);
             Log.i("NLService3", "打开支付宝完成");
             //2,点亮屏幕
             //                        Process process = null;
@@ -137,11 +137,11 @@ public class NLService extends Service implements Runnable {
 
             String commod1[] = {"am force-stop com.eg.android.AlipayGphone"}; //关闭支付宝
 
-            ToolsUntil.exeCommod(commod1);
+            ToolsUtil.exeCommod(commod1);
 
             String commod2[] = {"input keyevent 26"};//关闭屏幕
 
-            ToolsUntil.exeCommod(commod2);
+            ToolsUtil.exeCommod(commod2);
 
         } catch (Exception e) {
             Log.e("NLActivity", e.getMessage());

@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.track.mytools.R;
 import com.track.mytools.entity.ShortCutEntity;
 import com.track.mytools.until.FingerprintUtil;
-import com.track.mytools.until.ToolsUntil;
+import com.track.mytools.until.ToolsUtil;
 
 import java.io.File;
 import java.io.FileReader;
@@ -45,7 +45,7 @@ public class MainActivity extends Activity {
 
         if(!proFile.exists()){
             Log.e("su","参数文件不存在");
-            ToolsUntil.showToast(this, "参数文件不存在", 2000);
+            ToolsUtil.showToast(this, "参数文件不存在", 2000);
             return;
         }
 
@@ -53,7 +53,7 @@ public class MainActivity extends Activity {
             pro = loadConfig(this,"/sdcard/UCdownloads/tools.properties");
         }catch(Exception e){
             Log.e("su","获取初始化文件失败...");
-            ToolsUntil.showToast(this, "获取初始化文件失败...", 2000);
+            ToolsUtil.showToast(this, "获取初始化文件失败...", 2000);
         }
 
         String isUseFinIdMou = pro.getProperty("isUseFinIdMou");
@@ -88,7 +88,7 @@ public class MainActivity extends Activity {
         // Log.i("test", "----------->" + fingerGrant);
         //动态检测权限
         if(PackageManager.PERMISSION_GRANTED != fingerGrant){
-            //ToolsUntil.showToast(this,"没有权限访问指纹",1000);
+            //ToolsUtil.showToast(this,"没有权限访问指纹",1000);
            // return false;
             warnTitle.setText("没有权限访问指纹");
             warnTitle.setVisibility(TextView.VISIBLE);
@@ -97,7 +97,7 @@ public class MainActivity extends Activity {
 
         //检查是否有指纹模块和是否有录入
         if(!fm.isHardwareDetected() || !fm.isHardwareDetected()){
-            //ToolsUntil.showToast(this,"没有指纹模块，或者至少应该有一个指纹",1000);
+            //ToolsUtil.showToast(this,"没有指纹模块，或者至少应该有一个指纹",1000);
             //return false;
             warnTitle.setText("没有指纹模块，或者至少应该有一个指纹");
             warnTitle.setVisibility(TextView.VISIBLE);

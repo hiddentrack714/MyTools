@@ -29,7 +29,7 @@ public class FingerprintUtil extends FingerprintManager.AuthenticationCallback {
     public void onAuthenticationError(int errorCode, CharSequence errString) {
         super.onAuthenticationError(errorCode, errString);
         Log.i("ff","识别失败1......");
-        //ToolsUntil.showToast(mainActivity,"指纹不正确...",1000);
+        //ToolsUtil.showToast(mainActivity,"指纹不正确...",1000);
         warnTitle.setText(errString);
         warnTitle.setVisibility(TextView.VISIBLE);
     }

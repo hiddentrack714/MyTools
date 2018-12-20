@@ -12,7 +12,7 @@ import android.widget.SimpleAdapter;
 import com.track.mytools.R;
 import com.track.mytools.dao.ToolsDao;
 import com.track.mytools.entity.SuffixEntity;
-import com.track.mytools.until.ToolsUntil;
+import com.track.mytools.until.ToolsUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,7 +61,7 @@ public class QrySuffixActivity extends ListActivity {
 
         SuffixActivity.preMethod(dataMap.get("suffixFilter").toString(),dataMap.get("suffixType").toString());
 
-        List<HashMap<String,String>> listType = ToolsUntil.qrySuffixNum(dataMap.get("suffixPath").toString(),dataMap.get("suffixType").toString());
+        List<HashMap<String,String>> listType = ToolsUtil.qrySuffixNum(dataMap.get("suffixPath").toString(),dataMap.get("suffixType").toString());
 
         Log.i("ch","后缀类型数量:" + listType.size());
         typeName = new String[listType.size()];

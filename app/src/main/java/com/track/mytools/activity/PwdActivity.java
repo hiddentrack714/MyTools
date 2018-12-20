@@ -12,7 +12,7 @@ import com.track.mytools.R;
 import com.track.mytools.adapter.PwdMainAdapter;
 import com.track.mytools.dao.ToolsDao;
 import com.track.mytools.entity.PwdEntity;
-import com.track.mytools.until.ToolsUntil;
+import com.track.mytools.until.ToolsUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -78,14 +78,14 @@ public class PwdActivity extends Activity {
 
                 for(int i=0 ;i<qryList.size();i++){
                     if((boolean)PwdMainAdapter.viewList.get(i).get("changeIng") == true){
-                        ToolsUntil.showToast(pwdActivity,"还有未保存的修改!",3000);
+                        ToolsUtil.showToast(pwdActivity,"还有未保存的修改!",3000);
                         break;
                     }
                     ToolsDao.saveOrUpdIgnoreExsit(sdb,qryList.get(i),PwdEntity.class);
                     Log.i("PwdActivity",qryList.get(i).toString());
                 }
 
-                ToolsUntil.showToast(pwdActivity,"保存完成!",3000);
+                ToolsUtil.showToast(pwdActivity,"保存完成!",3000);
             }
         });
     }
