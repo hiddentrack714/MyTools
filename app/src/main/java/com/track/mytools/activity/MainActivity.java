@@ -41,33 +41,34 @@ public class MainActivity extends Activity {
         //加载初始文件
         Properties pro = new Properties();
 
-        File proFile = new File("/sdcard/UCdownloads/tools.properties");
+        String proFilePath = "/sdcard/UCdownloads/tools.properties";
+
+        File proFile = new File(proFilePath);
 
         if(!proFile.exists()){
             Log.e("su","参数文件不存在");
             ToolsUtil.showToast(this, "参数文件不存在", 2000);
-            return;
-        }
-
-        try{
-            pro = loadConfig(this,"/sdcard/UCdownloads/tools.properties");
-        }catch(Exception e){
-            Log.e("su","获取初始化文件失败...");
-            ToolsUtil.showToast(this, "获取初始化文件失败...", 2000);
-        }
-
-        String isUseFinIdMou = pro.getProperty("isUseFinIdMou");
-
-        //是否需要开启指纹识别
-        if("y".equalsIgnoreCase(isUseFinIdMou)){
-            //开启指纹识别
-            checkFiger();
         }else{
-            //关闭指纹识别,直接跳转到下一级
-            Intent intent = new Intent();
-            intent.setClass(this, ToolsActivity.class);
-            this.startActivity(intent);
-            this.finish();
+            try{
+                pro = loadConfig(this,proFilePath);
+            }catch(Exception e){
+                Log.e("su","获取初始化文件失败...");
+                ToolsUtil.showToast(this, "获取初始化文件失败...", 2000);
+            }
+
+            String isUseFinIdMou = pro.getProperty("isUseFinIdMou");
+
+            //是否需要开启指纹识别
+            if("y".equalsIgnoreCase(isUseFinIdMou)){
+                //开启指纹识别
+                checkFiger();
+            }else{
+                //关闭指纹识别,直接跳转到下一级
+                Intent intent = new Intent();
+                intent.setClass(this, ToolsActivity.class);
+                this.startActivity(intent);
+                this.finish();
+            }
         }
 
         List<ShortCutEntity> list = new ArrayList<ShortCutEntity>();

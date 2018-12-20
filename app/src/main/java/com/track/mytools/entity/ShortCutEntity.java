@@ -5,10 +5,6 @@ public class ShortCutEntity {
     public String LongName;
     public Class cla;
 
-    public ShortCutEntity(){
-
-    }
-
     public ShortCutEntity(String shortName,String LongName,Class cla){
         this.shortName = shortName;
         this.LongName = LongName;

@@ -101,7 +101,6 @@ public class CopyActivity extends Activity {
                     copyIPLayout.setVisibility(View.GONE); //隐藏PC信息
                     copyPortLayout.setVisibility(View.GONE); //隐藏PC信息
                 }
-
             }
         });
 
@@ -148,10 +147,7 @@ public class CopyActivity extends Activity {
                     isUpd = false;
                     copyUpdBtn.setText("修改");
                 }
-
             }
         });
-
     }
-
 }
