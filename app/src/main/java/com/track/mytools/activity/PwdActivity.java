@@ -74,13 +74,13 @@ public class PwdActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Log.i("pwd","pwdSaveBtn");
-                SQLiteDatabase sdb = ToolsDao.getDatabase();
 
                 for(int i=0 ;i<qryList.size();i++){
                     if((boolean)PwdMainAdapter.viewList.get(i).get("changeIng") == true){
                         ToolsUtil.showToast(pwdActivity,"还有未保存的修改!",3000);
                         break;
                     }
+                    SQLiteDatabase sdb = ToolsDao.getDatabase();
                     ToolsDao.saveOrUpdIgnoreExsit(sdb,qryList.get(i),PwdEntity.class);
                     Log.i("PwdActivity",qryList.get(i).toString());
                 }
