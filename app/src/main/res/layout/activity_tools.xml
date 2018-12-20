@@ -3,7 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingTop="25dp">
+    android:layout_marginTop="45px"
+    android:layout_marginLeft="20px"
+    android:layout_marginRight="20px">
     <Button android:id="@+id/suffixBtn"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
