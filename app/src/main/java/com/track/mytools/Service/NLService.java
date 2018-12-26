@@ -113,7 +113,7 @@ public class NLService extends Service implements Runnable {
             //                            MotionEvent.ACTION_DOWN, 655, 1050, 0));
             //                    inst.sendPointerSync(MotionEvent.obtain(SystemClock.uptimeMillis(),SystemClock.uptimeMillis(),
             //                            MotionEvent.ACTION_UP, 655, 1050, 0));
-            execShellCmd("input tap " + NLActivity.nle.getNlX() + " " + NLActivity.nle.getNlY());
+            execShellCmd("input tap " + NLActivity.nleArray[0].getNlX() + " " + NLActivity.nleArray[0].getNlY());
 
             Log.i("NLService5", "完成进入蚂蚁森林");
 
@@ -127,7 +127,10 @@ public class NLService extends Service implements Runnable {
 
             for (int i = 0; i < NLActivity.clickTime; i++) {
                 Log.i("NLService6", i + "");
-                execShellCmd("input tap " + NLActivity.nle.getBallX() + " " + NLActivity.nle.getBallY());
+                for(int j= 0 ;j<NLActivity.nleArray.length;j++){
+                    execShellCmd("input tap " + NLActivity.nleArray[j].getBallX() + " " + NLActivity.nleArray[j].getBallY());
+                    Thread.sleep(500);
+                }
                 Thread.sleep(500);
             }
 

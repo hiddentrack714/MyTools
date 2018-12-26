@@ -14,10 +14,6 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:text="查询类型数量"/>
-    <Button android:id="@+id/psdBtn"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text="密码本"/>
     <Button android:id="@+id/httpBtn"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"

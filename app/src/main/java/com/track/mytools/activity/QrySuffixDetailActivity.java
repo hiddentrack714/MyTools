@@ -145,8 +145,7 @@ public class QrySuffixDetailActivity extends Activity {
 
                                 Log.i("Size","-->" + tempL.size());
 
-                                for (int i:daoList
-                                     ) {
+                                for (int i:daoList) {
                                     Log.i("删除","-->"+i);
                                     tempL.remove(i);
                                     SuffixActivity.pathMap.get(useKey).remove(i);

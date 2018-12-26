@@ -86,12 +86,6 @@ public class WifiActivity extends Activity {
 
         lv = (ListView)findViewById(R.id.wifiList);
 
-        HashMap<String, String> tempMap = new HashMap<String, String>(); //有效和无效密码的分割符
-        tempMap.put("ssid","----------------------------");
-        tempMap.put("passwrd","---------------无效密码------------------------------------------------");
-
-        l.add(tempMap);
-
         l.addAll(tempL);
 
         wma = new WifiMainAdapter(ha,l);

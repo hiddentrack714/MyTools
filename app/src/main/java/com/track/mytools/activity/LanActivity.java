@@ -125,7 +125,7 @@ public class LanActivity extends Activity {
                         }
                     }
                     socket.close();
-                    execCatForArp();
+                    execCatForArp(hostIP);
                 } catch (SocketException e) {
                     e.printStackTrace();
                 } catch (UnknownHostException e) {
@@ -175,7 +175,7 @@ public class LanActivity extends Activity {
      * 执行 cat命令 查找android 设备arp表
      * arp表 包含ip地址和对应的mac地址
      */
-    private void execCatForArp() {
+    private void execCatForArp(String hostIP) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -195,6 +195,8 @@ public class LanActivity extends Activity {
 
                                 map.put("name","Router");//主机名称
 
+                            }else if(hostIP.equals(split[0])){
+                                map.put("name","Local");//主机名称
                             }else{
 
                                 NbtAddress nbtAddress = NbtAddress.getByName(split[0]);

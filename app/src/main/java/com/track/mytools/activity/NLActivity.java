@@ -62,7 +62,7 @@ public class NLActivity extends Activity {
 
     public static NLActivity nl;
 
-    public static NLEntity nle;
+    public static NLEntity []nleArray;
 
     private static Intent intentService;
 
@@ -123,7 +123,25 @@ public class NLActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                nle = new NLEntity(nlX,nlY,ballX,ballY);
+                //由于能量球位置可能变化，所以列出球可能出现的位置；
+
+                int xLen = map.get("ballX").toString().split(",").length;
+
+                int yLen = map.get("ballY").toString().split(",").length;
+
+                if(xLen == yLen && xLen > 1 && yLen>1){
+                    //多位置情况
+                    nleArray = new NLEntity[xLen];
+                    for(int i=0;i<xLen;i++){
+                        nleArray[i] = new NLEntity(Integer.parseInt(map.get("nlX").toString()), Integer.parseInt(map.get("nlY").toString()), Integer.parseInt(map.get("ballX").toString().split(",")[i]), Integer.parseInt(map.get("ballY").toString().split(",")[i]));
+                    }
+
+                }else{
+                    nleArray = new NLEntity[1];
+
+                    nleArray[0] = new NLEntity(Integer.parseInt(map.get("nlX").toString()), Integer.parseInt(map.get("nlY").toString()), Integer.parseInt(map.get("ballX").toString()), Integer.parseInt(map.get("ballY").toString()));
+
+                }
 
                 Log.i("NLActivity2",lightNum+"");
 

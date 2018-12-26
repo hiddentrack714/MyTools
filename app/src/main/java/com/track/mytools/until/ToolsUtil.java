@@ -30,6 +30,7 @@ import java.util.Set;
 
 public class ToolsUtil {
 
+    public static String[] zmArray = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
 
     /**
      * 删除后缀
@@ -514,5 +515,17 @@ public class ToolsUtil {
             }
         }
 
+    }
+
+    /**
+     * 获取A~Z集合
+     * @return
+     */
+    public static List<String> getZMList(){
+        List<String> list = new ArrayList<String>();
+        for(String str:zmArray){
+            list.add(str);
+        }
+        return list;
     }
 }

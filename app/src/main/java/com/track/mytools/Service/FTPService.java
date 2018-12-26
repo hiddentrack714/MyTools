@@ -98,7 +98,7 @@ public class FTPService extends Service {
         public void run() {
             Log.i("FTPSERVICE3","开启下载检测");
             try{
-                Thread.sleep(500);
+                Thread.sleep(1000);
                 while(isFinish){
                     File file = new File(localPath + fileName);
                     if(file.exists()){
