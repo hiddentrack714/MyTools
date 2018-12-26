@@ -63,7 +63,6 @@ public class ToolsActivity extends Activity implements OnClickListener{
         wifiBtn.setOnClickListener(this);
         lanBtn.setOnClickListener(this);
         nlBtn.setOnClickListener(this);
-
     }
 
     @Override

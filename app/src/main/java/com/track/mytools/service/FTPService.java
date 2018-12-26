@@ -1,4 +1,4 @@
-package com.track.mytools.Service;
+package com.track.mytools.service;
 
 import android.app.Service;
 import android.content.Intent;
@@ -10,8 +10,8 @@ import android.util.Log;
 
 import com.track.mytools.R;
 import com.track.mytools.activity.FTPActivity;
-import com.track.mytools.until.FTPUtil;
-import com.track.mytools.until.ToolsUtil;
+import com.track.mytools.util.FTPUtil;
+import com.track.mytools.util.ToolsUtil;
 
 import java.io.File;
 

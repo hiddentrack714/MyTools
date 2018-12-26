@@ -1,4 +1,4 @@
-package com.track.mytools.Service;
+package com.track.mytools.service;
 
 import android.app.Service;
 import android.content.Intent;
@@ -9,7 +9,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.track.mytools.activity.NLActivity;
-import com.track.mytools.until.ToolsUtil;
+import com.track.mytools.util.ToolsUtil;
 
 import java.io.DataOutputStream;
 import java.io.OutputStream;

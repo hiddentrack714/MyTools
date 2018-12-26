@@ -1,4 +1,4 @@
-package com.track.mytools.until;
+package com.track.mytools.util;
 
 import android.app.Activity;
 import android.os.Handler;
@@ -451,11 +451,6 @@ public class ToolsUtil {
             fos.write(buffer, 0, len);
             proLen = proLen + len;
             pb.setProgress(proLen);
-
-            if(!httpThreadEntity.isFileBoolean()){
-                //文件下载检测超时，跳出下载方法
-                throw new HttpException("文件下载超时");
-            }
         }
 
         fos.flush();

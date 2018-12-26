@@ -16,8 +16,8 @@ import android.widget.TextView;
 
 import com.track.mytools.R;
 import com.track.mytools.entity.ShortCutEntity;
-import com.track.mytools.until.FingerprintUtil;
-import com.track.mytools.until.ToolsUtil;
+import com.track.mytools.util.FingerprintUtil;
+import com.track.mytools.util.ToolsUtil;
 
 import java.io.File;
 import java.io.FileReader;
@@ -38,6 +38,12 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         warnTitle = (TextView)findViewById(R.id.warnTitle);
 
+        List<ShortCutEntity> list = new ArrayList<ShortCutEntity>();
+
+        list.add(new ShortCutEntity("http下载","http下载",HttpActivity.class));
+
+        dynamicAddShortCut(list);
+
         //加载初始文件
         Properties pro = new Properties();
 
@@ -51,31 +57,25 @@ public class MainActivity extends Activity {
         }else{
             try{
                 pro = loadConfig(this,proFilePath);
+
+                String isUseFinIdMou = pro.getProperty("isUseFinIdMou");
+
+                //是否需要开启指纹识别
+                if("y".equalsIgnoreCase(isUseFinIdMou)){
+                    //开启指纹识别
+                    checkFiger();
+                }else{
+                    //关闭指纹识别,直接跳转到下一级
+                    Intent intent = new Intent();
+                    intent.setClass(this, ToolsActivity.class);
+                    this.startActivity(intent);
+                    this.finish();
+                }
             }catch(Exception e){
                 Log.e("su","获取初始化文件失败...");
                 ToolsUtil.showToast(this, "获取初始化文件失败...", 2000);
             }
-
-            String isUseFinIdMou = pro.getProperty("isUseFinIdMou");
-
-            //是否需要开启指纹识别
-            if("y".equalsIgnoreCase(isUseFinIdMou)){
-                //开启指纹识别
-                checkFiger();
-            }else{
-                //关闭指纹识别,直接跳转到下一级
-                Intent intent = new Intent();
-                intent.setClass(this, ToolsActivity.class);
-                this.startActivity(intent);
-                this.finish();
-            }
         }
-
-        List<ShortCutEntity> list = new ArrayList<ShortCutEntity>();
-
-        list.add(new ShortCutEntity("http下载","http下载",HttpActivity.class));
-
-        dynamicAddShortCut(list);
     }
 
     /**

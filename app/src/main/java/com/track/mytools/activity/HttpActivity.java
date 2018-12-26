@@ -24,7 +24,7 @@ import com.track.mytools.dao.ToolsDao;
 import com.track.mytools.entity.HttpEntity;
 import com.track.mytools.entity.HttpThreadEntity;
 import com.track.mytools.exception.HttpException;
-import com.track.mytools.until.ToolsUtil;
+import com.track.mytools.util.ToolsUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -418,7 +418,6 @@ public class HttpActivity extends Activity{
                         hte.setFileSize(fileSize + "");
                         hte.setFileName(this.url.substring(this.url.lastIndexOf("/") + 1));
                         hte.setFileStartTime(startTime);
-                        hte.setFileBoolean(true);
 
                         msg.arg2 = 1;
                         msg.obj = hte;

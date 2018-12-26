@@ -5,7 +5,6 @@ public class HttpThreadEntity {
     private String fileSize;        //文件大小
     private String fileName;        //文件名称
     private long fileStartTime;   //文件下载起始时间
-    private boolean fileBoolean;
 
     public int getFileIndex() {
         return fileIndex;
@@ -39,11 +38,4 @@ public class HttpThreadEntity {
         this.fileStartTime = fileStartTime;
     }
 
-    public boolean isFileBoolean() {
-        return fileBoolean;
-    }
-
-    public void setFileBoolean(boolean fileBoolean) {
-        this.fileBoolean = fileBoolean;
-    }
 }

@@ -69,9 +69,9 @@
             android:label="NLActivity"
             android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
 
-        <service android:name=".Service.CopyService"></service>
-        <service android:name=".Service.FTPService"></service>
-        <service android:name=".Service.NLService"></service>
+        <service android:name=".service.CopyService"></service>
+        <service android:name=".service.FTPService"></service>
+        <service android:name=".service.NLService"></service>
 
         <receiver android:name=".broadcast.SMSReceiver" >
             <intent-filter>

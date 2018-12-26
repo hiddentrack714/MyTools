@@ -16,7 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.track.mytools.R;
-import com.track.mytools.Service.FTPService;
+import com.track.mytools.service.FTPService;
 import com.track.mytools.dao.ToolsDao;
 import com.track.mytools.entity.FTPEntity;
 
