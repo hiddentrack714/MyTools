@@ -70,15 +70,15 @@ public class ToolsActivity extends Activity implements OnClickListener{
     public void onClick(View v) {
         Intent intent = new Intent();
         if(v.getId() == R.id.suffixBtn){
-            Log.i("su","跳转到后缀删添");
+            Log.i("su","后缀删添");
             intent.setClass(ToolsActivity.this, SuffixActivity.class);
             this.startActivity(intent);
         }else if(v.getId() == R.id.qrySuBtn){
-            Log.i("su","跳转到后缀列表");
+            Log.i("su","后缀列表");
             intent.setClass(ToolsActivity.this, QrySuffixActivity.class);
             this.startActivity(intent);
         }else if(v.getId() == R.id.httpBtn){
-            Log.i("su","跳转到http下载");
+            Log.i("su","http下载");
             intent.setClass(ToolsActivity.this, HttpActivity.class);
             this.startActivity(intent);
         }else if(v.getId() == R.id.copyBtn){

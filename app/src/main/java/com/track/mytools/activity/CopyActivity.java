@@ -9,10 +9,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 
 import com.track.mytools.R;
 import com.track.mytools.Service.CopyService;
@@ -31,24 +29,16 @@ public class CopyActivity extends Activity {
      * @param savedInstanceState
      */
 
-    private Switch copySwitch; // 单一下载选项
-
     private Button copyUseBtn; // 服务启动/关闭按钮
     private Button copyUpdBtn; //修改
 
     public static EditText copyPhoneFile; //手机端保存文件
-    public static EditText copyPCIP; // PC端IP
-    public static EditText copyPCPort; //PC端Port
 
     private LinearLayout copyPhoneLayout; //手机模式
-    private LinearLayout copyIPLayout;    //PC模式IP
-    private LinearLayout copyPortLayout;  //PC模式Port
 
-    public static Boolean isSingle = false; // 复制模式，默认为保存到手机
+    public static String saveFile;//文件保存位置
 
-    public static String saveFile;
-
-    private static boolean isStart = false;
+    private static boolean isStart = false; //是否开始监听服务
 
     public static CopyActivity copyActivity;
 
@@ -61,16 +51,8 @@ public class CopyActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_copy);
 
-        copySwitch = (Switch)findViewById(R.id.copySwitch);
-
         copyPhoneFile = (EditText)findViewById(R.id.copyPhoneFile);
-        copyPCIP = (EditText)findViewById(R.id.copyPCIP);
-        copyPCPort = (EditText)findViewById(R.id.copyPCPort);
-
         copyPhoneLayout = (LinearLayout)findViewById(R.id.copyPhoneLayout);
-        copyIPLayout = (LinearLayout)findViewById(R.id.copyIPLayout);
-        copyPortLayout = (LinearLayout)findViewById(R.id.copyPortLayout);
-
         copyUseBtn = (Button)findViewById(R.id.copyUseBtn);
         copyUpdBtn = (Button)findViewById(R.id.copyUpdBtn);
 
@@ -80,30 +62,6 @@ public class CopyActivity extends Activity {
         HashMap<String,Object> map =  ToolsDao.qryTable(sdb,CopyEntity.class).get(0);
         copyPhoneFile.setText(map.get("copyPhoneFile").toString());
 
-        //复制模式监听
-        copySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked){
-                    //PC
-                    isSingle = true;
-                    Log.i("COPY_ACTIVITY","PC");
-                    copyPhoneLayout.setVisibility(View.GONE); //隐藏手机端音信
-
-                    copyIPLayout.setVisibility(View.VISIBLE); //显示PC信息
-                    copyPortLayout.setVisibility(View.VISIBLE); //显示PC信息
-                }else {
-                    //手机
-                    isSingle = false;
-                    Log.i("COPY_ACTIVITY","手机");
-                    copyPhoneLayout.setVisibility(View.VISIBLE); //显示手机端音信
-
-                    copyIPLayout.setVisibility(View.GONE); //隐藏PC信息
-                    copyPortLayout.setVisibility(View.GONE); //隐藏PC信息
-                }
-            }
-        });
-
         //服务启动按钮监听
         copyUseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,11 +70,11 @@ public class CopyActivity extends Activity {
                 if(isStart == false){
                     isStart = true;
                     saveFile = copyPhoneFile.getText().toString();
-                    intent.putExtra("a","");
                     startService(intent);
                     copyUseBtn.setText("关闭服务");
                 }else{
                     isStart = false;
+                    CopyService.firstCopy = true;
                     stopService(intent);
                     copyUseBtn.setText("开启服务");
                 }

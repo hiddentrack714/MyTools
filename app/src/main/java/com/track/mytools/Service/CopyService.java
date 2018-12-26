@@ -23,8 +23,8 @@ public class CopyService extends Service {
     private static ClipData data; // 剪贴板
     private static String oldStr; // 剪贴板旧内容
 
-    private static boolean firstCopy = true;
-    private boolean isWhile = true;
+    public static boolean firstCopy = true; //是否第一次复制
+    private boolean isWhile = true;  //是否继续循环检测剪贴板
 
     @Override
     public void onCreate() {
@@ -49,7 +49,6 @@ public class CopyService extends Service {
     class CopyThread extends Thread{
         @Override
         public void run() {
-
             while(isWhile) {
                 try {
                     Thread.sleep(100);
@@ -71,15 +70,8 @@ public class CopyService extends Service {
                         }
 
                         if (!oldStr.equals(content)) {
-                            //内容不一致，开始保存
-                            //检查当前的保存模式
-                            if (CopyActivity.isSingle == false) {
-                                //手机
-                                saveCopyFile(CopyActivity.saveFile, content);
-                                oldStr = content;
-                            } else {
-                                //PC
-                            }
+                            saveCopyFile(CopyActivity.saveFile, content);
+                            oldStr = content;
                         }
                     }
             }
