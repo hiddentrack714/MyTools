@@ -105,6 +105,8 @@ public class HttpActivity extends Activity{
         httpThread.setText(map.get("httpThread").toString());
         httpDir.setText(map.get("httpDir").toString());
         httpSuff.setText(map.get("httpSuff").toString());
+        httpSeek.setProgress(Integer.parseInt(map.get("httpThread").toString()));
+        httpSeek.setEnabled(false);
 
         //线程视图复制更新
         handler = new Handler(new Handler.Callback() {
@@ -330,6 +332,7 @@ public class HttpActivity extends Activity{
                     httpThread.setEnabled(true);
                     httpDir.setEnabled(true);
                     httpSuff.setEnabled(true);
+                    httpSeek.setEnabled(true);
 
                     isUpd = true;
 
@@ -339,6 +342,7 @@ public class HttpActivity extends Activity{
                     httpThread.setEnabled(false);
                     httpDir.setEnabled(false);
                     httpSuff.setEnabled(false);
+                    httpSeek.setEnabled(false);
 
                     HashMap<String,Object> dataMap = new HashMap<String,Object>();
 

@@ -27,6 +27,8 @@ public class FTPService extends Service {
 
     public static boolean isFinish = true;
 
+    public static FTPUtil fTPUtil;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -42,7 +44,7 @@ public class FTPService extends Service {
         new Thread(){
             @Override
             public void run() {
-                FTPUtil fTPUtil = new FTPUtil(ip,port,user,password);
+                 fTPUtil = new FTPUtil(ip,port,user,password);
                 if(fTPUtil.ftpLogin()){
                     FTPActivity.remoteFileSize = fTPUtil.getFileSeize(serverPath,fileName);
                     Message msg = FTPActivity.handler.obtainMessage();
@@ -73,11 +75,6 @@ public class FTPService extends Service {
                         ToolsUtil.showToast(FTPActivity.fTPActivity,"下载失败",2000);
                     }
 
-                    isFinish = false; // 下载完成，停止进度检测
-                    msg = FTPActivity.handler.obtainMessage();
-                    msg.arg1 = 1;
-                    FTPActivity.handler.sendMessage(msg);
-                    fTPUtil.ftpLogOut();
                 }else{
                     Log.e("FTPSERVICE2","FTP Login Fail:");
                     ToolsUtil.showToast(FTPActivity.fTPActivity,"FTP登陆失败",2000);
@@ -104,8 +101,17 @@ public class FTPService extends Service {
                     if(file.exists()){
                         Long fileSize = file.length();
                         Message msg = FTPActivity.handler.obtainMessage();
-                        msg.arg1 = 2;
-                        msg.obj = fileSize;
+
+                        if(Long.parseLong(FTPActivity.remoteFileSize) == fileSize){
+                            isFinish = false;
+                            msg.arg1 = 1;
+
+                            fTPUtil.ftpLogOut();
+                        }else{
+                            msg.arg1 = 2;
+                            msg.obj = fileSize;
+                        }
+
                         FTPActivity.handler.sendMessage(msg);
                     }
                 }

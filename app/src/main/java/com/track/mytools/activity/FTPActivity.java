@@ -103,13 +103,21 @@ public class FTPActivity extends Activity {
                 //下载完成，停止服务
                 if(arg0.arg1 == 1){
                     Log.i("FTPActivity1","下载完成");
+                    ftpDownBtn.setEnabled(true);
+
+                    ftpPro.setProgress(Integer.parseInt(remoteFileSize));
+                    ftpProText.setText(remoteFileSize+"/"+remoteFileSize);
+
+                    mBuilder.setProgress(Integer.parseInt(remoteFileSize),Integer.parseInt(remoteFileSize),false);
+                    mBuilder.setContentText("下载完成");
+                    notificationManager.notify(0x3,mBuilder.build());
                     stopService(intent);
                 }
                 //进度条更新
                 if(arg0.arg1 == 2){
                     ftpPro.setProgress(Integer.parseInt(arg0.obj+""));
                     ftpProText.setText(viewText);
-
+                    Log.i("FTPActivity1","下载进度更新:"+viewText);
                     mBuilder.setProgress(Integer.parseInt(remoteFileSize),Integer.parseInt(arg0.obj+""),false);
                     notificationManager.notify(0x3,mBuilder.build());
                 }
@@ -152,9 +160,11 @@ public class FTPActivity extends Activity {
 
                 notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
+                ftpDownBtn.setEnabled(false);
             }
         });
 
+        //点击修改按钮
         ftpUpdBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

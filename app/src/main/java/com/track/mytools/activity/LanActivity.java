@@ -2,6 +2,7 @@ package com.track.mytools.activity;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -172,6 +173,51 @@ public class LanActivity extends Activity {
     }
 
     /**
+     * 获取本机Mac
+     * @param context
+     * @return
+     */
+    public String getLocalMacAddressFromIp(Context context) {
+        String mac_s = "";
+        try {
+            byte[] mac;
+            NetworkInterface ne = NetworkInterface.getByInetAddress(InetAddress.getByName(getHostIP()));
+            mac = ne.getHardwareAddress();
+            mac_s = byte2hex(mac);
+            if(mac_s.length() == 12){
+                String finalMac = "";
+                for(int i = 0 ;i<6;i++){
+                    finalMac += mac_s.substring(i*2,i*2+2);
+                    if(i<5) {
+                        finalMac+=":";
+                    }
+                }
+                mac_s = finalMac;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return mac_s;
+    }
+
+    public String byte2hex(byte[] b) {
+        StringBuffer hs = new StringBuffer(b.length);
+        String stmp = "";
+        int len = b.length;
+        for (int n = 0; n < len; n++) {
+            stmp = Integer.toHexString(b[n] & 0xFF);
+            if (stmp.length() == 1) {
+                hs = hs.append("0").append(stmp);
+            } else {
+                hs = hs.append(stmp);
+            }
+        }
+
+        return String.valueOf(hs);
+    }
+
+    /**
      * 执行 cat命令 查找android 设备arp表
      * arp表 包含ip地址和对应的mac地址
      */
@@ -196,7 +242,7 @@ public class LanActivity extends Activity {
                                 map.put("name","Router");//主机名称
 
                             }else if(hostIP.equals(split[0])){
-                                map.put("name","Local");//主机名称
+                                map.put("name","Local");//本机名称
                             }else{
 
                                 NbtAddress nbtAddress = NbtAddress.getByName(split[0]);
@@ -215,6 +261,17 @@ public class LanActivity extends Activity {
                             l.add(map);
                         }
                     }
+
+                    //添加本机IP和Mac
+                    HashMap<String, String> map = new HashMap<String, String>();
+
+                    map.put("name","Local");//本机名称
+
+                    map.put("ip",hostIP);//IP
+
+                    map.put("mac",getLocalMacAddressFromIp(la));//Mac
+
+                    l.add(map);
 
                     lma = new LanMainAdapter(la,l);
 
