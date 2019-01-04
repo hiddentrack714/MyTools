@@ -24,7 +24,7 @@ public class YCTempActivity extends Activity {
 
         Intent intent = getIntent();
         String tempMode = intent.getData().toString();
-        Log.e("YCTempActivity","临时电量模式:" + tempMode);
+        Log.i("YCTempActivity","临时电量模式:" + tempMode);
 
         String commod[] = {"powercfg "+tempMode};
 
@@ -38,10 +38,12 @@ public class YCTempActivity extends Activity {
                 dos.writeBytes("exit\n");
                 dos.flush();
                 process.waitFor();
-
+                Log.i("YCTempActivity","输出完毕，等待回执信息");
                 dis =  new DataInputStream(process.getInputStream());
                 BufferedReader br = new BufferedReader(new InputStreamReader(dis));
-                ToolsUtil.showToast(this,br.readLine(),3000);
+                String result = br.readLine();
+                Log.i("YCTempActivity","临时电量切换:" + result);
+                ToolsUtil.showToast(this,result,3000);
             } catch (Exception e) {
                 ToolsUtil.showToast(this,"当前设备还未刷入yc调度",3000);
             } finally {
@@ -55,8 +57,8 @@ public class YCTempActivity extends Activity {
                     process.destroy();
                 } catch (Exception e) {
                 }
+                finish();
             }
-        finish();
         super.onCreate(savedInstanceState);
     }
 }
