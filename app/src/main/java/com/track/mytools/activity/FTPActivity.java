@@ -19,6 +19,7 @@ import com.track.mytools.R;
 import com.track.mytools.service.FTPService;
 import com.track.mytools.dao.ToolsDao;
 import com.track.mytools.entity.FTPEntity;
+import com.track.mytools.util.ToolsUtil;
 
 import java.util.HashMap;
 
@@ -104,6 +105,7 @@ public class FTPActivity extends Activity {
                 if(arg0.arg1 == 1){
                     Log.i("FTPActivity1","下载完成");
                     ftpDownBtn.setEnabled(true);
+                    ftpUpdBtn.setEnabled(true);
 
                     ftpPro.setProgress(Integer.parseInt(remoteFileSize));
                     ftpProText.setText(remoteFileSize+"/"+remoteFileSize);
@@ -144,6 +146,11 @@ public class FTPActivity extends Activity {
                 String localPath = ftpLocalPath.getText().toString();
                 String fileName = ftpFileName.getText().toString();
 
+                if("".equals(fileName.trim())){
+                    ToolsUtil.showToast(fTPActivity,"下载文件不能为空",3000);
+                    return;
+                }
+
                 ftpVal[0] = ip;
                 ftpVal[1] = port + "";
                 ftpVal[2] = user;
@@ -161,6 +168,7 @@ public class FTPActivity extends Activity {
                 notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
                 ftpDownBtn.setEnabled(false);
+                ftpUpdBtn.setEnabled(false);
             }
         });
 

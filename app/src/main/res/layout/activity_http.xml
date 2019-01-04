@@ -62,11 +62,11 @@
             android:layout_width="600px"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:max="50" />
+            android:max="20" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="50"/>
+            android:text="20"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -122,6 +122,7 @@
             android:layout_width="80px"
             android:layout_height="wrap_content"
             android:text="编号"
+            android:layout_gravity="center"
             android:gravity="center"/>
         <TextView
             android:layout_width="540px"
@@ -133,20 +134,18 @@
             android:layout_width="220px"
             android:layout_height="wrap_content"
             android:text="文件大小(byte)"
+            android:layout_gravity="center"
             android:gravity="center"/>
         <TextView
             android:layout_width="220px"
             android:layout_height="wrap_content"
             android:text="文件名称"
+            android:layout_gravity="center"
             android:gravity="center"/>
     </LinearLayout>
 
     <ListView
         android:id="@+id/httpList"
         android:layout_width="match_parent"
-        android:layout_height="460dp"
-        android:paddingTop="7dip"
-        android:paddingLeft="7dip"
-        android:paddingRight="7dip"
-        android:paddingBottom="7dip"/>
+        android:layout_height="match_parent"/>
 </LinearLayout>

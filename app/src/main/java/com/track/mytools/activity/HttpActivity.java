@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -116,11 +118,10 @@ public class HttpActivity extends Activity{
                 if(arg0.arg1 == 1){
                     httpDownBtn.setEnabled(true);
                     httpUrl.setEnabled(true);
-                    httpThread.setEnabled(true);
+                    httpUpdBtn.setEnabled(true);
                     httpDir.setEnabled(true);
                     httpCopyBtn.setEnabled(true);
-                    httpSuff.setEnabled(true);
-                    httpSeek.setEnabled(true);
+                    httpSwitch.setEnabled(true);
 
                     //清空Listview视图
                     l.clear();
@@ -182,11 +183,10 @@ public class HttpActivity extends Activity{
                 //开始下载，固定当前链接和按钮
                 httpDownBtn.setEnabled(false);
                 httpUrl.setEnabled(false);
-                httpThread.setEnabled(false);
+                httpUpdBtn.setEnabled(false);
                 httpDir.setEnabled(false);
                 httpCopyBtn.setEnabled(false);
-                httpSuff.setEnabled(false);
-                httpSeek.setEnabled(false);
+                httpSwitch.setEnabled(false);
 
                 //文件后缀名
                 String fileSuff = httpSuff.getText() + "";
@@ -308,6 +308,29 @@ public class HttpActivity extends Activity{
             }
         });
 
+
+        httpThread.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                try {
+                    int a = Integer.parseInt(httpThread.getText().toString());
+                    httpSeek.setProgress(a);
+                }catch (Exception e){
+                    ToolsUtil.showToast(ha,"请输入介于1~20之间的数字",3000);
+                }
+            }
+        });
+
         //单一选项选择器听监听
         httpSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             @Override
@@ -330,7 +353,6 @@ public class HttpActivity extends Activity{
                 if(isUpd == false){
 
                     httpThread.setEnabled(true);
-                    httpDir.setEnabled(true);
                     httpSuff.setEnabled(true);
                     httpSeek.setEnabled(true);
 
@@ -340,7 +362,6 @@ public class HttpActivity extends Activity{
                 }else{
 
                     httpThread.setEnabled(false);
-                    httpDir.setEnabled(false);
                     httpSuff.setEnabled(false);
                     httpSeek.setEnabled(false);
 

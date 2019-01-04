@@ -198,6 +198,8 @@ public class NLActivity extends Activity {
                         startService(intentService);
 
                         nlStartBtn.setText("服务启动中，点击停止");
+                        nlUpdBtn.setEnabled(false);
+                        nlCheck.setEnabled(false);
 
                         isStart = true;
 
@@ -216,6 +218,8 @@ public class NLActivity extends Activity {
 
                 }else{
                     nlStartBtn.setText("开启服务");
+                    nlUpdBtn.setEnabled(true);
+                    nlCheck.setEnabled(true);
 
                     isStart = false;
 
