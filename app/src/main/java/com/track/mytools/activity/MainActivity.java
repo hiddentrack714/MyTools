@@ -33,9 +33,9 @@ import java.util.Properties;
 
 public class MainActivity extends Activity {
 
-    private static String ASSETS_DB_PATH = "/sdcard/Android/data/com.track.mytools/databases/mytools.db";
+    public static String ASSETS_DB_PATH = "/sdcard/Android/data/com.track.mytools/databases/mytools.db";
 
-    private static String ASSETS_PROPERTIES_PATH = "/sdcard/Android/data/com.track.mytools/properties/mytools.properties";
+    public static String ASSETS_PROPERTIES_PATH = "/sdcard/Android/data/com.track.mytools/properties/mytools.properties";
 
     public TextView warnTitle;
     //shortcut模块
@@ -80,7 +80,7 @@ public class MainActivity extends Activity {
         //加载初始文件
         Properties pro = new Properties();
 
-        String proFilePath = "/sdcard/Android/data/com.track.mytools/properties/mytools.properties";
+        String proFilePath = ASSETS_PROPERTIES_PATH;
 
         File proFile = new File(proFilePath);
 
@@ -203,7 +203,10 @@ public class MainActivity extends Activity {
         String fileDirStr = filePath.substring(0,filePath.lastIndexOf("/"));
         File fileDir = new File(fileDirStr);
         if(!fileDir.exists()){
-            fileDir.mkdirs();
+            Log.i("MainActivity","创建目录:" + fileDirStr);
+            boolean isSuccess = fileDir.mkdirs();
+            Log.i("MainActivity","创建目录:" + (isSuccess==true?"成功":"失败"));
+            return isSuccess;
         }
 
         try {

@@ -27,7 +27,6 @@ public class YCTempActivity extends Activity {
         Log.e("YCTempActivity","临时电量模式:" + tempMode);
 
         String commod[] = {"powercfg "+tempMode};
-        //ToolsUtil.exeCommod(commod);
 
         Process process = null;
         DataOutputStream dos = null;
@@ -43,9 +42,8 @@ public class YCTempActivity extends Activity {
                 dis =  new DataInputStream(process.getInputStream());
                 BufferedReader br = new BufferedReader(new InputStreamReader(dis));
                 ToolsUtil.showToast(this,br.readLine(),3000);
-                //Log.i("YCTempActivity",br.readLine());
             } catch (Exception e) {
-                // return false;
+                ToolsUtil.showToast(this,"当前设备还未刷入yc调度",3000);
             } finally {
                 try {
                     if (dos != null) {

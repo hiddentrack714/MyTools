@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.track.mytools.activity.MainActivity;
 import com.track.mytools.annotation.TableNameAnnotation;
 
 import java.lang.reflect.Field;
@@ -27,7 +28,7 @@ public class ToolsDao {
             synchronized (ToolsDao.class){
                 if(sdb == null || !sdb.isOpen()){
                     try{
-                        sdb = SQLiteDatabase.openOrCreateDatabase("/sdcard/Android/data/com.track.mytools/databases/mytools.db",null);
+                        sdb = SQLiteDatabase.openOrCreateDatabase(MainActivity.ASSETS_DB_PATH,null);
                     }catch(Exception e){
                         Log.e("ToolsDao",e.getMessage());
                     }

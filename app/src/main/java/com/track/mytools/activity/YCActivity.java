@@ -67,9 +67,13 @@ public class YCActivity extends Activity {
             }else if("disabled".equals(line)){
                 //停用
                 ycRG.check(R.id.ycTY);
+            }else{
+                ycBtn.setEnabled(false);
+                ToolsUtil.showToast(this,"当前设备还未刷入yc调度",3000);
             }
         } catch (Exception e) {
-            // return false;
+            ycBtn.setEnabled(false);
+            ToolsUtil.showToast(this,"当前设备还未刷入yc调度",3000);
         } finally {
             try {
                 if (is != null) {
