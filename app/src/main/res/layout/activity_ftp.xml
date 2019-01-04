@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_marginLeft="20px">
+    android:layout_marginLeft="20px"
+    android:layout_marginRight="20px">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,7 +15,7 @@
             android:text="IP:"/>
         <EditText
             android:id="@+id/ftpIP"
-            android:layout_width="969px"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
             android:singleLine="true"/>
@@ -30,7 +31,7 @@
             android:text="PORT:"/>
         <EditText
             android:id="@+id/ftpPORT"
-            android:layout_width="909px"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
             android:singleLine="true"/>
@@ -46,7 +47,7 @@
             android:text="USER:"/>
         <EditText
             android:id="@+id/ftpUser"
-            android:layout_width="912px"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
             android:singleLine="true"/>
@@ -62,7 +63,7 @@
             android:text="PASSWORD:"/>
         <EditText
             android:id="@+id/ftpPassword"
-            android:layout_width="807px"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
             android:singleLine="true"/>
@@ -78,7 +79,7 @@
             android:text="FTPSERVERPATH:"/>
         <EditText
             android:id="@+id/ftpServerPath"
-            android:layout_width="706px"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
             android:singleLine="true"/>
@@ -94,7 +95,7 @@
             android:text="FTPLOCALPATH:"/>
         <EditText
             android:id="@+id/ftpLocalPath"
-            android:layout_width="728px"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
             android:singleLine="true"/>
@@ -110,7 +111,7 @@
             android:text="FTPFILENAME:"/>
         <EditText
             android:id="@+id/ftpFileName"
-            android:layout_width="761px"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text=""
             android:singleLine="true"/>

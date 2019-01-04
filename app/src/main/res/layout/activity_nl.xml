@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_marginLeft="20px">
+    android:layout_marginLeft="20px"
+    android:layout_marginRight="20px">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -36,7 +37,7 @@
             android:text="能量球X:"/>
         <EditText
             android:id="@+id/ballX"
-            android:layout_width="750px"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"/>
     </LinearLayout>
@@ -50,7 +51,7 @@
             android:text="能量球Y:"/>
         <EditText
             android:id="@+id/ballY"
-            android:layout_width="750px"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"/>
     </LinearLayout>
