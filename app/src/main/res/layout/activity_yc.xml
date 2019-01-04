@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_marginLeft="20px"
+    android:layout_marginRight="20px">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="200px"
+        android:orientation="horizontal">
+        <RadioGroup
+            android:id="@+id/ycRG"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center">
+            <RadioButton
+                android:id="@+id/ycSD"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="省电"/>
+            <RadioButton
+                android:id="@+id/ycPH"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="平衡(默认)"/>
+            <RadioButton
+                android:id="@+id/ycXN"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="性能"/>
+            <RadioButton
+                android:id="@+id/ycDYC"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="极速"/>
+            <RadioButton
+                android:id="@+id/ycTY"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="停用"/>
+        </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+        <Button
+            android:id="@+id/ycBtn"
+            android:layout_width="600px"
+            android:layout_height="wrap_content"
+            android:text="设置" />
+    </LinearLayout>
+</LinearLayout>

@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
+import android.graphics.drawable.Icon;
 import android.hardware.fingerprint.FingerprintManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.util.Log;
@@ -20,13 +22,20 @@ import com.track.mytools.util.FingerprintUtil;
 import com.track.mytools.util.ToolsUtil;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 public class MainActivity extends Activity {
+
+    private static String ASSETS_DB_PATH = "/sdcard/Android/data/com.track.mytools/databases/mytools.db";
+
+    private static String ASSETS_PROPERTIES_PATH = "/sdcard/Android/data/com.track.mytools/properties/mytools.properties";
 
     public TextView warnTitle;
     //shortcut模块
@@ -36,18 +45,42 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //检测是否把db和properties文件复制到手机磁盘
+        if(!new File(ASSETS_DB_PATH).exists()){
+            if(!initCopyFile(ASSETS_DB_PATH,"mytools.db")){
+                ToolsUtil.showToast(this,"数据库复制失败!",5000);
+                finish();
+            }
+        }
+
+        if(!new File(ASSETS_PROPERTIES_PATH).exists()){
+            if(!initCopyFile(ASSETS_PROPERTIES_PATH,"mytools.properties")){
+                ToolsUtil.showToast(this,"参数文件复制失败!",5000);
+                finish();
+            }
+        }
+
         warnTitle = (TextView)findViewById(R.id.warnTitle);
 
         List<ShortCutEntity> list = new ArrayList<ShortCutEntity>();
 
-        list.add(new ShortCutEntity("http下载","http下载",HttpActivity.class));
+        //list.add(new ShortCutEntity("http下载","http下载",HttpActivity.class));
+
+        list.add(new ShortCutEntity("powersave","省电-powersave",YCTempActivity.class,R.drawable.mode4));
+
+        list.add(new ShortCutEntity("balance","平衡-balance",YCTempActivity.class,R.drawable.mode3));
+
+        list.add(new ShortCutEntity("performance","性能-performance",YCTempActivity.class,R.drawable.mode2));
+
+        list.add(new ShortCutEntity("fast","极速-fast",YCTempActivity.class,R.drawable.mode1));
 
         dynamicAddShortCut(list);
 
         //加载初始文件
         Properties pro = new Properties();
 
-        String proFilePath = "/sdcard/UCdownloads/tools.properties";
+        String proFilePath = "/sdcard/Android/data/com.track.mytools/properties/mytools.properties";
 
         File proFile = new File(proFilePath);
 
@@ -144,12 +177,10 @@ public class MainActivity extends Activity {
             ShortcutInfo shortcutInfo = new ShortcutInfo.Builder(this, "shortcut_id_like" + i)
                     .setShortLabel(sce.getShortName())
                     .setLongLabel(sce.getLongName())
-                    //.setIcon(Icon.createWithResource(this, R.drawable.ic_bnsports))  //默认图片
+                    .setIcon(Icon.createWithResource(this, sce.getIconName()))  //默认图片
                     //.setIntent(new Intent(this, HttpActivity.class))   error
-                    .setIntent(new Intent(Intent.ACTION_VIEW)
-                            .setClass(this, sce.getCla()))//intent必须设置action
+                    .setIntent(new Intent(Intent.ACTION_VIEW,Uri.parse(sce.getShortName())).setClass(this, sce.getCla()))//intent必须设置action
                     .build();
-
             li.add(shortcutInfo);
             i++;
         }
@@ -158,6 +189,50 @@ public class MainActivity extends Activity {
 
         //这样就可以通过长按图标显示出快捷方式了
         shortcutManager.setDynamicShortcuts(li);
+    }
+
+    /**
+     * 初始化复制文件到手机磁盘
+     * @param filePath
+     * @param fileName
+     */
+    public boolean initCopyFile(String filePath ,String fileName) {
+        FileOutputStream out = null;
+        InputStream in = null;
+
+        String fileDirStr = filePath.substring(0,filePath.lastIndexOf("/"));
+        File fileDir = new File(fileDirStr);
+        if(!fileDir.exists()){
+            fileDir.mkdirs();
+        }
+
+        try {
+            out = new FileOutputStream(filePath);
+            in = getAssets().open(fileName);
+            byte[] buffer = new byte[1024];
+            int readBytes = 0;
+            while ((readBytes = in.read(buffer)) != -1) {
+                out.write(buffer, 0, readBytes);
+            }
+            out.flush();
+            if(new File(filePath).exists()){
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("MainActivity",e.getMessage());
+        }finally {
+            try{
+                if(in!=null){
+                    in.close();
+                }
+                if(out!=null){
+                    out.close();
+                }
+            }catch(Exception e){
+            }
+        }
+        return false;
     }
 
 }

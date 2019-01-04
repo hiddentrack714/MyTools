@@ -27,7 +27,7 @@ public class ToolsDao {
             synchronized (ToolsDao.class){
                 if(sdb == null || !sdb.isOpen()){
                     try{
-                        sdb = SQLiteDatabase.openOrCreateDatabase("/sdcard/UCdownloads/mytools.db",null);
+                        sdb = SQLiteDatabase.openOrCreateDatabase("/sdcard/Android/data/com.track.mytools/databases/mytools.db",null);
                     }catch(Exception e){
                         Log.e("ToolsDao",e.getMessage());
                     }

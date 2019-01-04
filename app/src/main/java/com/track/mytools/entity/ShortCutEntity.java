@@ -4,11 +4,13 @@ public class ShortCutEntity {
     public String shortName;
     public String LongName;
     public Class cla;
+    public int iconName;
 
-    public ShortCutEntity(String shortName,String LongName,Class cla){
+    public ShortCutEntity(String shortName,String LongName,Class cla,int iconName){
         this.shortName = shortName;
         this.LongName = LongName;
         this.cla = cla;
+        this.iconName = iconName;
     }
 
     public String getShortName() {
@@ -33,5 +35,13 @@ public class ShortCutEntity {
 
     public void setCla(Class cla) {
         this.cla = cla;
+    }
+
+    public int getIconName() {
+        return iconName;
+    }
+
+    public void setIconName(int iconName) {
+        this.iconName = iconName;
     }
 }

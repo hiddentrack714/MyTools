@@ -28,6 +28,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
     private Button wifiBtn;
     private Button lanBtn;
     private Button nlBtn;
+    private Button ycBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
         wifiBtn = (Button)findViewById(R.id.wifiBtn);
         lanBtn = (Button)findViewById(R.id.lanBtn);
         nlBtn = (Button)findViewById(R.id.nlBtn);
+        ycBtn = (Button)findViewById(R.id.ycBtn);
 
         suffixBtn.setOnClickListener(this);
         qrySuBtn.setOnClickListener(this);
@@ -63,6 +65,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
         wifiBtn.setOnClickListener(this);
         lanBtn.setOnClickListener(this);
         nlBtn.setOnClickListener(this);
+        ycBtn.setOnClickListener(this);
     }
 
     @Override
@@ -99,6 +102,10 @@ public class ToolsActivity extends Activity implements OnClickListener{
         }else if(v.getId() == R.id.nlBtn){
             Log.i("su","支付宝获取能量");
             intent.setClass(ToolsActivity.this,NLActivity.class);
+            this.startActivity(intent);
+        }else if(v.getId() == R.id.ycBtn){
+            Log.i("su","yc调度模式切换");
+            intent.setClass(ToolsActivity.this,YCActivity.class);
             this.startActivity(intent);
         }
     }

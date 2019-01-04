@@ -38,6 +38,10 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:text="支付宝获取能量"/>
+    <Button android:id="@+id/ycBtn"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="yc调度模式切换"/>
 
     <!--<LinearLayout   android:layout_width="match_parent"
                         android:layout_height="match_parent"
