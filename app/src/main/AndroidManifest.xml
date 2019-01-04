@@ -58,7 +58,7 @@
             android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
         <activity
             android:name=".activity.WifiActivity"
-            android:label="FTPActivity"
+            android:label="WifiActivity"
             android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
         <activity
             android:name=".activity.LanActivity"
