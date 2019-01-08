@@ -45,10 +45,10 @@ public class YCActivity extends Activity {
         //读取当当前模式
         Process process = null;
         InputStream is = null;
+        BufferedReader reader = null;
         try {
             process = Runtime.getRuntime().exec("cat /data/wipe_mode");
-            is = process.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line = reader.readLine();
             Log.e("YCActivity","当前模式:" + line);
 
@@ -64,12 +64,9 @@ public class YCActivity extends Activity {
             }else if("fast".equals(line)){
                 //低延迟
                 ycRG.check(R.id.ycDYC);
-            }else if("disabled".equals(line)){
+            }else if("disabled".equals(line) || null == line){
                 //停用
                 ycRG.check(R.id.ycTY);
-            }else{
-                ycBtn.setEnabled(false);
-                ToolsUtil.showToast(this,"当前设备还未刷入yc调度",3000);
             }
         } catch (Exception e) {
             ycBtn.setEnabled(false);
@@ -78,6 +75,9 @@ public class YCActivity extends Activity {
             try {
                 if (is != null) {
                     is.close();
+                }
+                if (reader != null) {
+                    reader.close();
                 }
                 process.destroy();
             } catch (Exception e) {
