@@ -3,13 +3,9 @@ package com.track.mytools.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.transition.Transition;
-import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 
 import com.track.mytools.R;
@@ -33,19 +29,6 @@ public class ToolsActivity extends Activity implements OnClickListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        //Activity切换动画
-        Transition explode = TransitionInflater.from(this).inflateTransition(R.transition.fade);
-        //退出时使用
-        getWindow().setExitTransition(explode);
-        //第一次进入时使用
-        getWindow().setEnterTransition(explode);
-        //再次进入时使用
-        getWindow().setReenterTransition(explode);
-        setContentView(R.layout.activity_tools);
-
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
         suffixBtn = (Button)findViewById(R.id.suffixBtn);
         qrySuBtn = (Button)findViewById(R.id.qrySuBtn);

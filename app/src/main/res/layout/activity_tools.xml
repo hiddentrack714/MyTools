@@ -42,43 +42,4 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:text="yc调度模式切换"/>
-
-    <!--<LinearLayout   android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:layout_gravity="bottom"
-                        android:gravity="bottom"
-                        android:paddingBottom="10dp">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <Button android:id="@+id/payBtn1"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_weight="0.5"
-                android:text="微信扫一扫"/>
-            <Button android:id="@+id/payBtn2"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_weight="0.5"
-                android:text="微信付款"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <Button android:id="@+id/payBtn3"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_weight="0.5"
-                android:text="支付宝扫一扫"/>
-            <Button android:id="@+id/payBtn4"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_weight="0.5"
-                android:text="支付宝付款"/>
-        </LinearLayout>
-    </LinearLayout>-->
-
 </LinearLayout>
