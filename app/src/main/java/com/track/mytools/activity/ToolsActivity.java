@@ -29,6 +29,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_tools);
 
         suffixBtn = (Button)findViewById(R.id.suffixBtn);
         qrySuBtn = (Button)findViewById(R.id.qrySuBtn);

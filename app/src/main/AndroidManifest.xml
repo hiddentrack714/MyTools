@@ -31,7 +31,7 @@
         <activity
             android:name=".activity.ToolsActivity"
             android:label="@string/title_activity_tools"
-            android:theme="@android:style/Theme.Material.Light.NoActionBar.TranslucentDecor"></activity>
+            android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
         <activity
             android:name=".activity.SuffixActivity"
             android:label="SuffixActivity"
