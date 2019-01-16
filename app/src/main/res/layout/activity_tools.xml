@@ -42,4 +42,8 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:text="yc调度模式切换"/>
+    <Button android:id="@+id/ipBtn"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="WifiIP静态/DHCP切换"/>
 </LinearLayout>

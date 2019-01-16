@@ -39,6 +39,21 @@ public class WifiActivity extends Activity {
         ha = this;
         setContentView(R.layout.activity_wifi);
 
+        l =  getWifigroup();
+
+        lv = (ListView)findViewById(R.id.wifiList);
+
+        wma = new WifiMainAdapter(ha,l);
+
+        lv.setAdapter(wma);
+
+        Log.i("WifiActivity_LOG2",l.toString());
+
+        super.onCreate(savedInstanceState);
+    }
+
+
+    public static List<HashMap<String, String>> getWifigroup(){
         try {
             Process process = null;
             l = new ArrayList<HashMap<String, String>>();
@@ -84,16 +99,8 @@ public class WifiActivity extends Activity {
             Log.e("WifiActivity_LOG1",e.getMessage());
         }
 
-        lv = (ListView)findViewById(R.id.wifiList);
-
         l.addAll(tempL);
 
-        wma = new WifiMainAdapter(ha,l);
-
-        lv.setAdapter(wma);
-
-        Log.i("WifiActivity_LOG2",l.toString());
-
-        super.onCreate(savedInstanceState);
+        return l;
     }
 }
