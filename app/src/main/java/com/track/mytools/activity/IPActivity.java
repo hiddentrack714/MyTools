@@ -3,10 +3,8 @@ package com.track.mytools.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
-import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.DhcpInfo;
 import android.net.NetworkInfo;
@@ -82,8 +80,6 @@ public class IPActivity extends Activity {
 
     public static Handler handler;
 
-    private LocationManager lm;//位置管理
-
     private HashMap<String,Integer> wifiIdMap = new HashMap<String,Integer>();//wifi:id键值对
 
     @Override
@@ -123,74 +119,61 @@ public class IPActivity extends Activity {
             wifilayout.setVisibility(View.GONE);
         }
 
-        //判断是否开启定位服务
-        lm = (LocationManager) getSystemService(LOCATION_SERVICE);
-        boolean ok = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        if(ok){
-            Log.i("IPActivity","已经开启定位");
-            ToolsUtil.showToast(this,"已经开启定位",3000);
-
-            //获取定位服务权限
-            mHasPermission = checkPermission();
-            if (!mHasPermission) {
-                Log.i("IPActivity","没有权限");
-                requestLocationPermission();
-            }else{
-                Log.i("IPActivity","拥有权限");
-                wifiList = getWifiList();
-            }
-
-            //获取Wifi列表，并且赋值到下拉列表
-            List<String> tempList = new ArrayList<String>();
-            int wifiIndex = 0;
-            for(ScanResult sr : wifiList){
-                tempList.add(sr.SSID);
-                wifiIdMap.put(sr.SSID,wifiIndex);
-                wifiIndex++;
-            }
-            ArrayAdapter adpter = new ArrayAdapter(this,R.layout.activity_wifilist,R.id.wifilistText,tempList);
-            staticWifiId.setAdapter(adpter);
-
-            //检测当前Wifi是DHCP还是静态连接
-            String wifiStr = getWifiSetting(this);
-            boolean isWifi = isWifi(this);
-
-            if(isWifi){
-                Log.i("IPActivity","当前Wifi状态:" + wifiStr);
-                List<HashMap<String,String>> list = WifiActivity.getWifigroup();
-
-                //针对已有WiFi列表做键值对
-                wifiId = getWifiId();
-                for(HashMap wifiMap:list){
-                    String ssid = wifiMap.get("ssid").toString();
-                    if(wifiId.indexOf(ssid) > 0){
-                        Log.i("IPActivity","WIFI:" + wifiIdMap);
-                        int index = wifiIdMap.get(ssid);
-                        staticWifiId.setSelection(wifiIdMap.get(ssid));
-                        staticPassword.setText(wifiMap.get("passwrd").toString());
-                    }
-                }
-
-                if("DHCP".equals(wifiStr)){
-                    //隐藏IP设置属性布局
-                    iplayout.setVisibility(View.GONE);
-                    ipRG.check(R.id.wifiMode1);
-                }else{
-                    ipRG.check(R.id.wifiMode2);
-                }
-            }else{
-                Log.i("IPActivity","当前Wifi状态:未连接");
-                ipRG.check(R.id.wifiMode3);
-                iplayout.setVisibility(View.GONE);
-            }
-
+        //获取定位服务权限
+        mHasPermission = checkPermission();
+        if (!mHasPermission) {
+            Log.i("IPActivity","没有权限");
+            requestLocationPermission();
         }else{
-            Log.i("IPActivity","还未开启定位，请先开启服务!");
-            ToolsUtil.showToast(this,"还未开启定位，请先开启服务!",3000);
-            Intent intent = new Intent();
-            intent.setClass(IPActivity.this, ToolsActivity.class);
-            this.startActivity(intent);
+            Log.i("IPActivity","拥有权限");
+            wifiList = getWifiList();
         }
+
+        //获取Wifi列表，并且赋值到下拉列表
+        List<String> tempList = new ArrayList<String>();
+        int wifiIndex = 0;
+        for(ScanResult sr : wifiList){
+            tempList.add(sr.SSID);
+            wifiIdMap.put(sr.SSID,wifiIndex);
+            wifiIndex++;
+        }
+        ArrayAdapter adpter = new ArrayAdapter(this,R.layout.activity_wifilist,R.id.wifilistText,tempList);
+        staticWifiId.setAdapter(adpter);
+
+        //检测当前Wifi是DHCP还是静态连接
+        String wifiStr = getWifiSetting(this);
+        boolean isWifi = isWifi(this);
+
+        //判断是否在Wifi连接下
+        if(isWifi){
+            Log.i("IPActivity","当前Wifi状态:" + wifiStr);
+            List<HashMap<String,String>> list = WifiActivity.getWifigroup();
+
+            //针对已有WiFi列表做键值对
+            wifiId = getWifiId();
+            for(HashMap wifiMap:list){
+                String ssid = wifiMap.get("ssid").toString();
+                if(wifiId.indexOf(ssid) > 0){
+                    Log.i("IPActivity","WIFI:" + wifiIdMap);
+                    int index = wifiIdMap.get(ssid);
+                    staticWifiId.setSelection(wifiIdMap.get(ssid));
+                    staticPassword.setText(wifiMap.get("passwrd").toString());
+                }
+            }
+
+            if("DHCP".equals(wifiStr)){
+                //隐藏IP设置属性布局
+                iplayout.setVisibility(View.GONE);
+                ipRG.check(R.id.wifiMode1);
+            }else{
+                ipRG.check(R.id.wifiMode2);
+            }
+        }else{
+            Log.i("IPActivity","当前Wifi状态:未连接");
+            ipRG.check(R.id.wifiMode3);
+            iplayout.setVisibility(View.GONE);
+        }
+
 
         //运行在主线程的Handler,它将监听所有的消息（Message）
         handler = new Handler(new Handler.Callback() {

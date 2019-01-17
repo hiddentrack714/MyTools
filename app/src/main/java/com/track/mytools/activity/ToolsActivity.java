@@ -2,6 +2,7 @@ package com.track.mytools.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.track.mytools.R;
+import com.track.mytools.util.ToolsUtil;
 
 /**
  * 功能主界面
@@ -95,10 +97,17 @@ public class ToolsActivity extends Activity implements OnClickListener{
             intent.setClass(ToolsActivity.this,YCActivity.class);
             this.startActivity(intent);
         }else if(v.getId() == R.id.ipBtn){
-            Log.i("su","WifiIP静态/DHCP切换");
-            intent.setClass(ToolsActivity.this,IPActivity.class);
-            this.startActivity(intent);
+            //判断是否开启定位服务
+            LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+            boolean ok = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            if(ok){
+                Log.i("su","WifiIP静态/DHCP切换");
+                intent.setClass(ToolsActivity.this,IPActivity.class);
+                this.startActivity(intent);
+            }else{
+                Log.i("IPActivity","还未开启定位，请先开启服务!");
+                ToolsUtil.showToast(this,"还未开启定位，请先开启服务!",3000);
+            }
         }
     }
-
 }
