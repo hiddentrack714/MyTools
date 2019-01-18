@@ -46,4 +46,8 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:text="WifiIP静态/DHCP切换"/>
+    <Button android:id="@+id/appExtractBtn"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="App提取"/>
 </LinearLayout>

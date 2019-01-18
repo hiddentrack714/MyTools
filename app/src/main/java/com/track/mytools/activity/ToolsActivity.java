@@ -28,6 +28,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
     private Button nlBtn;
     private Button ycBtn;
     private Button ipBtn;
+    private Button appExtractBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
         nlBtn = (Button)findViewById(R.id.nlBtn);
         ycBtn = (Button)findViewById(R.id.ycBtn);
         ipBtn = (Button)findViewById(R.id.ipBtn);
+        appExtractBtn = (Button)findViewById(R.id.appExtractBtn);
 
         suffixBtn.setOnClickListener(this);
         qrySuBtn.setOnClickListener(this);
@@ -55,6 +57,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
         nlBtn.setOnClickListener(this);
         ycBtn.setOnClickListener(this);
         ipBtn.setOnClickListener(this);
+        appExtractBtn.setOnClickListener(this);
     }
 
     @Override
@@ -108,6 +111,10 @@ public class ToolsActivity extends Activity implements OnClickListener{
                 Log.i("IPActivity","还未开启定位，请先开启服务!");
                 ToolsUtil.showToast(this,"还未开启定位，请先开启服务!",3000);
             }
+        }else if(v.getId() == R.id.appExtractBtn){
+            Log.i("su","App提取");
+            intent.setClass(ToolsActivity.this,AppExtractActivity.class);
+            this.startActivity(intent);
         }
     }
 }
