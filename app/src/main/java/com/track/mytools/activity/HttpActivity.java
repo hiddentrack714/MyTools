@@ -102,7 +102,7 @@ public class HttpActivity extends Activity{
         ha = this;
 
         SQLiteDatabase sdb = ToolsDao.getDatabase();
-        HashMap<String,Object> map = ToolsDao.qryTable(sdb,HttpEntity.class).get(0);
+        HashMap<String,Object> map = ToolsDao.qryTable(sdb,HttpEntity.class,HttpActivity.this).get(0);
 
         httpThread.setText(map.get("httpThread").toString());
         httpDir.setText(map.get("httpDir").toString());

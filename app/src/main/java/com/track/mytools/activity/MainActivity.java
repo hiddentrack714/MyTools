@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
         }else{
             if(!dbFile.exists()){
                 Log.i("MainActivity","db文件不在，开始复制" );
-                boolean isSuccess = initCopyFile(ASSETS_DB_PATH,"mytools.db");
+                boolean isSuccess = initCopyFile(ASSETS_DB_PATH,"mytools.db",MainActivity.this);
                 if(!isSuccess){
                     ToolsUtil.showToast(this,"数据库复制失败!",5000);
                     finish();
@@ -77,7 +77,7 @@ public class MainActivity extends Activity {
 
             if (!proFile.exists()) {
                 Log.i("MainActivity","pro文件不在，开始复制" );
-                boolean isSuccess = initCopyFile(ASSETS_PROPERTIES_PATH, "mytools.properties");
+                boolean isSuccess = initCopyFile(ASSETS_PROPERTIES_PATH, "mytools.properties",MainActivity.this);
                 if(!isSuccess){
                     ToolsUtil.showToast(this, "参数文件复制失败!", 5000);
                     finish();
@@ -93,7 +93,7 @@ public class MainActivity extends Activity {
                 Log.i("MainActivity","文件复制完成，可以分析" );
                 analysispro();
             }else{
-                ToolsUtil.showToast(this,"文件库复制失败，请删除后重试!",5000);
+                ToolsUtil.showToast(this,"文件复制失败，请删除后重试!",5000);
                 finish();
             }
         }
@@ -233,7 +233,7 @@ public class MainActivity extends Activity {
      * @param filePath 文件所在全路径
      * @param fileName 文件名
      */
-    public boolean initCopyFile(String filePath ,String fileName) {
+    public static boolean initCopyFile(String filePath ,String fileName,Context context) {
         FileOutputStream out = null;
         InputStream in = null;
 
@@ -252,7 +252,7 @@ public class MainActivity extends Activity {
 
         try {
             out = new FileOutputStream(filePath);
-            in = getAssets().open(fileName);
+            in = context.getAssets().open(fileName);
             byte[] buffer = new byte[512];
             int readBytes = 0;
             while ((readBytes = in.read(buffer)) != -1) {

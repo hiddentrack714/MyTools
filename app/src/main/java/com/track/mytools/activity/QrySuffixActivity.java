@@ -57,7 +57,7 @@ public class QrySuffixActivity extends ListActivity {
         }
 
         SQLiteDatabase sdb = ToolsDao.getDatabase();
-        HashMap<String,Object> dataMap = ToolsDao.qryTable(sdb,SuffixEntity.class).get(0);
+        HashMap<String,Object> dataMap = ToolsDao.qryTable(sdb,SuffixEntity.class,QrySuffixActivity.this).get(0);
 
         SuffixActivity.preMethod(dataMap.get("suffixFilter").toString(),dataMap.get("suffixType").toString());
 

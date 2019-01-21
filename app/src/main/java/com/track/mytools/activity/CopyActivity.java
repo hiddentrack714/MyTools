@@ -59,7 +59,7 @@ public class CopyActivity extends Activity {
         cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
         SQLiteDatabase sdb = ToolsDao.getDatabase();
-        HashMap<String,Object> map =  ToolsDao.qryTable(sdb,CopyEntity.class).get(0);
+        HashMap<String,Object> map =  ToolsDao.qryTable(sdb,CopyEntity.class,CopyActivity.this).get(0);
         copyPhoneFile.setText(map.get("copyPhoneFile").toString());
 
         //服务启动按钮监听

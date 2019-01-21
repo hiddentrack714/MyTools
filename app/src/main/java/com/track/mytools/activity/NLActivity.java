@@ -99,7 +99,7 @@ public class NLActivity extends Activity {
         nlDiffSecond = (EditText)findViewById(R.id.nlDiffSecond);
 
         SQLiteDatabase sdb = ToolsDao.getDatabase();
-        HashMap<String,Object> map =  ToolsDao.qryTable(sdb,NLEntity.class).get(0);
+        HashMap<String,Object> map =  ToolsDao.qryTable(sdb,NLEntity.class,NLActivity.this).get(0);
 
         nlX.setText(map.get("nlX").toString());
         nlY.setText(map.get("nlY").toString());

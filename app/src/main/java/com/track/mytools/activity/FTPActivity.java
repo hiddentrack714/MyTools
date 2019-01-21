@@ -81,7 +81,7 @@ public class FTPActivity extends Activity {
 
         SQLiteDatabase sdb = ToolsDao.getDatabase();
 
-        HashMap<String,Object> map = ToolsDao.qryTable(sdb,FTPEntity.class).get(0);
+        HashMap<String,Object> map = ToolsDao.qryTable(sdb,FTPEntity.class,FTPActivity.this).get(0);
 
         ftpIP.setText(map.get("ftpIP").toString());
         ftpPORT.setText(map.get("ftpPORT").toString());

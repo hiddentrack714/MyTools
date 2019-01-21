@@ -1,6 +1,7 @@
 package com.track.mytools.dao;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -68,12 +69,34 @@ public class ToolsDao {
      * 查询的sql
      *
      */
-    public static List<HashMap<String,Object>> qryTable(SQLiteDatabase db, Class cl){
-        TableNameAnnotation tn =  (TableNameAnnotation)cl.getAnnotation(TableNameAnnotation.class);
-
+    public static List<HashMap<String,Object>> qryTable(SQLiteDatabase db, Class cl, Context context){
+        TableNameAnnotation tn = (TableNameAnnotation)cl.getAnnotation(TableNameAnnotation.class);
+        //获取实体上注解对应的表名，
         String tableName = tn.value();
 
-        Cursor cursor = db.query (tableName,null,null,null,null,null,null);
+        List<HashMap<String,Object>> list = new ArrayList<HashMap<String,Object>>();
+
+        Cursor cursor = null;
+
+        try {
+
+            cursor = db.query(tableName, null, null, null, null, null, null);
+
+        }catch(android.database.sqlite.SQLiteException e){
+            //数据库查询失败，采取重新复制db策略
+            //应用更新的时候，防止db有更新
+            Log.e("ToolsDao","db查询异常:" + e.getMessage());
+            boolean isSuccess = MainActivity.initCopyFile(MainActivity.ASSETS_DB_PATH,"mytools.db",context);
+
+            if(isSuccess){
+                Log.e("ToolsDao","db初始化完成,请重新进入该界面");
+
+                cursor = db.query(tableName, null, null, null, null, null, null);
+            }
+        }catch(Exception e){
+
+            Log.e("ToolsDao",e.getMessage());
+        }
 
         Field[] declaredFields = cl.getDeclaredFields();
         Field[] fields = cl.getFields();
@@ -86,15 +109,13 @@ public class ToolsDao {
 
         Log.i("EntityNum",cl.getName()+"属性数量:" +allFields.length);
 
-        List<HashMap<String,Object>> list = new ArrayList<HashMap<String,Object>>();
-
         //判断游标是否为空
         if(cursor.moveToFirst()){
             Log.i("DaoCursor","游标长度:" + cursor.getCount()+"");
             //遍历游标
             for(int i = 0 ;i < cursor.getCount() ;i++){
                 cursor.moveToPosition(i);
-                 //获得用户名
+                //获得用户名
                 HashMap<String,Object> map = new HashMap<String,Object>();
                 for(Field f : allFields){
                     int index = cursor.getColumnIndex(f.getName());

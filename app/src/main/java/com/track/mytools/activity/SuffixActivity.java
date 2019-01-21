@@ -72,7 +72,7 @@ public class SuffixActivity extends Activity {
         viewPercent = (TextView) findViewById(R.id.viewPercent);
 
         SQLiteDatabase sdb = ToolsDao.getDatabase();
-        HashMap<String,Object> map = ToolsDao.qryTable(sdb,SuffixEntity.class).get(0);
+        HashMap<String,Object> map = ToolsDao.qryTable(sdb,SuffixEntity.class,SuffixActivity.this).get(0);
 
         suffixPath.setText(map.get("suffixPath").toString());
         suffixType.setText(map.get("suffixType").toString());

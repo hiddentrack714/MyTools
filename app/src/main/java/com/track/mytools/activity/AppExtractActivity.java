@@ -77,7 +77,7 @@ public class AppExtractActivity extends Activity {
 
         //查询app保存位置
         SQLiteDatabase sqd = ToolsDao.getDatabase();
-        HashMap<String,Object> appMap  = ToolsDao.qryTable(sqd, AppExtractEntity.class).get(0);
+        HashMap<String,Object> appMap  = ToolsDao.qryTable(sqd, AppExtractEntity.class,AppExtractActivity.this).get(0);
         appPath.setText(appMap.get("appPath").toString());
 
         //获取app应用列表

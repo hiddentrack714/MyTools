@@ -65,10 +65,10 @@ public class AppExtractService extends Service {
                     }catch(Exception e1){}
                 }finally{
                     if(readFile.length()!=outFile.length()){
-                        stopSelf();
                         Message msg = AppExtractActivity.handler.obtainMessage();
                         AppExtractActivity.handler.sendMessage(msg);
                         ToolsUtil.showToast(AppExtractActivity.aea,appName + "复制异常,暂停复制!",2000);
+                        stopSelf();
                         break;
                     }else{
                         ToolsUtil.showToast(AppExtractActivity.aea,appName + "复制，检测完成",300);

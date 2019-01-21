@@ -105,7 +105,7 @@ public class IPActivity extends Activity {
 
         //查询静态IP设置的参数
         SQLiteDatabase sdb = ToolsDao.getDatabase();
-        HashMap<String,Object> map = ToolsDao.qryTable(sdb, StaticIPEntity.class).get(0);
+        HashMap<String,Object> map = ToolsDao.qryTable(sdb, StaticIPEntity.class,IPActivity.this).get(0);
         staticIp.setText(map.get("staticIp").toString());
         staticGateWay.setText(map.get("staticGateWay").toString());
         staticSuffix.setText(map.get("staticSuffix").toString());
