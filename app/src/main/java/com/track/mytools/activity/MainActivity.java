@@ -58,28 +58,43 @@ public class MainActivity extends Activity {
         File proFile = new File(ASSETS_PROPERTIES_PATH);
         if(dbFile.exists() && proFile.exists()){
             //db和 pro文件都存在，直接分析
+            Log.i("MainActivity","双文件都在，可以分析" );
             analysispro();
         }else{
             if(!dbFile.exists()){
-                if(!initCopyFile(ASSETS_DB_PATH,"mytools.db")){
+                Log.i("MainActivity","db文件不在，开始复制" );
+                boolean isSuccess = initCopyFile(ASSETS_DB_PATH,"mytools.db");
+                if(!isSuccess){
                     ToolsUtil.showToast(this,"数据库复制失败!",5000);
                     finish();
                 }else{
+                    Log.i("MainActivity","db复制成功" );
                     dbReady = true;
                 }
+            }else{
+                dbReady = true;
             }
 
             if (!proFile.exists()) {
-                if (!initCopyFile(ASSETS_PROPERTIES_PATH, "mytools.properties")) {
+                Log.i("MainActivity","pro文件不在，开始复制" );
+                boolean isSuccess = initCopyFile(ASSETS_PROPERTIES_PATH, "mytools.properties");
+                if(!isSuccess){
                     ToolsUtil.showToast(this, "参数文件复制失败!", 5000);
                     finish();
                 }else{
+                    Log.i("MainActivity","pro复制成功" );
                     proReady = true;
                 }
+            }else{
+                proReady = true;
             }
 
             if(dbReady && proReady){
+                Log.i("MainActivity","文件复制完成，可以分析" );
                 analysispro();
+            }else{
+                ToolsUtil.showToast(this,"文件库复制失败，请删除后重试!",5000);
+                finish();
             }
         }
 
@@ -95,6 +110,8 @@ public class MainActivity extends Activity {
             pro = loadConfig(this,ASSETS_PROPERTIES_PATH);
 
             String isUseFinIdMou = pro.getProperty("isUseFinIdMou");
+
+            Log.i("MainActivity","是否开启指纹:" + isUseFinIdMou);
 
             //是否需要开启指纹识别
             if("y".equalsIgnoreCase(isUseFinIdMou)){

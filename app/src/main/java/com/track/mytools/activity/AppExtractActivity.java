@@ -1,12 +1,15 @@
 package com.track.mytools.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
@@ -21,13 +24,10 @@ import com.track.mytools.R;
 import com.track.mytools.adapter.AppMainAdapter;
 import com.track.mytools.dao.ToolsDao;
 import com.track.mytools.entity.AppExtractEntity;
+import com.track.mytools.service.AppExtractService;
 import com.track.mytools.util.ToolsUtil;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +54,13 @@ public class AppExtractActivity extends Activity {
 
     private static ArrayList<HashMap<String,Object>> tempList;
 
+    public static List<HashMap<String,Object>> finallyList;
+    public static String appPathStr;
+
+    public static AppExtractActivity aea;
+
+    public static Handler handler;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +70,8 @@ public class AppExtractActivity extends Activity {
         appUpdBtn = (Button)findViewById(R.id.appUpdBtn);
         extractBtn = (Button)findViewById(R.id.extractBtn);
         appSwitch = (Switch)findViewById(R.id.appSwitch);
+
+        aea = this;
 
         lv = (ListView)findViewById(R.id.appList);
 
@@ -77,6 +86,14 @@ public class AppExtractActivity extends Activity {
 
         systemAppList = new ArrayList<HashMap<String,Object>>();//系统app
         normalAppList = new ArrayList<HashMap<String,Object>>();//普通app
+
+        handler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                extractBtn.setEnabled(true);
+                appUpdBtn.setEnabled(true);
+            }
+        };
 
         //重新整理app列表，
         int i = 0;
@@ -152,57 +169,32 @@ public class AppExtractActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                List<HashMap<String,Object>> list = new ArrayList<HashMap<String,Object>>();
+                finallyList = new ArrayList<HashMap<String,Object>>();
                 for(HashMap<String,Object> map : tempList){
                     if(((boolean)map.get("isCheck")) == true){
-                        list.add(map);
+                        finallyList.add(map);
                     }
                 }
 
-                Log.i("AppExtractActivity",list.toString());
+                Log.i("AppExtractActivity",finallyList.toString());
 
-                if(list.size() == 0){
+                if(finallyList.size() == 0){
                     ToolsUtil.showToast(AppExtractActivity.this,"还没有选中要提取的APP",2000);
                 }else{
-                    ToolsUtil.showToast(AppExtractActivity.this,"开始复制",2000);
-                    //弹出模态加载层
-                    String appPathStr = appPath.getText().toString();
+                    ToolsUtil.showToast(AppExtractActivity.this,"开始复制["+finallyList.size()+"]款应用",500);
+
+                    appPathStr = appPath.getText().toString();
                     File file = new File(appPathStr);
                     if(!file.exists() || !file.isDirectory()){
                         file.mkdirs();
                     }
 
-                    for(HashMap<String,Object> map : list){
-                        String rootPath = appPath.getText().toString();
-                        String appName = map.get("appName").toString();
-                        String appVersionName = map.get("appVersionName").toString();
-                        File readFile = new File(map.get("appDir").toString());
-                        File outFile = new File(rootPath + "/" + appName + "_" + appVersionName + ".apk");
-                        InputStream is = null;
-                        OutputStream os = null;
-                        try{
-                            is = new FileInputStream(readFile);
-                            os= new FileOutputStream(outFile);
-                            byte []Bytes = new byte[512];
-                            int flag = 0;
-                            while((flag=is.read(Bytes))>-1){
-                                os.write(Bytes,0,flag);
-                            }
-                            os.flush();
-                        }catch(Exception e){
-                            try{
-                                if(is!=null){
-                                    is.close();
-                                }
-                                if(os!=null){
-                                    os.close();
-                                }
-                            }catch(Exception e1){
+                    extractBtn.setEnabled(false);
+                    appUpdBtn.setEnabled(false);
 
-                            }
-                        }
-                    }
-                    ToolsUtil.showToast(AppExtractActivity.this,"复制完成",2000);
+                    Intent intentService = new Intent(AppExtractActivity.this, AppExtractService.class);
+
+                    startService(intentService);
                 }
             }
         });

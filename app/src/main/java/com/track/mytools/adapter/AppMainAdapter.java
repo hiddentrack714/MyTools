@@ -92,7 +92,7 @@ public class AppMainAdapter extends BaseAdapter {
         holder.appPackageName.setText(listMap.get("appPackageName").toString());
         holder.appVersionName.setText(listMap.get("appVersionName").toString());
         holder.appIcon.setImageDrawable((Drawable)listMap.get("appIcon"));
-        holder.appVersionCode.setText(listMap.get("appVersionCode").toString());
+        holder.appVersionCode.setText("("+listMap.get("appVersionCode").toString()+")");
         holder.appSize.setText(listMap.get("appSize").toString());
 
         holder.appCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){

@@ -282,10 +282,13 @@ public class IPActivity extends Activity {
             @Override
             public void onClick(View v) {
                 wifiId = getWifiId();
-                if(!forgetWifi()){
-                    ToolsUtil.showToast(IPActivity.this,"请手动忘记Wifi密码!",3000);
+                if(mwifiManager.isWifiEnabled()){
+                    if(!forgetWifi()){
+                        ToolsUtil.showToast(IPActivity.this,"请手动忘记Wifi密码!",3000);
+                    }
+                }else{
+                    ToolsUtil.showToast(IPActivity.this,"当前未连接Wifi，不能忘记密码!",3000);
                 }
-
             }
         });
 

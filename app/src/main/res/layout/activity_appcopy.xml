@@ -6,5 +6,6 @@
         android:id="@+id/appPro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:visibility="visible"/>
 </LinearLayout>
