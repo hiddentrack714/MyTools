@@ -3,95 +3,101 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_marginLeft="20px"
-    android:layout_marginRight="20px">
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:layout_width="190px"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:text="蚂蚁森林X:"/>
+            android:text="@string/myslx"/>
         <EditText
             android:id="@+id/nlX"
-            android:layout_width="250px"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:enabled="false"/>
+            android:enabled="false"
+            android:inputType="number"/>
         <TextView
-            android:layout_width="190px"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:text="蚂蚁森林Y:"/>
+            android:text="@string/mysly"/>
         <EditText
             android:id="@+id/nlY"
-            android:layout_width="250px"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:enabled="false"/>
+            android:enabled="false"
+            android:inputType="number"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:layout_width="150px"
+            android:layout_width="55dp"
             android:layout_height="wrap_content"
-            android:text="能量球X:"/>
+            android:text="@string/nlqx"/>
         <EditText
             android:id="@+id/ballX"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"/>
+            android:enabled="false"
+            android:inputType="number"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:layout_width="150px"
+            android:layout_width="55dp"
             android:layout_height="wrap_content"
-            android:text="能量球Y:"/>
+            android:text="@string/nlqy"/>
         <EditText
             android:id="@+id/ballY"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"/>
+            android:enabled="false"
+            android:inputType="number"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:layout_width="180px"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:text="成熟时间:"/>
+            android:text="@string/cssj"/>
         <EditText
             android:id="@+id/nlHour"
-            android:layout_width="120px"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:inputType="number"/>
         <TextView
-            android:layout_width="50px"
+            android:layout_width="20dp"
             android:layout_height="wrap_content"
-            android:text="时"/>
+            android:text="@string/s"/>
         <EditText
             android:id="@+id/nlMinute"
-            android:layout_width="120px"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:inputType="number"/>
         <TextView
-            android:layout_width="50px"
+            android:layout_width="20dp"
             android:layout_height="wrap_content"
-            android:text="分"/>
+            android:text="@string/f"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:layout_width="180px"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:text="是否当天:"/>
+            android:text="@string/sfdt"/>
         <CheckBox
             android:id="@+id/nlCheck"
             android:layout_width="wrap_content"
@@ -102,58 +108,65 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:layout_width="180px"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:text="点击次数:"/>
+            android:text="@string/djcs"/>
         <EditText
             android:id="@+id/nlClick"
-            android:layout_width="120px"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:inputType="number"/>
         <TextView
-            android:layout_width="80px"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="次"/>
+            android:text="@string/c"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:layout_width="180px"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:text="倒计时:"/>
+            android:text="@string/djs"/>
         <EditText
             android:id="@+id/nlDiffHour"
-            android:layout_width="100px"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:text="00"
-            android:enabled="false"/>
+            android:text="@string/zz"
+            android:enabled="false"
+            android:gravity="center"
+            android:inputType="number"/>
         <TextView
-            android:layout_width="70px"
+            android:layout_width="20dp"
             android:layout_height="wrap_content"
-            android:text="时"/>
+            android:text="@string/s"/>
         <EditText
             android:id="@+id/nlDiffMinute"
-            android:layout_width="100px"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:text="00"
-            android:enabled="false"/>
+            android:text="@string/zz"
+            android:enabled="false"
+            android:gravity="center"
+            android:inputType="number"/>
         <TextView
-            android:layout_width="70px"
+            android:layout_width="20dp"
             android:layout_height="wrap_content"
-            android:text="分"/>
+            android:text="@string/f"/>
         <EditText
             android:id="@+id/nlDiffSecond"
-            android:layout_width="100px"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:text="00"
-            android:enabled="false"/>
+            android:text="@string/zz"
+            android:enabled="false"
+            android:gravity="center"
+            android:inputType="number"/>
         <TextView
-            android:layout_width="70px"
+            android:layout_width="20dp"
             android:layout_height="wrap_content"
-            android:text="秒"/>
+            android:text="@string/m"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -161,17 +174,19 @@
         android:orientation="horizontal">
     <Button
             android:id="@+id/nlUpdBtn"
-            android:layout_marginTop="20px"
-            android:layout_width="150px"
+            android:layout_marginTop="5dp"
+            android:layout_width="75dp"
             android:layout_height="wrap_content"
-            android:text="修改"
-            android:layout_gravity="center"/>
+            android:text="@string/xg"
+            android:layout_gravity="center"
+           style="?android:attr/buttonStyle"/>
     <Button
         android:id="@+id/nlStartBtn"
-        android:layout_marginTop="20px"
-        android:layout_width="700px"
+        android:layout_marginTop="5dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:text="开启服务"
-        android:layout_gravity="center"/>
+        android:text="@string/kqfw"
+        android:layout_gravity="center"
+        style="?android:attr/buttonStyle"/>
     </LinearLayout>
 </LinearLayout>

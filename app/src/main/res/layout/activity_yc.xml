@@ -3,54 +3,51 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_marginLeft="20px"
-    android:layout_marginRight="20px">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="200px"
-        android:orientation="horizontal">
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp">
         <RadioGroup
             android:id="@+id/ycRG"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginTop="5dp"
             android:gravity="center">
             <RadioButton
                 android:id="@+id/ycSD"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="省电"/>
+                android:text="@string/sd"/>
             <RadioButton
                 android:id="@+id/ycPH"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="平衡(默认)"/>
+                android:text="@string/ph"/>
             <RadioButton
                 android:id="@+id/ycXN"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="性能"/>
+                android:text="@string/xn"/>
             <RadioButton
                 android:id="@+id/ycDYC"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="极速"/>
+                android:text="@string/js"/>
             <RadioButton
                 android:id="@+id/ycTY"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="停用"/>
+                android:text="@string/ty"/>
         </RadioGroup>
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center">
+        android:gravity="center"
+        android:layout_marginTop="5dp">
         <Button
             android:id="@+id/ycBtn"
-            android:layout_width="600px"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:text="设置" />
+            android:text="@string/sz" />
     </LinearLayout>
 </LinearLayout>

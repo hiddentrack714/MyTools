@@ -184,6 +184,7 @@ public class FTPActivity extends Activity {
                     ftpServerPath.setEnabled(true);
                     ftpLocalPath.setEnabled(true);
                     ftpPassword.setEnabled(true);
+                    ftpDownBtn.setEnabled(false);
 
                     isUpd = true;
 
@@ -197,6 +198,7 @@ public class FTPActivity extends Activity {
                     ftpServerPath.setEnabled(false);
                     ftpLocalPath.setEnabled(false);
                     ftpPassword.setEnabled(false);
+                    ftpDownBtn.setEnabled(true);
 
                     isUpd = false;
 

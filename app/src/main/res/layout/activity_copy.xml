@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_marginLeft="20px"
-    android:layout_marginRight="20px">
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp">
     <LinearLayout
         android:id="@+id/copyPhoneLayout"
         android:layout_width="match_parent"
@@ -13,13 +13,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="文件位置:"/>
+            android:text="@string/wjwz"/>
         <EditText
             android:id="@+id/copyPhoneFile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            android:inputType="text"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,13 +28,15 @@
         android:orientation="horizontal">
         <Button
             android:id="@+id/copyUpdBtn"
-            android:layout_width="150px"
+            android:layout_width="75dp"
             android:layout_height="wrap_content"
-            android:text="修改"/>
+            android:text="@string/xg"
+            style="?android:attr/buttonStyle"/>
         <Button
             android:id="@+id/copyUseBtn"
-            android:layout_width="700px"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:text="开启服务"/>
+            android:text="@string/kqfw"
+            style="?android:attr/buttonStyle"/>
     </LinearLayout>
 </LinearLayout>

@@ -5,13 +5,13 @@
     <!--Wifi名称-->
     <TextView
         android:id="@+id/wifiSSid"
-        android:layout_width="280px"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:gravity="center" />
     <!--Wifi密码-->
     <TextView
         android:id="@+id/wifiPassword"
-        android:layout_width="780px"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:gravity="center" />
 </LinearLayout>

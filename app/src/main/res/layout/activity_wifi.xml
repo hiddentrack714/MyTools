@@ -7,19 +7,19 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10px"
-        android:layout_marginLeft="50px">
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="50dp">
         <TextView
-            android:layout_width="220px"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:text="SSID"
+            android:text="@string/ssid"
             android:gravity="center"
             android:textStyle="bold"/>
         <TextView
-            android:layout_width="780px"
-            android:layout_marginLeft="30px"
+            android:layout_width="320dp"
+            android:layout_marginStart="30dp"
             android:layout_height="wrap_content"
-            android:text="PASSWORD"
+            android:text="@string/wifipassword"
             android:layout_gravity="center"
             android:gravity="center"
             android:textStyle="bold"/>
@@ -28,8 +28,8 @@
     <ListView
         android:id="@+id/wifiList"
         android:layout_width="match_parent"
-        android:layout_height="600px"
-        android:layout_marginRight="20px"
-        android:layout_marginLeft="20px"/>
+        android:layout_height="300dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"/>
 
 </LinearLayout>

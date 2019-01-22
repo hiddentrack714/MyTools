@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_marginLeft="20px"
-    android:layout_marginRight="20px">
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,22 +13,22 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Wifi状态:"
+        android:text="@string/wifizt"
         android:layout_gravity="center_vertical"/>
         <TextView
-            android:layout_width="100px"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
-            android:text="关闭"/>
+            android:text="@string/gb"/>
         <Switch
             android:id="@+id/staticWifiStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textOff="off"
-            android:textOn="on"/>
+            android:textOff="@string/off"
+            android:textOn="@string/on"/>
         <TextView
-            android:layout_width="100px"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
-            android:text="开启"/>
+            android:text="@string/kq"/>
 </LinearLayout>
 
     <LinearLayout
@@ -38,7 +38,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="连接模式:"
+            android:text="@string/ljms"
             android:layout_gravity="center_vertical"/>
         <RadioGroup
             android:id="@+id/ipRG"
@@ -49,17 +49,17 @@
                 android:id="@+id/wifiMode1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="DHCP"/>
+                android:text="@string/dhcp"/>
             <RadioButton
                 android:id="@+id/wifiMode2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="静态"/>
+                android:text="@string/jt"/>
             <RadioButton
                 android:id="@+id/wifiMode3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="未连接"/>
+                android:text="@string/wlj"/>
         </RadioGroup>
     </LinearLayout>
     <LinearLayout
@@ -73,7 +73,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="WifiId:"/>
+                android:gravity="center"
+                android:text="@string/wifiId"/>
             <Spinner
                 android:id="@+id/staticWifiId"
                 android:layout_width="match_parent"
@@ -86,11 +87,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Password:"/>
+                android:text="@string/password"/>
             <EditText
                 android:id="@+id/staticPassword"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="text"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -105,12 +107,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="静态IP地址:"/>
+            android:text="@string/jtipdz"/>
         <EditText
             android:id="@+id/staticIp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"/>
+            android:enabled="false"
+            android:inputType="number"/>
     </LinearLayout>
 
     <LinearLayout
@@ -119,12 +122,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="网关:"/>
+            android:text="@string/wg"/>
         <EditText
             android:id="@+id/staticGateWay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"/>
+            android:enabled="false"
+            android:inputType="number"/>
     </LinearLayout>
 
     <LinearLayout
@@ -133,12 +137,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="网络前置长度:"/>
+            android:text="@string/wlqzcd"/>
         <EditText
             android:id="@+id/staticSuffix"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"/>
+            android:enabled="false"
+            android:inputType="number"/>
     </LinearLayout>
 
     <LinearLayout
@@ -147,10 +152,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="DNS1:"/>
+            android:text="@string/dns1"/>
         <Spinner
             android:id="@+id/staticDNS1"
-            android:layout_width="600px"
+            android:layout_width="600dp"
             android:layout_height="wrap_content"
             android:entries="@array/spingarr">
         </Spinner>
@@ -162,18 +167,21 @@
         android:layout_height="wrap_content">
         <Button
             android:id="@+id/ipUpdBtn"
-            android:layout_width="150px"
+            android:layout_width="75dp"
             android:layout_height="wrap_content"
-            android:text="修改"/>
+            android:text="@string/xg"
+            style="?android:attr/buttonStyle"/>
         <Button
             android:id="@+id/ipForgetBtn"
-            android:layout_width="400px"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:text="忘记密码" />
+            android:text="@string/wjmm"
+            style="?android:attr/buttonStyle"/>
         <Button
             android:id="@+id/ipSetBtn"
-            android:layout_width="400px"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:text="连接Wifi" />
+            android:text="@string/ljwifi"
+            style="?android:attr/buttonStyle"/>
     </LinearLayout>
 </LinearLayout>

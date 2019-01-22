@@ -1,4 +1,109 @@
 <resources>
     <string name="app_name">MyTools</string>
     <string name="title_activity_tools">ToolsActivity</string>
+    <!--功能-->
+    <string name="t1">后缀名一键删除/添加</string>
+    <string name="t2">查询类型数量</string>
+    <string name="t3">http下载</string>
+    <string name="t4">快捷复制</string>
+    <string name="t5">FTP下载</string>
+    <string name="t6">Wifi密码</string>
+    <string name="t7">局域网设备</string>
+    <string name="t8">支付宝获取能量</string>
+    <string name="t9">yc调度模式切换</string>
+    <string name="t10">WifiIP静态/DHCP切换</string>
+    <string name="t12">App提取</string>
+    <!--公共-->
+    <string name="xg">修改</string>
+    <string name="off">off</string>
+    <string name="on">on</string>
+    <string name="zhz">0/0</string>
+    <!--快捷复制-->
+    <string name="wjwz">文件位置:</string>
+    <string name="kqfw">开启服务</string>
+    <!--ftp下载-->
+    <string name="ip">IP:</string>
+    <string name="port">PORT:</string>
+    <string name="user">USER:</string>
+    <string name="password">PASSWORD:</string>
+    <string name="ftpserverpath">FTPSERVERPATH:</string>
+    <string name="ftplocalpath">FTPLOCALPATH:</string>
+    <string name="ftpfilename">FTPFILENAME:</string>
+    <string name="xz">下载</string>
+    <string name="jdt">进度条</string>
+    <!--http下载-->
+    <string name="httplj">http连接:</string>
+    <string name="fz">复制</string>
+    <string name="dyxz">单一下载:</string>
+    <string name="xcsl">线程数量:</string>
+    <string name="z">0</string>
+    <string name="tw">20</string>
+    <string name="wjhz">文件后缀:</string>
+    <string name="xzdz">下载地址:</string>
+    <string name="bh">编号</string>
+    <string name="xzjd">下载进度</string>
+    <string name="wjdx">文件大小(byte)</string>
+    <string name="wjmc">文件名称</string>
+    <!--ip切换-->
+    <string name="wifizt">WIFI状态:</string>
+    <string name="gb">关闭</string>
+    <string name="kq">开启</string>
+    <string name="ljms">连接模式:</string>
+    <string name="dhcp">DHCP</string>
+    <string name="jt">静态</string>
+    <string name="wlj">未连接</string>
+    <string name="wifiId">WIFIID:</string>
+    <string name="jtipdz">静态IP地址:</string>
+    <string name="wg">网关:</string>
+    <string name="wlqzcd">网络前置长度:</string>
+    <string name="dns1">DNS1:</string>
+    <string name="wjmm">忘记密码</string>
+    <string name="ljwifi">连接WIFI</string>
+    <!--局域网扫描-->
+    <string name="sm">扫描</string>
+    <string name="zjmc">主机名称</string>
+    <string name="mac">MAC</string>
+    <string name="lanip">IP</string>
+    <!--支付宝获取能量-->
+    <string name="myslx">蚂蚁森林X:</string>
+    <string name="mysly">蚂蚁森林Y:</string>
+    <string name="nlqx">能量球X:</string>
+    <string name="nlqy">能量球Y:</string>
+    <string name="cssj">成熟时间:</string>
+    <string name="s">时</string>
+    <string name="f">分</string>
+    <string name="m">秒</string>
+    <string name="sfdt">是否当天:</string>
+    <string name="djcs">点击次数:</string>
+    <string name="c">次</string>
+    <string name="djs">倒计时:</string>
+    <string name="zz">00</string>
+    <!--后缀名删除-->
+    <string name="ml">目录:</string>
+    <string name="hz">后缀:</string>
+    <string name="gl">过滤:</string>
+    <string name="schz">删除后缀</string>
+    <string name="tjhz">添加后缀</string>
+    <!--查询类型数量-->
+    <string name="qx">全选</string>
+    <string name="qxx">取消</string>
+    <string name="fx">反选</string>
+    <string name="sc">删除</string>
+    <!--app提取-->
+    <string name="sstj">筛选条件:</string>
+    <string name="fxt">非系统</string>
+    <string name="xt">系统</string>
+    <string name="bcwz">保存位置:</string>
+    <string name="tq">提取</string>
+    <string name="desc">app图标</string>
+    <!--wifi密码-->
+    <string name="ssid">SSID</string>
+    <string name="wifipassword">PASSWORD</string>
+    <!--yc调度-->
+    <string name="sd">省电</string>
+    <string name="ph">平衡(默认)</string>
+    <string name="xn">性能</string>
+    <string name="js">极速</string>
+    <string name="ty">停用</string>
+    <string name="sz">设置</string>
 </resources>

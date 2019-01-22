@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_marginLeft="20px"
-    android:layout_marginRight="20px">
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -12,13 +12,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="IP:"/>
+            android:text="@string/ip"/>
         <EditText
             android:id="@+id/ftpIP"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            android:inputType="number"/>
     </LinearLayout>
 
     <LinearLayout
@@ -28,13 +29,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PORT:"/>
+            android:text="@string/port"/>
         <EditText
             android:id="@+id/ftpPORT"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            android:inputType="number"/>
     </LinearLayout>
 
     <LinearLayout
@@ -44,13 +46,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="USER:"/>
+            android:text="@string/user"/>
         <EditText
             android:id="@+id/ftpUser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            android:inputType="text"/>
     </LinearLayout>
 
     <LinearLayout
@@ -60,13 +63,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PASSWORD:"/>
+            android:text="@string/password"/>
         <EditText
             android:id="@+id/ftpPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            android:inputType="text"/>
     </LinearLayout>
 
     <LinearLayout
@@ -76,13 +80,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="FTPSERVERPATH:"/>
+            android:text="@string/ftpserverpath"/>
         <EditText
             android:id="@+id/ftpServerPath"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            android:inputType="text"/>
     </LinearLayout>
 
     <LinearLayout
@@ -92,13 +97,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="FTPLOCALPATH:"/>
+            android:text="@string/ftplocalpath"/>
         <EditText
             android:id="@+id/ftpLocalPath"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            android:inputType="text"/>
     </LinearLayout>
 
     <LinearLayout
@@ -108,13 +114,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="FTPFILENAME:"/>
+            android:text="@string/ftpfilename"/>
         <EditText
             android:id="@+id/ftpFileName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text=""
-            android:singleLine="true"/>
+            android:singleLine="true"
+            android:inputType="text"/>
     </LinearLayout>
 
     <LinearLayout
@@ -123,27 +130,29 @@
         android:orientation="horizontal">
         <Button
             android:id="@+id/ftpUpdBtn"
-            android:layout_width="150px"
+            android:layout_width="75dp"
             android:layout_height="wrap_content"
-            android:text="修改"
-            android:layout_gravity="center"/>
+            android:text="@string/xg"
+            android:layout_gravity="center"
+            style="?android:attr/buttonStyle"/>
         <Button
             android:id="@+id/ftpDownBtn"
-            android:layout_width="700px"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:text="下载"/>
+            android:text="@string/xz"
+            style="?android:attr/buttonStyle"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="vertical"
         android:layout_weight="1"
         android:layout_marginTop="30dp">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="进度条"
+            android:text="@string/jdt"
             android:layout_gravity="center"
             android:gravity="center_horizontal"/>
         <ProgressBar
@@ -161,7 +170,7 @@
             android:id="@+id/ftpProText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="0/0"
+            android:text="@string/zhz"
             android:layout_gravity="center"
             android:gravity="center_horizontal"/>
     </LinearLayout>

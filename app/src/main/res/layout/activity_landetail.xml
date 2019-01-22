@@ -5,19 +5,19 @@
     <!--主机名-->
     <TextView
         android:id="@+id/lanName"
-        android:layout_width="250px"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:gravity="center" />
     <!--IP-->
     <TextView
         android:id="@+id/lanIP"
-        android:layout_width="350px"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:gravity="center" />
     <!--Mac-->
     <TextView
         android:id="@+id/lanMac"
-        android:layout_width="450px"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:gravity="center" />
 </LinearLayout>
