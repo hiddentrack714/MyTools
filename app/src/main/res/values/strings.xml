@@ -96,6 +96,10 @@
     <string name="bcwz">保存位置:</string>
     <string name="tq">提取</string>
     <string name="desc">app图标</string>
+    <string name="pxtj">排序条件:</string>
+    <string name="dx">大->小</string>
+    <string name="xd">小->大</string>
+    <string name="ssyy">搜索应用</string>
     <!--wifi密码-->
     <string name="ssid">SSID</string>
     <string name="wifipassword">PASSWORD</string>

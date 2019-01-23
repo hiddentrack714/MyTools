@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -31,6 +33,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * APP提取
@@ -42,6 +45,8 @@ public class AppExtractActivity extends Activity {
     private Button appUpdBtn;
     private Button extractBtn;
     private Switch appSwitch;
+    private Switch sortSwitch;
+    private EditText appSearch;
 
     private boolean isUpd = false;
 
@@ -70,6 +75,8 @@ public class AppExtractActivity extends Activity {
         appUpdBtn = (Button)findViewById(R.id.appUpdBtn);
         extractBtn = (Button)findViewById(R.id.extractBtn);
         appSwitch = (Switch)findViewById(R.id.appSwitch);
+        sortSwitch = (Switch)findViewById(R.id.sortSwitch);
+        appSearch = (EditText)findViewById(R.id.appSearch);
 
         aea = this;
 
@@ -95,8 +102,7 @@ public class AppExtractActivity extends Activity {
             }
         };
 
-        //重新整理app列表，
-        int i = 0;
+        //重新整理app列表
         for(ApplicationInfo appInfo:appInfos){
             HashMap<String,Object> tempMap = new HashMap<String,Object>();
             try{
@@ -107,7 +113,7 @@ public class AppExtractActivity extends Activity {
                 String appVersionNamee = packageInfo.versionName;               //应用版本
                 int appVersionCode = packageInfo.versionCode;                   //应用小版本
                 Drawable appIcon = packageInfo.applicationInfo.loadIcon(pm);    //应用图标
-                String appDir = appInfo.sourceDir;
+                String appDir = appInfo.sourceDir;                              //应用位置
 
                 tempMap.put("appName",appName);
                 tempMap.put("appPackageName",appPackageName);
@@ -115,8 +121,9 @@ public class AppExtractActivity extends Activity {
                 tempMap.put("appVersionCode",appVersionCode);
                 tempMap.put("appIcon",appIcon);
                 tempMap.put("appSize",countFileSize(appInfo.sourceDir)); // 以MB为单位
+                tempMap.put("appRealSize",new File(appInfo.sourceDir).length()); // 实际app大小
                 tempMap.put("isCheck",false); // 默认为不选中
-                tempMap.put("appDir",appDir); // 默认为不选中
+                tempMap.put("appDir",appDir);
 
                 //判断是否是系统应用，
                 int flags = appInfo.flags;
@@ -127,14 +134,21 @@ public class AppExtractActivity extends Activity {
                     //Log.d("app  ","  不是系统应用  ");
                     normalAppList.add(tempMap);
                 }
-                i++;
             }catch(Exception e){
                 e.getStackTrace();
                // Log.e("AppExtractActivity",e.getMessage());
             }
         }
 
-        tempList = (ArrayList<HashMap<String,Object>>)normalAppList.clone();
+        //默认显示普通应用
+        try {
+            tempList = (ArrayList<HashMap<String, Object>>) deepCopy(normalAppList);
+        }catch(Exception e){
+            Log.i("AppExtractActivity","深复制失败：" + e.getMessage());
+        }
+
+        //默认先按从小到大排序
+        tempList = sortBySize(tempList,true);
 
         ama = new AppMainAdapter(this,tempList);
 
@@ -179,7 +193,7 @@ public class AppExtractActivity extends Activity {
                 Log.i("AppExtractActivity",finallyList.toString());
 
                 if(finallyList.size() == 0){
-                    ToolsUtil.showToast(AppExtractActivity.this,"还没有选中要提取的APP",2000);
+                    ToolsUtil.showToast(AppExtractActivity.this,"还没有选中要提取的APP",1000);
                 }else{
                     ToolsUtil.showToast(AppExtractActivity.this,"开始复制["+finallyList.size()+"]款应用",500);
 
@@ -205,34 +219,118 @@ public class AppExtractActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 AppMainAdapter.ViewHolder holder = (AppMainAdapter.ViewHolder) view.getTag();
-                if((boolean)normalAppList.get(position).get("isCheck") == true){
+                if((boolean)tempList.get(position).get("isCheck") == true){
                     holder.appCB.setChecked(false);
-                    normalAppList.get(position).put("isCheck",false);
+                    tempList.get(position).put("isCheck",false);
                 }else{
                     holder.appCB.setChecked(true);
-                    normalAppList.get(position).put("isCheck",true);
+                    tempList.get(position).put("isCheck",true);
                 }
             }
         });
 
-        //监听Switch
+        //监听筛选条件
         appSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                for(int i = 0;i<tempList.size();i++){
+                    AppMainAdapter.isSelected.put(i,false);
+                }
+                ama.notifyDataSetChanged();
+                tempList.clear();
                 if (isChecked){
                     //系统
                     Log.i("AppExtractActivity3","展示系统APP");
-                    tempList.clear();
-                    tempList.addAll(systemAppList);
-                    ama.notifyDataSetChanged();
+                    if(!sortSwitch.isChecked()){
+                        //小->大
+                        tempList.addAll(sortBySize(deepCopy(systemAppList),true));
+                    }else{
+                        //大->小
+                        tempList.addAll(sortBySize(deepCopy(systemAppList),false));
+                    }
                 }else {
                     //普通
                     Log.i("AppExtractActivity4","展示普通APP");
 
-                    tempList.clear();
-                    tempList.addAll(normalAppList);
-                    ama.notifyDataSetChanged();
+                    if(!sortSwitch.isChecked()){
+                        //小->大
+                        tempList.addAll(sortBySize(deepCopy(normalAppList),true));
+                    }else{
+                        //大->小
+                        tempList.addAll(sortBySize(deepCopy(normalAppList),false));
+                    }
                 }
+                ama.notifyDataSetChanged();
+            }
+        });
+
+        //监听排序条件
+        sortSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                for(int i = 0;i<tempList.size();i++){
+                    AppMainAdapter.isSelected.put(i,false);
+                }
+                ama.notifyDataSetChanged();
+                tempList.clear();
+                if (isChecked){
+                    //大->小
+                    if(appSwitch.isChecked()){
+                        tempList.addAll(sortBySize(deepCopy(systemAppList),false));
+                    }else{
+                        tempList.addAll(sortBySize(deepCopy(normalAppList),false));
+                    }
+                }else {
+                    //小->大
+                    if(appSwitch.isChecked()){
+                        tempList.addAll(sortBySize(deepCopy(systemAppList),true));
+                    }else{
+                        tempList.addAll(sortBySize(deepCopy(normalAppList),true));
+                    }
+                }
+                ama.notifyDataSetChanged();
+            }
+        });
+
+        //监听搜索内容
+        appSearch.addTextChangedListener(new TextWatcher(){
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                for(int i = 0;i<tempList.size();i++){
+                    AppMainAdapter.isSelected.put(i,false);
+                }
+                ama.notifyDataSetChanged();
+
+                ArrayList<HashMap<String,Object>> ssTempList = null;
+                if(appSwitch.isChecked()){
+                    //搜索系统应用
+                    ssTempList = systemAppList;
+                }else{
+                    //搜索普通应用
+                    ssTempList = normalAppList;
+                }
+
+               ArrayList<HashMap<String,Object>> realTempList = new ArrayList<HashMap<String,Object>>();
+               for(HashMap<String,Object> map : ssTempList){
+                   if(map.get("appName").toString().toUpperCase().indexOf(s.toString().toUpperCase())>-1){
+                       realTempList.add(map);
+                   }
+               }
+                tempList.clear();
+                tempList.addAll(sortBySize(deepCopy(realTempList),sortSwitch.isChecked()?false:true));
+                ama.notifyDataSetChanged();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
 
             }
         });
@@ -265,30 +363,77 @@ public class AppExtractActivity extends Activity {
     }
 
     /**
-     * 将字节干3个单位分割
+     * 将字节按3个单位分割
      * @param str
      * @return
      */
-    private String splitThree(String str){
+    private static String splitThree(String str){
         int bigTime = str.length() / 3;
         int littleTime = str.length() % 3;
         String tempStr = "";
 
-        for(int i = 0;i<bigTime+(littleTime>0?1:0);i++){
-            if(littleTime > 0 && i == 0){
-                tempStr = str.substring(0,littleTime);
-                str = str.substring(littleTime,str.length());
-            }else if(littleTime > 0){
-                tempStr = tempStr + "," + str.substring((i-1)*3,(i-1)*3+3);
-            }else {
-                tempStr = str.substring(i*3,i*3+3)+","+tempStr;
+        if(littleTime >0) {
+            //有余数
+            for(int i = 0 ;i<bigTime + 1;i++) {
+                if(i==0) {
+                    tempStr = str.substring(i, i+littleTime);
+                }else {
+                    tempStr = tempStr +","+ str.substring((i-1)*3+littleTime, (i-1)*3+3+littleTime);
+                }
             }
-        }
-        if(littleTime > 0) {
-            tempStr = tempStr.substring(0,tempStr.length());
         }else {
-            tempStr = tempStr.substring(0,tempStr.length()-1);
+            //没有余数，直接截取
+            for(int i = 0 ;i<bigTime;i++) {
+                tempStr = tempStr+","+ str.substring(i*3, i*3+3);
+            }
+            tempStr = tempStr.substring(1,tempStr.length());
         }
         return tempStr;
     }
+
+    /**
+     * 按APP大小排序
+     * @param tempList 待排序集合
+     * @param sortMode 排序模式 true:从小到大；false:从大到小
+     * @return
+     */
+    private ArrayList<HashMap<String,Object>> sortBySize(ArrayList<HashMap<String,Object>> tempList,boolean sortMode){
+        //默认按从大到小排序一次
+        for(int i = 0 ;i<tempList.size();i++) {
+            for(int j = i + 1;j<tempList.size();j++) {
+                if(sortMode){
+                    if(Integer.parseInt(tempList.get(i).get("appRealSize").toString()) > Integer.parseInt(tempList.get(j).get("appRealSize").toString())){
+                        HashMap<String,Object> temp = tempList.get(j);
+                        tempList.set(j,tempList.get(i));
+                        tempList.set(i, temp);
+                    }
+                }else{
+                    if(Integer.parseInt(tempList.get(i).get("appRealSize").toString()) < Integer.parseInt(tempList.get(j).get("appRealSize").toString())){
+                        HashMap<String,Object> temp = tempList.get(j);
+                        tempList.set(j,tempList.get(i));
+                        tempList.set(i, temp);
+                    }
+                }
+            }
+        }
+        return tempList;
+    }
+
+    /**
+     * 深复制
+     * @param list yuan源集合
+     * @return
+     */
+    public ArrayList<HashMap<String,Object>> deepCopy(ArrayList<HashMap<String,Object>> list){
+        ArrayList<HashMap<String,Object>> deepList = new ArrayList<HashMap<String,Object>>(list.size());
+        for(HashMap<String,Object> map : list){
+            HashMap<String,Object> temp = new HashMap<String,Object>();
+            for(Map.Entry<String,Object> entry:map.entrySet()){
+                temp.put(entry.getKey(),entry.getValue());
+            }
+            deepList.add(temp);
+        }
+        return deepList;
+    }
+
 }
