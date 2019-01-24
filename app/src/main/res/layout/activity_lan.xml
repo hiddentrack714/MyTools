@@ -17,13 +17,13 @@
         android:layout_marginTop="5dp"
         android:layout_marginStart="5dp">
         <TextView
-            android:layout_width="120dp"
+            android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:text="@string/zjmc"
             android:gravity="center"
             android:textStyle="bold"/>
         <TextView
-            android:layout_width="100dp"
+            android:layout_width="80dp"
             android:layout_marginStart="30dp"
             android:layout_height="wrap_content"
             android:text="@string/lanip"
@@ -39,13 +39,13 @@
     </LinearLayout>
     <ProgressBar
         android:id="@+id/lanPro"
-        android:layout_width="200dp"
-        android:layout_height="250dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:layout_gravity="center"
         android:layout_marginTop="100dp"
         android:visibility="invisible"/>
     <ListView
         android:id="@+id/lanList"
         android:layout_width="match_parent"
-        android:layout_height="230dp"/>
+        android:layout_height="wrap_content"/>
 </LinearLayout>

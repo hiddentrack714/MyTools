@@ -1,9 +1,11 @@
 package com.track.mytools.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,6 +30,7 @@ import com.track.mytools.entity.HttpThreadEntity;
 import com.track.mytools.exception.HttpException;
 import com.track.mytools.util.ToolsUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -157,114 +160,67 @@ public class HttpActivity extends Activity{
                 Log.i("httpSwitch",isSingle+"");
 
                 if("0".equals(httpThread.getText().toString())){
-                    ToolsUtil.showToast(HttpActivity.ha,"下载线程数不能为0",3000);
+                    ToolsUtil.showToast(HttpActivity.ha,"下载线程数不能为0",2000);
                     return;
                 }
 
                 if("".equals(httpUrl.getText().toString())){
-                    ToolsUtil.showToast(HttpActivity.ha,"下载链接不能为空",3000);
+                    ToolsUtil.showToast(HttpActivity.ha,"下载链接不能为空",2000);
                     return;
                 }
 
-                URL = httpUrl.getText().toString();
-                THREAD_NUM = Integer.parseInt(httpThread.getText().toString());
-                DIR_NAME = httpDir.getText().toString();
+                URL = httpUrl.getText().toString();   //http连接
+                THREAD_NUM = Integer.parseInt(httpThread.getText().toString());//线程数量
+                DIR_NAME = httpDir.getText().toString();//下载地址
 
-                URL = URL.substring(0,URL.lastIndexOf("/") + 1);
-                String flag = URL;
-
-                //启动单一文件下载，只启动一个线程即可
-                boolean threadSigle = true;
-                if(isSingle){
-                    THREAD_NUM = 1;
-                    threadSigle = false;
+                if(map.get("httpDir").toString().equals(DIR_NAME.trim())){
+                    ToolsUtil.showToast(HttpActivity.ha,"下载地址没有修改",2000);
+                    return;
                 }
 
-                //开始下载，固定当前链接和按钮
-                httpDownBtn.setEnabled(false);
-                httpUrl.setEnabled(false);
-                httpUpdBtn.setEnabled(false);
-                httpDir.setEnabled(false);
-                httpCopyBtn.setEnabled(false);
-                httpSwitch.setEnabled(false);
+                File file = new File(DIR_NAME);
 
-                //文件后缀名
-                String fileSuff = httpSuff.getText() + "";
-
-                //循环初始化多个线程
-                List<String> list = new ArrayList<String>();
-                ConcurrentHashMap<Integer,Boolean> map = new ConcurrentHashMap<Integer,Boolean>();  // 线程下载状态
-                for(int i = 1 ;i < THREAD_NUM + 1 ;i++) {
-                    ConcurrentHashMap<String,Object> listMap = new ConcurrentHashMap<String,Object>();              //线程属性
-                    String temp = "";
-                    if(i<10) {
-                        temp = "0" + i;
-                    }else {
-                        temp = i+"";
-                    }
-
-                    //URL+文件+后缀
-                    if(isSingle){
-                        flag = httpUrl.getText().toString();
-                    }else{
-                        flag = flag + temp + "." + fileSuff;
-                    }
-
-                    list.add(flag);
-                    flag = URL;
-                    map.put(i-1, true); // 每个线程的初始状态都是true
-
-                    //初始化线程属性状态
-                    listMap.put("httpDownNo",i);
-                    listMap.put("httpDownPro",0);
-                    listMap.put("httpDownSize","");
-                    listMap.put("httpDownName","");
-                    l.add(listMap);
-                }
-
-                hma = new HttpMainAdapter(ha,l);
-
-                lv.setAdapter(hma);
-
-                Log.i("size",l.size()+"");
-
-                ExecutorService es = Executors.newCachedThreadPool();
-
-                //开启线程池
-                for(int i=0;i<THREAD_NUM;i++) {
-                    es.submit(new MyThread(list.get(i),i,map,threadSigle));
-                }
-
-                //下载进度检测
-                new Thread(()->{
-                    boolean t = true;
-                    while(t) {
-                        int i = 0;
-                        for(Map.Entry<Integer,Boolean> entry:map.entrySet()) {
-                            if(entry.getValue()==false) {
-                                i++;
+                //要下载的文件目录存在同名文件,如果是目录的直接覆盖里面的内容
+                if(file.exists()){
+                    AlertDialog.Builder normalDialog =
+                            new AlertDialog.Builder(HttpActivity.this);
+                    //normalDialog.setIcon(R.drawable.icon_dialog);
+                    normalDialog.setTitle("选择").setMessage("本地存在同名文件或文件夹，请选择?");
+                    normalDialog.setPositiveButton("取消",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // ...To-do
+                                }
+                            });
+                    normalDialog.setNeutralButton("删除本地文件",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if(file.delete()){
+                                        ToolsUtil.showToast(HttpActivity.this,file.getName() + " 删除成功，继续下载",1000);
+                                        dialogRes();
+                                    } else{
+                                        ToolsUtil.showToast(HttpActivity.this,file.getName() + " 删除失败",1000);
+                                    }
+                                }
+                            });
+                    normalDialog.setNegativeButton("修改本地文件名", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if(file.renameTo(new File(DIR_NAME+"[1]"))){
+                                ToolsUtil.showToast(HttpActivity.this,file.getName() + " 修改成功，继续下载",1000);
+                                dialogRes();
+                            } else{
+                                ToolsUtil.showToast(HttpActivity.this,file.getName() + " 修改失败",1000);
                             }
                         }
-
-                        //Log.i("http","下载进度检查");
-
-                        if(i == THREAD_NUM) {
-                            t = false;
-                            Message msg = HttpActivity.handler.obtainMessage();
-                            msg.arg1 = 1;
-                            HttpActivity.handler.sendMessage(msg);
-                            Log.i("http","下载完成");
-
-                            //下载完成，清空所有静态参数
-                            HttpMainAdapter.viewList.clear();
-
-                            ToolsUtil.showToast(HttpActivity.ha,"下载完成",3000);
-
-                            es.shutdown();
-                        }
-
-                    }
-                } ).start();
+                    });
+                    // 创建实例并显示
+                    normalDialog.show();
+                }else{
+                    dialogRes();
+                }
 
             }
         });
@@ -308,7 +264,7 @@ public class HttpActivity extends Activity{
             }
         });
 
-
+        //监听线程数量
         httpThread.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -383,6 +339,107 @@ public class HttpActivity extends Activity{
             }
         });
 
+    }
+
+    /**
+     *
+     */
+    private void dialogRes(){
+        URL = URL.substring(0,URL.lastIndexOf("/") + 1);
+        String flag = URL;
+
+        //启动单一文件下载，只启动一个线程即可
+        boolean threadSigle = true;
+        if(isSingle){
+            THREAD_NUM = 1;
+            threadSigle = false;
+        }
+
+        //开始下载，固定当前链接和按钮
+        httpDownBtn.setEnabled(false);
+        httpUrl.setEnabled(false);
+        httpUpdBtn.setEnabled(false);
+        httpDir.setEnabled(false);
+        httpCopyBtn.setEnabled(false);
+        httpSwitch.setEnabled(false);
+
+        //文件后缀名
+        String fileSuff = httpSuff.getText() + "";
+
+        //循环初始化多个线程
+        List<String> list = new ArrayList<String>();
+        ConcurrentHashMap<Integer,Boolean> map = new ConcurrentHashMap<Integer,Boolean>();  // 线程下载状态
+        for(int i = 1 ;i < THREAD_NUM + 1 ;i++) {
+            ConcurrentHashMap<String,Object> listMap = new ConcurrentHashMap<String,Object>();              //线程属性
+            String temp = "";
+            if(i<10) {
+                temp = "0" + i;
+            }else {
+                temp = i+"";
+            }
+
+            //URL+文件+后缀
+            if(isSingle){
+                flag = httpUrl.getText().toString();
+            }else{
+                flag = flag + temp + "." + fileSuff;
+            }
+
+            list.add(flag);
+            flag = URL;
+            map.put(i-1, true); // 每个线程的初始状态都是true
+
+            //初始化线程属性状态
+            listMap.put("httpDownNo",i);
+            listMap.put("httpDownPro",0);
+            listMap.put("httpDownSize","");
+            listMap.put("httpDownName","");
+            l.add(listMap);
+        }
+
+        hma = new HttpMainAdapter(ha,l);
+
+        lv.setAdapter(hma);
+
+        Log.i("size",l.size()+"");
+
+        ExecutorService es = Executors.newCachedThreadPool();
+
+        //开启线程池
+        for(int i=0;i<THREAD_NUM;i++) {
+            es.submit(new MyThread(list.get(i),i,map,threadSigle));
+        }
+
+        //下载进度检测
+        new Thread(()->{
+            boolean t = true;
+            while(t) {
+                int i = 0;
+                for(Map.Entry<Integer,Boolean> entry:map.entrySet()) {
+                    if(entry.getValue()==false) {
+                        i++;
+                    }
+                }
+
+                //Log.i("http","下载进度检查");
+
+                if(i == THREAD_NUM) {
+                    t = false;
+                    Message msg = HttpActivity.handler.obtainMessage();
+                    msg.arg1 = 1;
+                    HttpActivity.handler.sendMessage(msg);
+                    Log.i("http","下载完成");
+
+                    //下载完成，清空所有静态参数
+                    HttpMainAdapter.viewList.clear();
+
+                    ToolsUtil.showToast(HttpActivity.ha,"下载完成",3000);
+
+                    es.shutdown();
+                }
+
+            }
+        } ).start();
     }
 
     /**

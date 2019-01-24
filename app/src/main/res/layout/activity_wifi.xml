@@ -10,13 +10,13 @@
         android:layout_marginTop="10dp"
         android:layout_marginStart="50dp">
         <TextView
-            android:layout_width="50dp"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:text="@string/ssid"
             android:gravity="center"
             android:textStyle="bold"/>
         <TextView
-            android:layout_width="320dp"
+            android:layout_width="350dp"
             android:layout_marginStart="30dp"
             android:layout_height="wrap_content"
             android:text="@string/wifipassword"

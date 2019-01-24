@@ -15,9 +15,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 
-public class AppExtractService extends Service {
+public class AppExtractCopyService extends Service {
 
     @Nullable
     @Override
@@ -28,7 +30,7 @@ public class AppExtractService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.i("AppExtractService","开启AppExtractService");
+        Log.i("AppExtractCopyService","开启AppExtractService");
         CopyThread ct = new CopyThread();
         ct.start();
     }
@@ -52,6 +54,11 @@ public class AppExtractService extends Service {
                     int flag = 0;
                     while((flag=is.read(Bytes))>-1){
                         os.write(Bytes,0,flag);
+                        Message msg = AppExtractActivity.handler.obtainMessage();
+                        msg.arg1=2;
+                        AppExtractActivity.nowSize = AppExtractActivity.nowSize + flag;
+                        msg.obj=countPercent(String.valueOf(AppExtractActivity.nowSize),String.valueOf(AppExtractActivity.totalSize));
+                        AppExtractActivity.handler.sendMessage(msg);
                     }
                     os.flush();
                 }catch(Exception e){
@@ -66,6 +73,7 @@ public class AppExtractService extends Service {
                 }finally{
                     if(readFile.length()!=outFile.length()){
                         Message msg = AppExtractActivity.handler.obtainMessage();
+                        msg.arg1=0;
                         AppExtractActivity.handler.sendMessage(msg);
                         ToolsUtil.showToast(AppExtractActivity.aea,appName + "复制异常,暂停复制!",2000);
                         stopSelf();
@@ -76,9 +84,38 @@ public class AppExtractService extends Service {
                 }
             }
             Message msg = AppExtractActivity.handler.obtainMessage();
+            msg.arg1=0;
             AppExtractActivity.handler.sendMessage(msg);
             ToolsUtil.showToast(AppExtractActivity.aea,"全部复制完成",1000);
             stopSelf();
         }
+    }
+
+    /**
+     * 计算百分比
+     * @return
+     */
+    public String countPercent(String n,String t){
+        Double a = Double.parseDouble(n);
+        Double b = Double.parseDouble(t);
+        BigDecimal bi1 = new BigDecimal(a.toString());
+        BigDecimal bi2 = new BigDecimal(b.toString());
+        BigDecimal divide = bi1.divide(bi2, 4, RoundingMode.HALF_UP);
+
+        String res =  (divide.doubleValue()*100) + "";
+
+        String big = res.split("\\.")[0] + ".";
+        String little = res.split("\\.")[1];
+
+        if(little.length()>2){
+            little = little.substring(0,2);
+        }
+
+        if(big.indexOf("100")>-1){
+            little="";
+            big = big.substring(0,big.length() -1);
+        }
+
+        return big + little;
     }
 }

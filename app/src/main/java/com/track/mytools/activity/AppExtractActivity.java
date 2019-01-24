@@ -2,11 +2,7 @@ package com.track.mytools.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,14 +15,18 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.track.mytools.R;
 import com.track.mytools.adapter.AppMainAdapter;
 import com.track.mytools.dao.ToolsDao;
 import com.track.mytools.entity.AppExtractEntity;
-import com.track.mytools.service.AppExtractService;
+import com.track.mytools.service.AppExtractCopyService;
+import com.track.mytools.service.AppExtractLoadService;
 import com.track.mytools.util.ToolsUtil;
 
 import java.io.File;
@@ -47,17 +47,20 @@ public class AppExtractActivity extends Activity {
     private Switch appSwitch;
     private Switch sortSwitch;
     private EditText appSearch;
+    private LinearLayout appPro;
+    private ProgressBar appCopyPro;
+    private TextView appCopyVal;
 
     private boolean isUpd = false;
 
-    private static AppMainAdapter ama;
+    public static AppMainAdapter ama;
 
     private ListView lv;
 
-    private static ArrayList<HashMap<String,Object>> systemAppList;
-    private static ArrayList<HashMap<String,Object>> normalAppList;
+    public static ArrayList<HashMap<String,Object>> systemAppList;
+    public static ArrayList<HashMap<String,Object>> normalAppList;
 
-    private static ArrayList<HashMap<String,Object>> tempList;
+    public static ArrayList<HashMap<String,Object>> tempList;
 
     public static List<HashMap<String,Object>> finallyList;
     public static String appPathStr;
@@ -65,6 +68,9 @@ public class AppExtractActivity extends Activity {
     public static AppExtractActivity aea;
 
     public static Handler handler;
+
+    public static long totalSize = 0;
+    public static long nowSize = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,6 +83,9 @@ public class AppExtractActivity extends Activity {
         appSwitch = (Switch)findViewById(R.id.appSwitch);
         sortSwitch = (Switch)findViewById(R.id.sortSwitch);
         appSearch = (EditText)findViewById(R.id.appSearch);
+        appPro = (LinearLayout)findViewById(R.id.appPro);
+        appCopyPro = (ProgressBar)findViewById(R.id.appCopyPro);
+        appCopyVal = (TextView)findViewById(R.id.appCopyVal);
 
         aea = this;
 
@@ -87,72 +96,40 @@ public class AppExtractActivity extends Activity {
         HashMap<String,Object> appMap  = ToolsDao.qryTable(sqd, AppExtractEntity.class,AppExtractActivity.this).get(0);
         appPath.setText(appMap.get("appPath").toString());
 
-        //获取app应用列表
-        PackageManager pm = this.getPackageManager();
-        List<ApplicationInfo> appInfos= pm.getInstalledApplications(0);
-
         systemAppList = new ArrayList<HashMap<String,Object>>();//系统app
         normalAppList = new ArrayList<HashMap<String,Object>>();//普通app
 
         handler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                extractBtn.setEnabled(true);
-                appUpdBtn.setEnabled(true);
+
+                if(msg.arg1 == 0){
+                    extractBtn.setEnabled(true);
+                    appUpdBtn.setEnabled(true);
+                }else if(msg.arg1 == 1){
+                    appPro.setVisibility(View.GONE);
+                    appList.setVisibility(View.VISIBLE);
+                    extractBtn.setEnabled(true);
+                    lv.setAdapter(ama);
+                }else if(msg.arg1 == 2){
+                    appCopyPro.setProgress((int)nowSize);
+                    appCopyVal.setText(msg.obj+"%");
+                }
             }
         };
 
-        //重新整理app列表
-        for(ApplicationInfo appInfo:appInfos){
-            HashMap<String,Object> tempMap = new HashMap<String,Object>();
-            try{
-                PackageInfo packageInfo = pm.getPackageInfo(appInfo.packageName,0);
+         new Thread(){
+             @Override
+             public void run() {
+                 try {
+                    Thread.sleep(1000);
+                     Intent intentService = new Intent(AppExtractActivity.this, AppExtractLoadService.class);
+                     startService(intentService);
+                 }catch(Exception e){
 
-                String appName = appInfo.loadLabel(pm).toString();              //应用名称
-                String appPackageName = appInfo.packageName;                    //应用包名
-                String appVersionNamee = packageInfo.versionName;               //应用版本
-                int appVersionCode = packageInfo.versionCode;                   //应用小版本
-                Drawable appIcon = packageInfo.applicationInfo.loadIcon(pm);    //应用图标
-                String appDir = appInfo.sourceDir;                              //应用位置
-
-                tempMap.put("appName",appName);
-                tempMap.put("appPackageName",appPackageName);
-                tempMap.put("appVersionName",appVersionNamee);
-                tempMap.put("appVersionCode",appVersionCode);
-                tempMap.put("appIcon",appIcon);
-                tempMap.put("appSize",countFileSize(appInfo.sourceDir)); // 以MB为单位
-                tempMap.put("appRealSize",new File(appInfo.sourceDir).length()); // 实际app大小
-                tempMap.put("isCheck",false); // 默认为不选中
-                tempMap.put("appDir",appDir);
-
-                //判断是否是系统应用，
-                int flags = appInfo.flags;
-                if((flags&ApplicationInfo.FLAG_SYSTEM)==ApplicationInfo.FLAG_SYSTEM){
-                    //Log.d("app  ","  是系统应用  ");
-                    systemAppList.add(tempMap);
-                }else{
-                    //Log.d("app  ","  不是系统应用  ");
-                    normalAppList.add(tempMap);
-                }
-            }catch(Exception e){
-                e.getStackTrace();
-               // Log.e("AppExtractActivity",e.getMessage());
-            }
-        }
-
-        //默认显示普通应用
-        try {
-            tempList = (ArrayList<HashMap<String, Object>>) deepCopy(normalAppList);
-        }catch(Exception e){
-            Log.i("AppExtractActivity","深复制失败：" + e.getMessage());
-        }
-
-        //默认先按从小到大排序
-        tempList = sortBySize(tempList,true);
-
-        ama = new AppMainAdapter(this,tempList);
-
-        lv.setAdapter(ama);
+                 }
+             }
+         }.start();
 
         //监听修改按钮
         appUpdBtn.setOnClickListener(new View.OnClickListener() {
@@ -183,12 +160,16 @@ public class AppExtractActivity extends Activity {
 
             @Override
             public void onClick(View v) {
+                nowSize = 0;
+                totalSize = 0;
                 finallyList = new ArrayList<HashMap<String,Object>>();
                 for(HashMap<String,Object> map : tempList){
                     if(((boolean)map.get("isCheck")) == true){
                         finallyList.add(map);
+                        totalSize = totalSize + Integer.parseInt(map.get("appRealSize").toString());
                     }
                 }
+                appCopyPro.setMax((int)totalSize);
 
                 Log.i("AppExtractActivity",finallyList.toString());
 
@@ -206,7 +187,7 @@ public class AppExtractActivity extends Activity {
                     extractBtn.setEnabled(false);
                     appUpdBtn.setEnabled(false);
 
-                    Intent intentService = new Intent(AppExtractActivity.this, AppExtractService.class);
+                    Intent intentService = new Intent(AppExtractActivity.this, AppExtractCopyService.class);
 
                     startService(intentService);
                 }
@@ -336,12 +317,13 @@ public class AppExtractActivity extends Activity {
         });
     }
 
+
     /**
      * 计算app大小
      * @param filePath
      * @return  模板 xx.xx MB(xxxxxx字节)
      */
-    private String countFileSize(String filePath) {
+    public static String countFileSize(String filePath) {
         File file = new File(filePath);
         String fileSize = "0";
         try {
@@ -367,7 +349,7 @@ public class AppExtractActivity extends Activity {
      * @param str
      * @return
      */
-    private static String splitThree(String str){
+    public static String splitThree(String str){
         int bigTime = str.length() / 3;
         int littleTime = str.length() % 3;
         String tempStr = "";
@@ -397,7 +379,7 @@ public class AppExtractActivity extends Activity {
      * @param sortMode 排序模式 true:从小到大；false:从大到小
      * @return
      */
-    private ArrayList<HashMap<String,Object>> sortBySize(ArrayList<HashMap<String,Object>> tempList,boolean sortMode){
+    public static ArrayList<HashMap<String,Object>> sortBySize(ArrayList<HashMap<String,Object>> tempList,boolean sortMode){
         //默认按从大到小排序一次
         for(int i = 0 ;i<tempList.size();i++) {
             for(int j = i + 1;j<tempList.size();j++) {
@@ -424,7 +406,7 @@ public class AppExtractActivity extends Activity {
      * @param list yuan源集合
      * @return
      */
-    public ArrayList<HashMap<String,Object>> deepCopy(ArrayList<HashMap<String,Object>> list){
+    public static ArrayList<HashMap<String,Object>> deepCopy(ArrayList<HashMap<String,Object>> list){
         ArrayList<HashMap<String,Object>> deepList = new ArrayList<HashMap<String,Object>>(list.size());
         for(HashMap<String,Object> map : list){
             HashMap<String,Object> temp = new HashMap<String,Object>();

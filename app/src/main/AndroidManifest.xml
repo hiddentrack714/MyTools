@@ -94,7 +94,8 @@
         <service android:name=".service.CopyService"></service>
         <service android:name=".service.FTPService"></service>
         <service android:name=".service.NLService"></service>
-        <service android:name=".service.AppExtractService"></service>
+        <service android:name=".service.AppExtractCopyService"></service>
+        <service android:name=".service.AppExtractLoadService"></service>
 
         <receiver android:name=".broadcast.SMSReceiver" >
             <intent-filter>

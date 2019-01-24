@@ -123,6 +123,6 @@ public class AppMainAdapter extends BaseAdapter {
         public TextView appVersionCode; //应用小版本
         public ImageView appIcon;        //应用图标
         public TextView appSize;        //应用大小
-        public CheckBox appCB;        //应用大小
+        public CheckBox appCB;          //应用选择
     }
 }

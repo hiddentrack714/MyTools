@@ -20,10 +20,21 @@
     <ListView
         android:id="@+id/appList"
         android:layout_width="match_parent"
-        android:layout_height="510dp"></ListView>
+        android:layout_height="520dp"
+        android:visibility="gone"/>
+    <LinearLayout
+        android:id="@+id/appPro"
+        android:layout_width="match_parent"
+        android:layout_height="520dp"
+        android:gravity="center">
+        <ProgressBar
+            android:layout_width="70dp"
+            android:layout_height="70dp"/>
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <!--排序条件-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -42,13 +53,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dx"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        <!--筛选条件-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:text="@string/sstj"/>
         <TextView
             android:layout_width="wrap_content"
@@ -64,6 +73,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/xt"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tqjd"/>
+        <ProgressBar
+            android:id="@+id/appCopyPro"
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:max="100"
+            android:progress="0"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
+        <TextView
+            android:id="@+id/appCopyVal"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="@string/zb"
+            android:gravity="right"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -93,6 +126,7 @@
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:text="@string/tq"
-            style="?android:attr/buttonStyle"/>
+            style="?android:attr/buttonStyle"
+            android:enabled="false"/>
     </LinearLayout>
 </LinearLayout>

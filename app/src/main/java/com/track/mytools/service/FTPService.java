@@ -44,8 +44,11 @@ public class FTPService extends Service {
         new Thread(){
             @Override
             public void run() {
+                //FTP登录
                  fTPUtil = new FTPUtil(ip,port,user,password);
+
                 if(fTPUtil.ftpLogin()){
+                    //获取文件大小
                     FTPActivity.remoteFileSize = fTPUtil.getFileSeize(serverPath,fileName);
                     Message msg = FTPActivity.handler.obtainMessage();
                     msg.arg1 = 0;
@@ -65,18 +68,19 @@ public class FTPService extends Service {
 
                     MyThread t = new MyThread();
                     t.start();
-                    Log.i("FTPSERVICE1","文件大小:" + FTPActivity.remoteFileSize);
 
+                    Log.i("FTPSERVICE1","文件大小:" + FTPActivity.remoteFileSize);
+                    //开始下载
                     boolean sucess = fTPUtil.downloadFile(fileName, localPath, serverPath);
 
                     if(sucess){
-                        ToolsUtil.showToast(FTPActivity.fTPActivity,"下载成功",2000);
+                        ToolsUtil.showToast(FTPActivity.fTPActivity,fileName+" 下载成功",2000);
                     }else{
-                        ToolsUtil.showToast(FTPActivity.fTPActivity,"下载失败",2000);
+                        ToolsUtil.showToast(FTPActivity.fTPActivity,fileName+" 下载失败",2000);
                     }
 
                 }else{
-                    Log.e("FTPSERVICE2","FTP Login Fail:");
+                    Log.e("FTPSERVICE2","FTP Login Fail");
                     ToolsUtil.showToast(FTPActivity.fTPActivity,"FTP登陆失败",2000);
                 }
             }
@@ -95,9 +99,8 @@ public class FTPService extends Service {
         public void run() {
             Log.i("FTPSERVICE3","开启下载检测");
             try{
-                Thread.sleep(1000);
+                File file = new File(localPath + fileName);
                 while(isFinish){
-                    File file = new File(localPath + fileName);
                     if(file.exists()){
                         Long fileSize = file.length();
                         Message msg = FTPActivity.handler.obtainMessage();
@@ -105,14 +108,15 @@ public class FTPService extends Service {
                         if(Long.parseLong(FTPActivity.remoteFileSize) == fileSize){
                             isFinish = false;
                             msg.arg1 = 1;
-
+                            //断开FTP连接
                             fTPUtil.ftpLogOut();
                         }else{
                             msg.arg1 = 2;
                             msg.obj = fileSize;
                         }
-
                         FTPActivity.handler.sendMessage(msg);
+                        //每隔100毫秒更新一次，不然视图无法正常刷新
+                        Thread.sleep(100);
                     }
                 }
             }catch(Exception e){
