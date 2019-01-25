@@ -1,13 +1,17 @@
 package com.track.mytools.activity;
 
 import android.app.Activity;
+import android.content.ClipboardManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.track.mytools.R;
 import com.track.mytools.adapter.WifiMainAdapter;
+import com.track.mytools.util.ToolsUtil;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -17,42 +21,58 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  *
  * 展示WIFI密码
  */
 public class WifiActivity extends Activity {
 
+    @BindView(R.id.wifiList)
+    ListView wifiList;
+
     private static int i = -1;
     private static HashMap<String ,String> map;//密码集合
     private static List<HashMap<String, String>> l;//密码键值对
     private static List<HashMap<String, String>> tempL;//临时密码键值对
 
-    private static WifiMainAdapter wma;
+    private static WifiMainAdapter wifiMainAdapter;
 
-    private ListView lv;
-
-    private static WifiActivity ha;
+    public ClipboardManager cm;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        ha = this;
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wifi);
+        ButterKnife.bind(this);
 
         l =  getWifigroup();
 
-        lv = (ListView)findViewById(R.id.wifiList);
+        wifiMainAdapter = new WifiMainAdapter(this,l);
+        wifiList.setAdapter(wifiMainAdapter);
 
-        wma = new WifiMainAdapter(ha,l);
+        cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
-        lv.setAdapter(wma);
+        wifiList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 
-        Log.i("WifiActivity_LOG2",l.toString());
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                WifiMainAdapter.ViewHolder holder = (WifiMainAdapter.ViewHolder) view.getTag();
+                String vhPassword =  holder.vhPassword.getText().toString();
+                Log.i("WifiActivity_Log",vhPassword);
 
-        super.onCreate(savedInstanceState);
+                cm.setText(vhPassword);
+                ToolsUtil.showToast(WifiActivity.this,"密码已复制到剪切板",1000);
+            }
+        });
     }
 
-
+    /**
+     * 获取Wifi列表
+     * @return
+     */
     public static List<HashMap<String, String>> getWifigroup(){
         try {
             Process process = null;
@@ -96,7 +116,7 @@ public class WifiActivity extends Activity {
             }
             r.close();
         }catch(Exception e){
-            Log.e("WifiActivity_LOG1",e.getMessage());
+            Log.e("WifiActivity_Log",e.getMessage());
         }
 
         l.addAll(tempL);

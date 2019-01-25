@@ -16,31 +16,41 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * YC调度切换模式
  *
  */
 public class YCActivity extends Activity {
 
-    private RadioButton ycSD;
-    private RadioButton ycPH;
-    private RadioButton ycXN;
-    private RadioButton ycDYC;
-    private RadioButton ycTY;
-    private RadioGroup ycRG;
-    private Button ycBtn;
+    @BindView(R.id.ycSD)
+    RadioButton ycSD;
+
+    @BindView(R.id.ycPH)
+    RadioButton ycPH;
+
+    @BindView(R.id.ycXN)
+    RadioButton ycXN;
+
+    @BindView(R.id.ycDYC)
+    RadioButton ycDYC;
+
+    @BindView(R.id.ycTY)
+    RadioButton ycTY;
+
+    @BindView(R.id.ycRG)
+    RadioGroup ycRG;
+
+    @BindView(R.id.ycBtn)
+    Button ycBtn;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_yc);
-
-        ycSD = findViewById(R.id.ycSD);
-        ycPH = findViewById(R.id.ycPH);
-        ycXN = findViewById(R.id.ycXN);
-        ycDYC = findViewById(R.id.ycDYC);
-        ycTY = findViewById(R.id.ycTY);
-        ycRG = findViewById(R.id.ycRG);
-        ycBtn = findViewById(R.id.ycBtn);
+        ButterKnife.bind(this);
 
         //读取当当前模式
         Process process = null;
@@ -50,7 +60,7 @@ public class YCActivity extends Activity {
             process = Runtime.getRuntime().exec("cat /data/wipe_mode");
             reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line = reader.readLine();
-            Log.e("YCActivity","当前模式:" + line);
+            Log.e("YCActivity_Log","当前模式:" + line);
 
             if("powersave".equals(line)){
                 //省电
@@ -108,13 +118,11 @@ public class YCActivity extends Activity {
                    commod[0] = "echo \"disabled\" > /data/wipe_mode";
                }
 
-               Log.i("YCActivity","设置电量为:" + mode);
+               Log.i("YCActivity_Log","设置电量为:" + mode);
 
                ToolsUtil.exeCommod(commod);
             }
         });
-
-        super.onCreate(savedInstanceState);
     }
 }
 

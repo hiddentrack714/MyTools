@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import jcifs.netbios.NbtAddress;
 
 /**
@@ -43,39 +45,38 @@ import jcifs.netbios.NbtAddress;
 
 public class LanActivity extends Activity {
 
-    private Button scanBtn; //扫描按键
-    private ProgressBar lanPro; //扫描按键
+    @BindView(R.id.scanBtn)
+    Button scanBtn; //扫描按键
 
-    private static LanMainAdapter lma;
+    @BindView(R.id.lanPro)
+    ProgressBar lanPro; //扫描按键
 
-    private static LanActivity la;
+    @BindView(R.id.lanList)
+    ListView lanList;
 
-    private ListView lv;
+    private static LanMainAdapter lanMainAdapter;
 
-    private static Handler handler;
+    private static LanActivity lanActivity;
+
+    private static Handler lanActivityHandler;
 
     private static List<HashMap<String, String>> l;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        la = this;
-
         setContentView(R.layout.activity_lan);
+        ButterKnife.bind(this);
 
-        scanBtn = (Button)findViewById(R.id.scanBtn);
-        lanPro = (ProgressBar) findViewById(R.id.lanPro);
-
-        lv = (ListView)findViewById(R.id.lanList);
+        lanActivity = this;
 
         //扫描按键监听
         scanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(LanActivity.l!=null &&  LanActivity.lma!=null){
+                if(LanActivity.l!=null &&  LanActivity.lanMainAdapter!=null){
                     LanActivity.l.clear();
-                    LanActivity.lma.notifyDataSetChanged();
+                    LanActivity.lanMainAdapter.notifyDataSetChanged();
                 }
                 lanPro.setVisibility(View.VISIBLE);
                 scanBtn.setEnabled(false);
@@ -83,12 +84,12 @@ public class LanActivity extends Activity {
             }
         });
 
-        handler = new Handler(){
+        lanActivityHandler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 lanPro.setVisibility(View.GONE);
                 scanBtn.setEnabled(true);
-                lv.setAdapter(lma);
+                lanList.setAdapter(lanMainAdapter);
             }
         };
     }
@@ -116,7 +117,7 @@ public class LanActivity extends Activity {
                     socket = new DatagramSocket();
                     int position = 2;
                     while (position < 255) {
-                        Log.e("kalshen", "run: udp-" + substring + position);
+                        Log.e("LanActivity_Log", "run: udp-" + substring + position);
                         dp.setAddress(InetAddress.getByName(substring + String.valueOf(position)));
                         socket.send(dp);
                         position++;
@@ -165,7 +166,7 @@ public class LanActivity extends Activity {
                 }
             }
         } catch (SocketException e) {
-            Log.i("kalshen", "SocketException");
+            Log.i("LanActivity_Log", "SocketException");
             e.printStackTrace();
         }
         return hostIp;
@@ -269,19 +270,19 @@ public class LanActivity extends Activity {
 
                     map.put("ip",hostIP);//IP
 
-                    map.put("mac",getLocalMacAddressFromIp(la));//Mac
+                    map.put("mac",getLocalMacAddressFromIp(lanActivity));//Mac
 
                     l.add(map);
 
-                    lma = new LanMainAdapter(la,l);
+                    lanMainAdapter = new LanMainAdapter(lanActivity,l);
 
-                    Message message = LanActivity.handler.obtainMessage();
+                    Message message = LanActivity.lanActivityHandler.obtainMessage();
 
-                    message.obj = lma;
+                    message.obj = lanMainAdapter;
 
-                    LanActivity.handler.sendMessage(message);
+                    LanActivity.lanActivityHandler.sendMessage(message);
 
-                    Log.i("LanActivity",l.toString());
+                    Log.i("LanActivity_Log",l.toString());
 
                 } catch (IOException e) {
                     e.printStackTrace();

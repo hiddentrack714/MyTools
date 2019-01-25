@@ -18,14 +18,17 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.track.mytools.R;
-import com.track.mytools.service.NLService;
 import com.track.mytools.dao.ToolsDao;
 import com.track.mytools.entity.NLEntity;
+import com.track.mytools.service.NLService;
 import com.track.mytools.util.ToolsUtil;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  *
@@ -36,20 +39,44 @@ import java.util.HashMap;
 
 public class NLActivity extends Activity {
 
-    private EditText nlX;  //蚂蚁森林图标x轴位置
-    private EditText nlY;  //蚂蚁森林图标y线位置
-    private EditText ballX;  //能量球x轴位置
-    private EditText ballY;  //能量球y线位置
-    private Button nlStartBtn;   //开启服务
-    private EditText nlHour;     //时
-    private EditText nlMinute;   //分
-    private CheckBox nlCheck;    //是否是收获日当天
-    private EditText nlClick;    //能量球点击次数
-    private Button nlUpdBtn;  //修改按钮
+    @BindView(R.id.nlX)
+    EditText nlX;  //蚂蚁森林图标x轴位置
 
-    private EditText nlDiffHour;
-    private EditText nlDiffMinute;
-    private EditText nlDiffSecond;
+    @BindView(R.id.nlY)
+    EditText nlY;  //蚂蚁森林图标y线位置
+
+    @BindView(R.id.ballX)
+    EditText ballX;  //能量球x轴位置
+
+    @BindView(R.id.ballY)
+    EditText ballY;  //能量球y线位置
+
+    @BindView(R.id.nlStartBtn)
+    Button nlStartBtn;   //开启服务
+
+    @BindView(R.id.nlHour)
+    EditText nlHour;     //时
+
+    @BindView(R.id.nlMinute)
+    EditText nlMinute;   //分
+
+    @BindView(R.id.nlCheck)
+    CheckBox nlCheck;    //是否是收获日当天
+
+    @BindView(R.id.nlClick)
+    EditText nlClick;    //能量球点击次数
+
+    @BindView(R.id.nlUpdBtn)
+    Button nlUpdBtn;  //修改按钮
+
+    @BindView(R.id.nlDiffHour)
+    EditText nlDiffHour;
+
+    @BindView(R.id.nlDiffMinute)
+    EditText nlDiffMinute;
+
+    @BindView(R.id.nlDiffSecond)
+    EditText nlDiffSecond;
 
     private static boolean isStart = false; // 服务是否启动
     private static boolean isNow;   // 是否是成熟日当天
@@ -60,43 +87,25 @@ public class NLActivity extends Activity {
 
     public static Long diffTime; //时间差值
 
-    public static NLActivity nl;
-
     public static NLEntity []nleArray;
 
     private static Intent intentService;
 
     private PowerManager.WakeLock wakeLock;
 
-    public static Handler handler;
+    public static Handler nlActivityHandler;
 
     private static int lightNum;  //屏幕亮度
 
-    public static int clickTime;
+    public static int clickTime; //点击数次
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-
-        nl = this;
-
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nl);
+        ButterKnife.bind(this);
 
         lightNum = getScreenBrightness(); //获取屏幕亮度
-
-        nlX = (EditText)findViewById(R.id.nlX);
-        nlY = (EditText)findViewById(R.id.nlY);
-        nlHour = (EditText)findViewById(R.id.nlHour);
-        nlMinute = (EditText)findViewById(R.id.nlMinute);
-        nlStartBtn = (Button)findViewById(R.id.nlStartBtn);
-        nlCheck  = (CheckBox)findViewById(R.id.nlCheck);
-        ballX = (EditText)findViewById(R.id.ballX);
-        ballY = (EditText)findViewById(R.id.ballY);
-        nlClick = (EditText)findViewById(R.id.nlClick);
-        nlUpdBtn = (Button)findViewById(R.id.nlUpdBtn);
-
-        nlDiffHour = (EditText)findViewById(R.id.nlDiffHour);
-        nlDiffMinute = (EditText)findViewById(R.id.nlDiffMinute);
-        nlDiffSecond = (EditText)findViewById(R.id.nlDiffSecond);
 
         SQLiteDatabase sdb = ToolsDao.getDatabase();
         HashMap<String,Object> map =  ToolsDao.qryTable(sdb,NLEntity.class,NLActivity.this).get(0);
@@ -109,7 +118,7 @@ public class NLActivity extends Activity {
         nlMinute.setText(map.get("nlMinute").toString());
         nlClick.setText(map.get("nlClick").toString());
 
-        handler = new Handler(){
+        nlActivityHandler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 nlDiffHour.setText(((NLService.NLTime)msg.obj).getHour());
@@ -143,7 +152,7 @@ public class NLActivity extends Activity {
 
                 }
 
-                Log.i("NLActivity2",lightNum+"");
+                Log.i("NLActivity_Log",lightNum+"");
 
                 if(isStart == false){
                     //1,计算到达时间
@@ -186,7 +195,7 @@ public class NLActivity extends Activity {
 
                     diffTime = growTime - System.currentTimeMillis();
 
-                    Log.i("NLActivity1",diffTime + "");
+                    Log.i("NLActivity_Log",diffTime + "");
 
                     if(diffTime <= 0){
                         //差值计算错误；
@@ -194,7 +203,7 @@ public class NLActivity extends Activity {
                     }else{
                         //2,开启服务
                         intentService = new Intent(NLActivity.this,NLService.class);
-                        Log.i("NLActivity","开启服务");
+                        Log.i("NLActivity_Log","开启服务");
                         startService(intentService);
 
                         nlStartBtn.setText("服务启动中，点击停止");
@@ -294,7 +303,6 @@ public class NLActivity extends Activity {
             }
         });
 
-        super.onCreate(savedInstanceState);
     }
 
     @Override

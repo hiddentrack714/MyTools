@@ -30,7 +30,7 @@ public class CopyService extends Service {
     public void onCreate() {
         super.onCreate();
         //启动线程，每隔1秒检测复制的内容是否有变化
-        Log.i("COPY_SERVICE1","开启多线程...");
+        Log.i("CopyService_Log","开启多线程...");
         new Thread(new CopyThread()).start();
     }
 
@@ -54,15 +54,15 @@ public class CopyService extends Service {
                     Thread.sleep(100);
                     } catch (Exception e) {
                         e.getStackTrace();
-                        Log.e("COPY_SERVICE2", e.getMessage());
+                        Log.e("CopyService_Log", e.getMessage());
                     }
-                    Log.i("COPY_SERVICE", "检查...");
+                    Log.i("CopyService_Log", "检查...");
 
                     ClipData data = CopyActivity.cm.getPrimaryClip();
                     if (data != null) {
                         ClipData.Item item = data.getItemAt(0);
                         String content = item.getText().toString();
-                        Log.i("COPY_SERVICE6",content);
+                        Log.i("CopyService_Log",content);
                         //第一次复制
                         if (firstCopy == true) {
                             oldStr = content;
@@ -108,7 +108,7 @@ public class CopyService extends Service {
             w.close();
         }catch(Exception e){
             e.getStackTrace();
-            Log.e("COPY_SERVICE3",e.getMessage());
+            Log.e("CopyService_Log",e.getMessage());
         }
     }
 }

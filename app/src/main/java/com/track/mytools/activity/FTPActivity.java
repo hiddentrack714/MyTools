@@ -26,27 +26,48 @@ import com.track.mytools.util.ToolsUtil;
 import java.io.File;
 import java.util.HashMap;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * FTP下载
  */
 public class FTPActivity extends Activity {
 
-    private EditText ftpIP;
-    private EditText ftpPORT;
-    private EditText ftpUser;
-    private EditText ftpPassword;
-    private EditText ftpServerPath;
-    private EditText ftpLocalPath;
-    private EditText ftpFileName;
+    @BindView(R.id.ftpIP)
+    EditText ftpIP;
 
-    private ProgressBar ftpPro;
+    @BindView(R.id.ftpPORT)
+    EditText ftpPORT;
 
-    private Button ftpDownBtn;  //下载
-    private Button ftpUpdBtn;   //修改
+    @BindView(R.id.ftpUser)
+    EditText ftpUser;
+
+    @BindView(R.id.ftpPassword)
+    EditText ftpPassword;
+
+    @BindView(R.id.ftpServerPath)
+    EditText ftpServerPath;
+
+    @BindView(R.id.ftpLocalPath)
+    EditText ftpLocalPath;
+
+    @BindView(R.id.ftpFileName)
+    EditText ftpFileName;
+
+    @BindView(R.id.ftpPro)
+    ProgressBar ftpPro;
+
+    @BindView(R.id.ftpDownBtn)
+    Button ftpDownBtn;  //下载
+
+    @BindView(R.id.ftpUpdBtn)
+    Button ftpUpdBtn;   //修改
+
+    @BindView(R.id.ftpProText)
+    TextView ftpProText;
 
     public static Handler handler;
-
-    private TextView ftpProText;
 
     public static String remoteFileSize; // ftp远端文件大小;
 
@@ -64,21 +85,7 @@ public class FTPActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ftp);
-
-        ftpIP = (EditText)findViewById(R.id.ftpIP);
-        ftpPORT = (EditText)findViewById(R.id.ftpPORT);
-        ftpUser = (EditText)findViewById(R.id.ftpUser);
-        ftpServerPath = (EditText)findViewById(R.id.ftpServerPath);
-        ftpLocalPath = (EditText)findViewById(R.id.ftpLocalPath);
-        ftpPassword = (EditText)findViewById(R.id.ftpPassword);
-        ftpFileName = (EditText)findViewById(R.id.ftpFileName);
-
-        ftpDownBtn = (Button)findViewById(R.id.ftpDownBtn);
-        ftpUpdBtn = (Button)findViewById(R.id.ftpUpdBtn);
-
-        ftpPro = (ProgressBar)findViewById(R.id.ftpPro);
-
-        ftpProText = (TextView)findViewById(R.id.ftpProText);
+        ButterKnife.bind(this);
 
         fTPActivity = this;
 
@@ -100,13 +107,15 @@ public class FTPActivity extends Activity {
             @Override
             public boolean handleMessage(Message arg0) {
                 String viewText = arg0.obj +"/"+ remoteFileSize;
+
                 //设置进度条最大值
                 if(arg0.arg1 == 0){
                     ftpPro.setMax(Integer.parseInt(remoteFileSize));
                 }
+
                 //下载完成，停止服务
                 if(arg0.arg1 == 1){
-                    Log.i("FTPActivity1","下载完成");
+                    Log.i("FTPActivity_Log","下载完成");
                     ftpDownBtn.setEnabled(true);
                     ftpUpdBtn.setEnabled(true);
 
@@ -118,11 +127,12 @@ public class FTPActivity extends Activity {
                     notificationManager.notify(0x3,mBuilder.build());
                     stopService(intent);
                 }
+
                 //进度条更新
                 if(arg0.arg1 == 2){
                     ftpPro.setProgress(Integer.parseInt(arg0.obj+""));
                     ftpProText.setText(viewText);
-                    //Log.i("FTPActivity1","下载进度更新:"+viewText);
+
                     mBuilder.setProgress(Integer.parseInt(remoteFileSize),Integer.parseInt(arg0.obj+""),false);
                     notificationManager.notify(0x3,mBuilder.build());
                 }
@@ -158,24 +168,25 @@ public class FTPActivity extends Activity {
                 ftpVal[6] = fileName;
 
                 if("".equals(fileName.trim())){
-                    ToolsUtil.showToast(fTPActivity,"下载文件不能为空",3000);
+                    ToolsUtil.showToast(FTPActivity.this,"下载文件不能为空",3000);
                     return;
                 }
 
                 File file = new File(localPath+fileName);
+
                 //如果要下载的文件本地已经存在，则弹出，删除，修改名称，还是取消
                 if(file.exists()){
                     AlertDialog.Builder normalDialog =
                             new AlertDialog.Builder(FTPActivity.this);
-                    //normalDialog.setIcon(R.drawable.icon_dialog);
                     normalDialog.setTitle("选择").setMessage("本地存在同名文件或文件夹，请选择?");
+
                     normalDialog.setPositiveButton("取消",
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    // ...To-do
                                 }
                             });
+
                     normalDialog.setNeutralButton("删除本地文件",
                             new DialogInterface.OnClickListener() {
                                 @Override
@@ -188,6 +199,7 @@ public class FTPActivity extends Activity {
                                     }
                                 }
                             });
+
                     normalDialog.setNegativeButton("修改本地文件名", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

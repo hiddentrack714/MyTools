@@ -31,7 +31,7 @@ public class ToolsDao {
                     try{
                         sdb = SQLiteDatabase.openOrCreateDatabase(MainActivity.ASSETS_DB_PATH,null);
                     }catch(Exception e){
-                        Log.e("ToolsDao",e.getMessage());
+                        Log.e("ToolsDao_Log",e.getMessage());
                     }
                 }
             }
@@ -85,17 +85,17 @@ public class ToolsDao {
         }catch(android.database.sqlite.SQLiteException e){
             //数据库查询失败，采取重新复制db策略
             //应用更新的时候，防止db有更新
-            Log.e("ToolsDao","db查询异常:" + e.getMessage());
+            Log.e("ToolsDao_Log","db查询异常:" + e.getMessage());
             boolean isSuccess = MainActivity.initCopyFile(MainActivity.ASSETS_DB_PATH,"mytools.db",context);
 
             if(isSuccess){
-                Log.e("ToolsDao","db初始化完成,请重新进入该界面");
+                Log.e("ToolsDao_Log","db初始化完成,请重新进入该界面");
 
                 cursor = db.query(tableName, null, null, null, null, null, null);
             }
         }catch(Exception e){
 
-            Log.e("ToolsDao",e.getMessage());
+            Log.e("ToolsDao_Log",e.getMessage());
         }
 
         Field[] declaredFields = cl.getDeclaredFields();
@@ -107,11 +107,11 @@ public class ToolsDao {
 
         System.arraycopy(fields,0,allFields,declaredFields.length,fields.length);
 
-        Log.i("EntityNum",cl.getName()+"属性数量:" +allFields.length);
+        Log.i("ToolsDao_Log",cl.getName()+"属性数量:" +allFields.length);
 
         //判断游标是否为空
         if(cursor.moveToFirst()){
-            Log.i("DaoCursor","游标长度:" + cursor.getCount()+"");
+            Log.i("ToolsDao_Log","游标长度:" + cursor.getCount()+"");
             //遍历游标
             for(int i = 0 ;i < cursor.getCount() ;i++){
                 cursor.moveToPosition(i);
@@ -119,7 +119,7 @@ public class ToolsDao {
                 HashMap<String,Object> map = new HashMap<String,Object>();
                 for(Field f : allFields){
                     int index = cursor.getColumnIndex(f.getName());
-                    Log.i("Daoindex",f.getName()+":"+index);
+                    Log.i("ToolsDao_Log",f.getName()+":"+index);
                     String value = cursor.getString(index);
                     map.put(f.getName(),value);
                 }
@@ -145,10 +145,10 @@ public class ToolsDao {
         TableNameAnnotation tn =  (TableNameAnnotation)cl.getAnnotation(TableNameAnnotation.class);
 
         String tableName = tn.value();
-        Log.i("ToolsDao",tableName);
+        Log.i("ToolsDao_Log",tableName);
         //2,判断表是否存在
         boolean isExist = tabbleIsExist(db,tableName);
-        Log.i("isExist",tableName+":"+isExist);
+        Log.i("ToolsDao_Log",tableName+":"+isExist);
         if(!isExist){
             //3,创建表
             String table="create table "+ tableName +"(id integer primary key autoincrement";
@@ -159,7 +159,7 @@ public class ToolsDao {
 
             table = table + ")";
 
-            Log.i("ToolsDao",table);
+            Log.i("ToolsDao_Log",table);
 
             db.execSQL(table);
         }
@@ -198,7 +198,7 @@ public class ToolsDao {
         Cursor cursor = null;
         try {
             String sql = "select count(*) as c from sqlite_master where type ='table' and name ='"+tableName.trim()+"' ";
-            Log.i("QryisExistSql",sql);
+            Log.i("ToolsDao_Log",sql);
             cursor = db.rawQuery(sql, null);
             cursor.moveToPosition(0);
             int count = cursor.getInt(0);

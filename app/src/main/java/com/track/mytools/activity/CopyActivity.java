@@ -10,37 +10,34 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 
 import com.track.mytools.R;
-import com.track.mytools.service.CopyService;
 import com.track.mytools.dao.ToolsDao;
 import com.track.mytools.entity.CopyEntity;
+import com.track.mytools.service.CopyService;
 
 import java.util.HashMap;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * 快捷复制
  */
 public class CopyActivity extends Activity {
 
-    /**
-     * 手机端多次复制保存
-     * @param savedInstanceState
-     */
+    @BindView(R.id.copyUseBtn)
+    Button copyUseBtn; // 服务启动/关闭按钮
 
-    private Button copyUseBtn; // 服务启动/关闭按钮
-    private Button copyUpdBtn; //修改
+    @BindView(R.id.copyUpdBtn)
+    Button copyUpdBtn; //修改
 
-    public static EditText copyPhoneFile; //手机端保存文件
-
-    private LinearLayout copyPhoneLayout; //手机模式
+    @BindView(R.id.copyPhoneFile)
+    EditText copyPhoneFile; //手机端保存文件
 
     public static String saveFile;//文件保存位置
 
     private static boolean isStart = false; //是否开始监听服务
-
-    public static CopyActivity copyActivity;
 
     public static ClipboardManager cm;
 
@@ -50,11 +47,7 @@ public class CopyActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_copy);
-
-        copyPhoneFile = (EditText)findViewById(R.id.copyPhoneFile);
-        copyPhoneLayout = (LinearLayout)findViewById(R.id.copyPhoneLayout);
-        copyUseBtn = (Button)findViewById(R.id.copyUseBtn);
-        copyUpdBtn = (Button)findViewById(R.id.copyUpdBtn);
+        ButterKnife.bind(this);
 
         cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
@@ -98,7 +91,9 @@ public class CopyActivity extends Activity {
                     SQLiteDatabase sdb =  ToolsDao.getDatabase();
                     HashMap<String,Object> dataMap = new HashMap<String,Object>();
                     dataMap.put("copyPhoneFile",copyPhoneFile.getText().toString());
-                    Log.i("1111111111",(String)map.get("id"));
+
+                    Log.i("CopyActivity_Log",(String)map.get("id"));
+
                     dataMap.put("id",map.get("id"));
                     ToolsDao.saveOrUpdIgnoreExsit(sdb,dataMap,CopyEntity.class);
 

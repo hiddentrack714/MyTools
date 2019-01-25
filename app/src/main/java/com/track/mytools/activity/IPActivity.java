@@ -46,20 +46,49 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class IPActivity extends Activity {
-    private Spinner staticWifiId;//WifiID
-    private EditText staticPassword;//密码
-    private EditText staticIp;//静态IP
-    private EditText staticGateWay;//网关
-    private EditText staticSuffix;//网络前置长度
-    private Spinner staticDNS1;//DNS1
-    private LinearLayout iplayout;//静态Ip设置属性布局框
-    private LinearLayout wifilayout;//WiFiID和password属性布局框
-    private RadioGroup ipRG;
-    private Button ipSetBtn;//设置按钮
-    private Button ipForgetBtn;//忘记按钮
-    private Button ipUpdBtn;//修改按钮
-    private Switch staticWifiStatus; //wifi开关
+
+    @BindView(R.id.staticWifiId)
+    Spinner staticWifiId;//WifiID
+
+    @BindView(R.id.staticPassword)
+    EditText staticPassword;//密码
+
+    @BindView(R.id.staticIp)
+    EditText staticIp;//静态IP
+
+    @BindView(R.id.staticGateWay)
+    EditText staticGateWay;//网关
+
+    @BindView(R.id.staticSuffix)
+    EditText staticSuffix;//网络前置长度
+
+    @BindView(R.id.staticDNS1)
+    Spinner staticDNS1;//DNS1
+
+    @BindView(R.id.iplayout)
+    LinearLayout iplayout;//静态Ip设置属性布局框
+
+    @BindView(R.id.wifilayout)
+    LinearLayout wifilayout;//WiFiID和password属性布局框
+
+    @BindView(R.id.ipRG)
+    RadioGroup ipRG;
+
+    @BindView(R.id.ipSetBtn)
+    Button ipSetBtn;//设置按钮
+
+    @BindView(R.id.ipForgetBtn)
+    Button ipForgetBtn;//忘记按钮
+
+    @BindView(R.id.ipUpdBtn)
+    Button ipUpdBtn;//修改按钮
+
+    @BindView(R.id.staticWifiStatus)
+    Switch staticWifiStatus; //wifi开关
 
     private WifiManager mwifiManager;
     private String wifiId;
@@ -78,7 +107,7 @@ public class IPActivity extends Activity {
 
     private static List<ScanResult> wifiList;
 
-    public static Handler handler;
+    public static Handler ipActivityHandler;
 
     private HashMap<String,Integer> wifiIdMap = new HashMap<String,Integer>();//wifi:id键值对
 
@@ -86,22 +115,9 @@ public class IPActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ip);
+        ButterKnife.bind(this);
 
-        staticWifiId = (Spinner)findViewById(R.id.staticWifiId);
-        staticPassword = (EditText)findViewById(R.id.staticPassword);
-        staticIp = (EditText)findViewById(R.id.staticIp);
-        staticGateWay = (EditText)findViewById(R.id.staticGateWay);
-        staticSuffix = (EditText)findViewById(R.id.staticSuffix);
-        staticDNS1 = (Spinner)findViewById(R.id.staticDNS1);
-        iplayout = (LinearLayout)findViewById(R.id.iplayout);
-        wifilayout = (LinearLayout)findViewById(R.id.wifilayout);
-        ipRG = (RadioGroup)findViewById(R.id.ipRG);
-        ipSetBtn = (Button)findViewById(R.id.ipSetBtn);
-        ipForgetBtn = (Button)findViewById(R.id.ipForgetBtn);
-        ipUpdBtn = (Button)findViewById(R.id.ipUpdBtn);
-        staticWifiStatus = (Switch)findViewById(R.id.staticWifiStatus);
-
-        mwifiManager = (WifiManager) IPActivity.this.getSystemService(WIFI_SERVICE);
+        mwifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
 
         //查询静态IP设置的参数
         SQLiteDatabase sdb = ToolsDao.getDatabase();
@@ -122,10 +138,10 @@ public class IPActivity extends Activity {
         //获取定位服务权限
         mHasPermission = checkPermission();
         if (!mHasPermission) {
-            Log.i("IPActivity","没有权限");
+            Log.i("IPActivity_Log","没有权限");
             requestLocationPermission();
         }else{
-            Log.i("IPActivity","拥有权限");
+            Log.i("IPActivity_Log","拥有权限");
             wifiList = getWifiList();
         }
 
@@ -137,6 +153,7 @@ public class IPActivity extends Activity {
             wifiIdMap.put(sr.SSID,wifiIndex);
             wifiIndex++;
         }
+
         ArrayAdapter adpter = new ArrayAdapter(this,R.layout.activity_wifilist,R.id.wifilistText,tempList);
         staticWifiId.setAdapter(adpter);
 
@@ -146,7 +163,7 @@ public class IPActivity extends Activity {
 
         //判断是否在Wifi连接下
         if(isWifi){
-            Log.i("IPActivity","当前Wifi状态:" + wifiStr);
+            Log.i("IPActivity_Log","当前Wifi状态:" + wifiStr);
             List<HashMap<String,String>> list = WifiActivity.getWifigroup();
 
             //针对已有WiFi列表做键值对
@@ -154,7 +171,7 @@ public class IPActivity extends Activity {
             for(HashMap wifiMap:list){
                 String ssid = wifiMap.get("ssid").toString();
                 if(wifiId.indexOf(ssid) > 0){
-                    Log.i("IPActivity","WIFI:" + wifiIdMap);
+                    Log.i("IPActivity_Log","WIFI:" + wifiIdMap);
                     int index = wifiIdMap.get(ssid);
                     staticWifiId.setSelection(wifiIdMap.get(ssid));
                     staticPassword.setText(wifiMap.get("passwrd").toString());
@@ -169,14 +186,13 @@ public class IPActivity extends Activity {
                 ipRG.check(R.id.wifiMode2);
             }
         }else{
-            Log.i("IPActivity","当前Wifi状态:未连接");
+            Log.i("IPActivity_Log","当前Wifi状态:未连接");
             ipRG.check(R.id.wifiMode3);
             iplayout.setVisibility(View.GONE);
         }
 
-
         //运行在主线程的Handler,它将监听所有的消息（Message）
-        handler = new Handler(new Handler.Callback() {
+        ipActivityHandler = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message arg0) {
                 //接受到另一个线程的Message，拿到它的参数，这个参数代表了进度
@@ -241,7 +257,7 @@ public class IPActivity extends Activity {
                     String staticDNS1Str = staticDNS1.getSelectedItem().toString().split(":")[1];
 
                     mWifiConfiguration = CreateWifiInfo(staticWifiIdStr, staticPasswordStr, 3);
-                    System.out.println("mWifiConfiguration"+mWifiConfiguration);
+
                     int wcgID = mwifiManager.addNetwork(mWifiConfiguration);
                     boolean bbb = mwifiManager.enableNetwork(wcgID, true);
 
@@ -251,7 +267,7 @@ public class IPActivity extends Activity {
                                 InetAddress.getByName(staticGateWayStr),
                                 InetAddress.getAllByName(staticDNS1Str));
                     }catch(Exception e){
-                        Log.e("",e.getMessage());
+                        Log.e("IPActivity_Log",e.getMessage());
                     }
                 }else{
                     if(mwifiManager.isWifiEnabled()){
@@ -401,7 +417,7 @@ public class IPActivity extends Activity {
     public String getWifiSetting(Context context){
         WifiManager wifiManager = (WifiManager) context.getSystemService(WIFI_SERVICE);
         DhcpInfo dhcpInfo=wifiManager.getDhcpInfo();
-        //netmaskIpL=dhcpInfo.netmask;
+
         if(dhcpInfo.leaseDuration==0){
             return "StaticIP";
         }else{
@@ -442,15 +458,12 @@ public class IPActivity extends Activity {
         System.out.println("conconconm" + config);
         int updateNetwork = manager.updateNetwork(config);
         boolean saveConfiguration = manager.saveConfiguration();
-        System.out.println("updateNetwork" + updateNetwork + saveConfiguration);
-
-        System.out.println("ttttttttttt" + "成功");
 
         int netId = manager.addNetwork(config);
         manager.disableNetwork(netId);
         boolean  flag  = manager.enableNetwork(netId, true);
-        Log.e("netId",netId+"");
-        Log.e("flag",flag+"");
+        Log.e("IPActivity_Log",netId+"");
+        Log.e("IPActivity_Log",flag+"");
 
     }
 
@@ -650,7 +663,7 @@ public class IPActivity extends Activity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-       Log.i("IPActivity","定位权限回调");
+       Log.i("IPActivity_Log","定位权限回调");
         wifiList = getWifiList();
     }
 
@@ -691,29 +704,29 @@ public class IPActivity extends Activity {
                 int i = 0;
                 while(isCon) {
                     Thread.sleep(2000);
-                    Log.i("IPActivity","wifi连接监听");
+                    Log.i("IPActivity_Log","wifi连接监听");
                     if(isWifi(mContext)){
                         isCon = false;
-                        Log.i("IPActivity","wifi连接成功");
+                        Log.i("IPActivity_Log","wifi连接成功");
 
-                        Message msg = IPActivity.handler.obtainMessage();
+                        Message msg = IPActivity.ipActivityHandler.obtainMessage();
                         String wifiStr = getWifiSetting(mContext);
                         if("DHCP".equals(wifiStr)){
                             msg.arg1 = R.id.wifiMode1;
                         }else{
                             msg.arg1 = R.id.wifiMode2;
                         }
-                        IPActivity.handler.sendMessage(msg);
+                        IPActivity.ipActivityHandler.sendMessage(msg);
                     }else{
-                        Log.i("IPActivity","wifi连接失败，继续监听");
+                        Log.i("IPActivity_Log","wifi连接失败，继续监听");
                     }
                     i++;
                     if(i == time){
                         isCon = false;
-                        Log.i("IPActivity","wifi连接监听停止，划拨连接状态为【未连接】");
-                        Message msg = IPActivity.handler.obtainMessage();
+                        Log.i("IPActivity_Log","wifi连接监听停止，划拨连接状态为【未连接】");
+                        Message msg = IPActivity.ipActivityHandler.obtainMessage();
                         msg.arg1 = R.id.wifiMode3;
-                        IPActivity.handler.sendMessage(msg);
+                        IPActivity.ipActivityHandler.sendMessage(msg);
                     }
                 }
             }catch (Exception e){

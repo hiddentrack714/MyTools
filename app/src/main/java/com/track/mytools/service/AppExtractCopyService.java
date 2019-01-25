@@ -30,11 +30,15 @@ public class AppExtractCopyService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.i("AppExtractCopyService","开启AppExtractService");
+        Log.i("AppExtractCopyService_Log","开启AppExtractService");
         CopyThread ct = new CopyThread();
         ct.start();
     }
 
+    /**
+     * App提取线程
+     *
+     */
     class CopyThread extends Thread{
 
         @Override
@@ -54,11 +58,11 @@ public class AppExtractCopyService extends Service {
                     int flag = 0;
                     while((flag=is.read(Bytes))>-1){
                         os.write(Bytes,0,flag);
-                        Message msg = AppExtractActivity.handler.obtainMessage();
+                        Message msg = AppExtractActivity.appExtractActivityHandler.obtainMessage();
                         msg.arg1=2;
                         AppExtractActivity.nowSize = AppExtractActivity.nowSize + flag;
                         msg.obj=countPercent(String.valueOf(AppExtractActivity.nowSize),String.valueOf(AppExtractActivity.totalSize));
-                        AppExtractActivity.handler.sendMessage(msg);
+                        AppExtractActivity.appExtractActivityHandler.sendMessage(msg);
                     }
                     os.flush();
                 }catch(Exception e){
@@ -72,21 +76,21 @@ public class AppExtractCopyService extends Service {
                     }catch(Exception e1){}
                 }finally{
                     if(readFile.length()!=outFile.length()){
-                        Message msg = AppExtractActivity.handler.obtainMessage();
+                        Message msg = AppExtractActivity.appExtractActivityHandler.obtainMessage();
                         msg.arg1=0;
-                        AppExtractActivity.handler.sendMessage(msg);
-                        ToolsUtil.showToast(AppExtractActivity.aea,appName + "复制异常,暂停复制!",2000);
+                        AppExtractActivity.appExtractActivityHandler.sendMessage(msg);
+                        ToolsUtil.showToast(AppExtractActivity.appExtractActivity,appName + "复制异常,暂停复制!",2000);
                         stopSelf();
                         break;
                     }else{
-                        ToolsUtil.showToast(AppExtractActivity.aea,appName + "复制，检测完成",300);
+                        ToolsUtil.showToast(AppExtractActivity.appExtractActivity,appName + "复制，检测完成",300);
                     }
                 }
             }
-            Message msg = AppExtractActivity.handler.obtainMessage();
+            Message msg = AppExtractActivity.appExtractActivityHandler.obtainMessage();
             msg.arg1=0;
-            AppExtractActivity.handler.sendMessage(msg);
-            ToolsUtil.showToast(AppExtractActivity.aea,"全部复制完成",1000);
+            AppExtractActivity.appExtractActivityHandler.sendMessage(msg);
+            ToolsUtil.showToast(AppExtractActivity.appExtractActivity,"全部复制完成",1000);
             stopSelf();
         }
     }

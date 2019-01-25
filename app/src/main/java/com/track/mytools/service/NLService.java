@@ -28,7 +28,7 @@ public class NLService extends Service implements Runnable {
 
     @Override
     public void onCreate() {
-        Log.i("NLService1", "进入服务");
+        Log.i("NLService_Log", "进入服务");
 
         handlerMain.postDelayed(this, NLActivity.diffTime);//每两秒执行一次runnable.
 
@@ -76,10 +76,10 @@ public class NLService extends Service implements Runnable {
         try {
             //开启定时后等待启动服务
             //1,打开支付宝
-            Log.i("NLService2", "打开支付宝");
+            Log.i("NLService_Log", "打开支付宝");
             String commod[] = {"am start -n com.eg.android.AlipayGphone/com.eg.android.AlipayGphone.AlipayLogin"};
             ToolsUtil.exeCommod(commod);
-            Log.i("NLService3", "打开支付宝完成");
+            Log.i("NLService_Log", "打开支付宝完成");
             //2,点亮屏幕
             //                        Process process = null;
             //                        DataOutputStream dos = null;
@@ -107,7 +107,7 @@ public class NLService extends Service implements Runnable {
 
             }
 
-            Log.i("NLService4", "准备进入蚂蚁森林");
+            Log.i("NLService_Log", "准备进入蚂蚁森林");
             //                    Instrumentation inst = new Instrumentation();
             //                    inst.sendPointerSync(MotionEvent.obtain(SystemClock.uptimeMillis(),SystemClock.uptimeMillis(),
             //                            MotionEvent.ACTION_DOWN, 655, 1050, 0));
@@ -115,7 +115,7 @@ public class NLService extends Service implements Runnable {
             //                            MotionEvent.ACTION_UP, 655, 1050, 0));
             execShellCmd("input tap " + NLActivity.nleArray[0].getNlX() + " " + NLActivity.nleArray[0].getNlY());
 
-            Log.i("NLService5", "完成进入蚂蚁森林");
+            Log.i("NLService_Log", "完成进入蚂蚁森林");
 
             try {
                 Thread.sleep(5000);
@@ -123,10 +123,10 @@ public class NLService extends Service implements Runnable {
 
             }
 
-            Log.i("NLService6", "开始点击能量球");
+            Log.i("NLService_Log", "开始点击能量球");
 
             for (int i = 0; i < NLActivity.clickTime; i++) {
-                Log.i("NLService6", i + "");
+                Log.i("NLService_Log", i + "");
                 for(int j= 0 ;j<NLActivity.nleArray.length;j++){
                     execShellCmd("input tap " + NLActivity.nleArray[j].getBallX() + " " + NLActivity.nleArray[j].getBallY());
                     Thread.sleep(500);
@@ -134,7 +134,7 @@ public class NLService extends Service implements Runnable {
                 Thread.sleep(500);
             }
 
-            Log.i("NLService7", "结束点击能量球");
+            Log.i("NLService_Log", "结束点击能量球");
 
             handlerMain.removeCallbacks(this);
 
@@ -147,7 +147,7 @@ public class NLService extends Service implements Runnable {
             ToolsUtil.exeCommod(commod2);
 
         } catch (Exception e) {
-            Log.e("NLActivity", e.getMessage());
+            Log.e("NLService_Log", e.getMessage());
         }
     }
 
@@ -192,10 +192,10 @@ public class NLService extends Service implements Runnable {
         @Override
         public void run() {
             //秒计算位时分秒
-            Log.e("NLServiceTime",lastSecond+"");
-            Message mes = NLActivity.handler.obtainMessage();
+            Log.e("NLService_Log",lastSecond+"");
+            Message mes = NLActivity.nlActivityHandler.obtainMessage();
             mes.obj = secondToTime(lastSecond);
-            NLActivity.handler.sendMessage(mes);
+            NLActivity.nlActivityHandler.sendMessage(mes);
             lastSecond = lastSecond - 1000;
             if(lastSecond>0){
                 handlerTime.postDelayed(this,1000);

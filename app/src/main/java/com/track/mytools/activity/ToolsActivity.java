@@ -12,40 +12,54 @@ import android.widget.Button;
 import com.track.mytools.R;
 import com.track.mytools.util.ToolsUtil;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * 功能主界面
  *
  */
 public class ToolsActivity extends Activity implements OnClickListener{
 
-    private Button suffixBtn;
-    private Button qrySuBtn;
-    private Button httpBtn;
-    private Button copyBtn;
-    private Button ftpBtn;
-    private Button wifiBtn;
-    private Button lanBtn;
-    private Button nlBtn;
-    private Button ycBtn;
-    private Button ipBtn;
-    private Button appExtractBtn;
+    @BindView(R.id.suffixBtn)
+    Button suffixBtn;
+
+    @BindView(R.id.qrySuBtn)
+    Button qrySuBtn;
+
+    @BindView(R.id.httpBtn)
+    Button httpBtn;
+
+    @BindView(R.id.copyBtn)
+    Button copyBtn;
+
+    @BindView(R.id.ftpBtn)
+    Button ftpBtn;
+
+    @BindView(R.id.wifiBtn)
+    Button wifiBtn;
+
+    @BindView(R.id.lanBtn)
+    Button lanBtn;
+
+    @BindView(R.id.nlBtn)
+    Button nlBtn;
+
+    @BindView(R.id.ycBtn)
+    Button ycBtn;
+
+    @BindView(R.id.ipBtn)
+    Button ipBtn;
+
+    @BindView(R.id.appExtractBtn)
+    Button appExtractBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tools);
 
-        suffixBtn = (Button)findViewById(R.id.suffixBtn);
-        qrySuBtn = (Button)findViewById(R.id.qrySuBtn);
-        httpBtn = (Button)findViewById(R.id.httpBtn);
-        copyBtn = (Button)findViewById(R.id.copyBtn);
-        ftpBtn = (Button)findViewById(R.id.ftpBtn);
-        wifiBtn = (Button)findViewById(R.id.wifiBtn);
-        lanBtn = (Button)findViewById(R.id.lanBtn);
-        nlBtn = (Button)findViewById(R.id.nlBtn);
-        ycBtn = (Button)findViewById(R.id.ycBtn);
-        ipBtn = (Button)findViewById(R.id.ipBtn);
-        appExtractBtn = (Button)findViewById(R.id.appExtractBtn);
+        ButterKnife.bind(this);
 
         suffixBtn.setOnClickListener(this);
         qrySuBtn.setOnClickListener(this);

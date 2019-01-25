@@ -86,7 +86,7 @@ public class SuffixMainAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View view, ViewGroup parent) {
         if (view == null) {
-            Log.i("check", "holder == null--" + position);
+            Log.i("SuffixMainAdapter_Log", "holder == null--" + position);
             //this.position = position;
             holder = new ViewHolder();
             view = mInflater.inflate(layoutID, null);
@@ -95,7 +95,7 @@ public class SuffixMainAdapter extends BaseAdapter {
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
-            Log.i("check", "holder != null--" + position);
+            Log.i("SuffixMainAdapter_Log", "holder != null--" + position);
         }
 
         HashMap<String, String> map = list.get(position);
@@ -112,13 +112,13 @@ public class SuffixMainAdapter extends BaseAdapter {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
 
-                    Log.i("ck","ck-sel->" + position);
+                    Log.i("SuffixMainAdapter_Log","ck-sel->" + position);
 
                     isSelected.put(position,true);
 
                 }else{
 
-                   Log.i("ck","ck-unsel->" + position);
+                   Log.i("SuffixMainAdapter_Log","ck-unsel->" + position);
 
                     isSelected.put(position,false);
 

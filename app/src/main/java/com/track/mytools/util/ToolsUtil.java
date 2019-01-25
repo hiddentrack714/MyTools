@@ -30,8 +30,6 @@ import java.util.Set;
 
 public class ToolsUtil {
 
-    public static String[] zmArray = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
-
     /**
      * 删除后缀
      * @param filePath 位置
@@ -58,13 +56,13 @@ public class ToolsUtil {
                             //删除成功
                             Log.i("su","当前进度:" + SuffixActivity.finshFileNum);
 
-                            Message msg = SuffixActivity.handler.obtainMessage();
+                            Message msg = SuffixActivity.suffixActivityHandler.obtainMessage();
                              //将进度值作为消息的参数包装进去
                             msg.arg1 = SuffixActivity.finshFileNum ;
                              //将消息发送给主线程的Handler
                             msg.obj = SuffixActivity.finshFileNum + "/" + SuffixActivity.dealFileNum;
 
-                            SuffixActivity.handler.sendMessage(msg);
+                            SuffixActivity.suffixActivityHandler.sendMessage(msg);
 
                             SuffixActivity.finshFileNum ++;
                         }else{
@@ -102,13 +100,13 @@ public class ToolsUtil {
 
                             Log.i("su","当前进度:" + SuffixActivity.finshFileNum);
 
-                            Message msg = SuffixActivity.handler.obtainMessage();
+                            Message msg = SuffixActivity.suffixActivityHandler.obtainMessage();
                             //将进度值作为消息的参数包装进去
                             msg.arg1 = SuffixActivity.finshFileNum ;
                             //将消息发送给主线程的Handler
                             msg.obj = SuffixActivity.finshFileNum + "/" + SuffixActivity.dealFileNum;
 
-                            SuffixActivity.handler.sendMessage(msg);
+                            SuffixActivity.suffixActivityHandler.sendMessage(msg);
 
                             SuffixActivity.finshFileNum ++;
                         }else{
@@ -127,13 +125,13 @@ public class ToolsUtil {
                                 Log.i("name",finshFile.getAbsolutePath());
                                 Log.i("su","当前进度:" + SuffixActivity.finshFileNum);
 
-                                Message msg = SuffixActivity.handler.obtainMessage();
+                                Message msg = SuffixActivity.suffixActivityHandler.obtainMessage();
                                 //将进度值作为消息的参数包装进去
                                 msg.arg1 = SuffixActivity.finshFileNum ;
                                 //将消息发送给主线程的Handler
                                 msg.obj = SuffixActivity.finshFileNum + "/" + SuffixActivity.dealFileNum;
 
-                                SuffixActivity.handler.sendMessage(msg);
+                                SuffixActivity.suffixActivityHandler.sendMessage(msg);
 
                                 SuffixActivity.finshFileNum ++;
 
@@ -512,15 +510,4 @@ public class ToolsUtil {
 
     }
 
-    /**
-     * 获取A~Z集合
-     * @return
-     */
-    public static List<String> getZMList(){
-        List<String> list = new ArrayList<String>();
-        for(String str:zmArray){
-            list.add(str);
-        }
-        return list;
-    }
 }

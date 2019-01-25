@@ -15,7 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/ssyy"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:singleLine="true"/>
     </LinearLayout>
     <ListView
         android:id="@+id/appList"

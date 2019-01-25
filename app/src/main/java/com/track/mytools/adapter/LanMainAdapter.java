@@ -71,17 +71,12 @@ public class LanMainAdapter extends BaseAdapter {
         holder.tvIP.setText(listMap.get("ip").toString());
         holder.tvMac.setText(listMap.get("mac").toString());
 
-        /* 标识View对象 */
-        //将list_view的ID作为Tag的Key值
-        //convertView.setTag(R.id.httpList, position);//此处将位置信息作为标识传递
-        //viewList.add(convertView);
-
         return convertView;
     }
 
     public class ViewHolder {
         public TextView tvName;   //主机名称
-        public TextView tvIP; //主机IP
-        public TextView tvMac; //主机Mac
+        public TextView tvIP;     //主机IP
+        public TextView tvMac;    //主机Mac
     }
 }

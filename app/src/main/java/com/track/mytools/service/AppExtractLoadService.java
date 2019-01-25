@@ -75,19 +75,19 @@ public class AppExtractLoadService extends Service {
         try {
             AppExtractActivity.tempList = (ArrayList<HashMap<String, Object>>) AppExtractActivity.deepCopy(AppExtractActivity.normalAppList);
         }catch(Exception e){
-            Log.i("AppExtractActivity","深复制失败：" + e.getMessage());
+            Log.i("AppExtractLoadService_Log","深复制失败：" + e.getMessage());
         }
 
         //默认先按从小到大排序
         AppExtractActivity.tempList = AppExtractActivity.sortBySize(AppExtractActivity.tempList,true);
 
-        AppExtractActivity.ama = new AppMainAdapter(this,AppExtractActivity.tempList);
+        AppExtractActivity.appMainAdapter = new AppMainAdapter(this,AppExtractActivity.tempList);
 
-        Message msg = AppExtractActivity.handler.obtainMessage();
+        Message msg = AppExtractActivity.appExtractActivityHandler.obtainMessage();
 
         msg.arg1=1;
 
-        AppExtractActivity.handler.sendMessage(msg);
+        AppExtractActivity.appExtractActivityHandler.sendMessage(msg);
 
         stopSelf();
     }

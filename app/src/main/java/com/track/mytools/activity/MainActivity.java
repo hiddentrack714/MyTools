@@ -31,15 +31,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends Activity {
 
     public static String ASSETS_DB_PATH = "/sdcard/Android/data/com.track.mytools/databases/mytools.db";
 
     public static String ASSETS_PROPERTIES_PATH = "/sdcard/Android/data/com.track.mytools/properties/mytools.properties";
 
-    public TextView warnTitle;
-    //shortcut模块
-    private ShortcutManager shortcutManager;
+    @BindView(R.id.warnTitle)
+    TextView warnTitle;
+
+    private ShortcutManager shortcutManager;//shortcut模块
 
     private static boolean dbReady = false;
     private static boolean proReady = false;
@@ -48,7 +52,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        warnTitle = (TextView)findViewById(R.id.warnTitle);
+        ButterKnife.bind(this);
 
         //添加ShortCut
         dynamicAddShortCut();
@@ -56,19 +60,20 @@ public class MainActivity extends Activity {
         //检测是否把db和properties文件复制到手机磁盘
         File dbFile = new File(ASSETS_DB_PATH);
         File proFile = new File(ASSETS_PROPERTIES_PATH);
+
         if(dbFile.exists() && proFile.exists()){
             //db和 pro文件都存在，直接分析
-            Log.i("MainActivity","双文件都在，可以分析" );
+            Log.i("MainActivity_Log","双文件都在，可以分析" );
             analysispro();
         }else{
             if(!dbFile.exists()){
-                Log.i("MainActivity","db文件不在，开始复制" );
+                Log.i("MainActivity_Log","db文件不在，开始复制" );
                 boolean isSuccess = initCopyFile(ASSETS_DB_PATH,"mytools.db",MainActivity.this);
                 if(!isSuccess){
                     ToolsUtil.showToast(this,"数据库复制失败!",5000);
                     finish();
                 }else{
-                    Log.i("MainActivity","db复制成功" );
+                    Log.i("MainActivity_Log","db复制成功" );
                     dbReady = true;
                 }
             }else{
@@ -76,13 +81,13 @@ public class MainActivity extends Activity {
             }
 
             if (!proFile.exists()) {
-                Log.i("MainActivity","pro文件不在，开始复制" );
+                Log.i("MainActivity_Log","pro文件不在，开始复制" );
                 boolean isSuccess = initCopyFile(ASSETS_PROPERTIES_PATH, "mytools.properties",MainActivity.this);
                 if(!isSuccess){
                     ToolsUtil.showToast(this, "参数文件复制失败!", 5000);
                     finish();
                 }else{
-                    Log.i("MainActivity","pro复制成功" );
+                    Log.i("MainActivity_Log","pro复制成功" );
                     proReady = true;
                 }
             }else{
@@ -90,7 +95,7 @@ public class MainActivity extends Activity {
             }
 
             if(dbReady && proReady){
-                Log.i("MainActivity","文件复制完成，可以分析" );
+                Log.i("MainActivity_Log","文件复制完成，可以分析" );
                 analysispro();
             }else{
                 ToolsUtil.showToast(this,"文件复制失败，请删除后重试!",5000);
@@ -111,7 +116,7 @@ public class MainActivity extends Activity {
 
             String isUseFinIdMou = pro.getProperty("isUseFinIdMou");
 
-            Log.i("MainActivity","是否开启指纹:" + isUseFinIdMou);
+            Log.i("MainActivity_Log","是否开启指纹:" + isUseFinIdMou);
 
             //是否需要开启指纹识别
             if("y".equalsIgnoreCase(isUseFinIdMou)){
@@ -125,7 +130,7 @@ public class MainActivity extends Activity {
                 this.finish();
             }
         }catch(Exception e){
-            Log.e("su","获取初始化文件失败...");
+            Log.e("MainActivity_Log","获取初始化文件失败...");
             ToolsUtil.showToast(this, "获取初始化文件失败...", 2000);
         }
 
@@ -242,9 +247,9 @@ public class MainActivity extends Activity {
 
         //检查文件目录是否存在
         if(!fileDir.exists()){
-            Log.i("MainActivity","创建目录:" + fileDirStr);
+            Log.i("MainActivity_Log","创建目录:" + fileDirStr);
             boolean isSuccess = fileDir.mkdirs();
-            Log.i("MainActivity","创建目录:" + (isSuccess==true?"成功":"失败"));
+            Log.i("MainActivity_Log","创建目录:" + (isSuccess==true?"成功":"失败"));
             if(isSuccess == false){
                 return isSuccess;
             }

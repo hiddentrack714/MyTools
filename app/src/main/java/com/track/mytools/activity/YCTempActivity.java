@@ -21,10 +21,10 @@ import java.io.InputStreamReader;
 public class YCTempActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-
+        super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         String tempMode = intent.getData().toString();
-        Log.i("YCTempActivity","临时电量模式:" + tempMode);
+        Log.i("YCTempActivity_Log","临时电量模式:" + tempMode);
 
         String commod[] = {"powercfg "+tempMode};
 
@@ -38,11 +38,11 @@ public class YCTempActivity extends Activity {
                 dos.writeBytes("exit\n");
                 dos.flush();
                 process.waitFor();
-                Log.i("YCTempActivity","输出完毕，等待回执信息");
+                Log.i("YCTempActivity_Log","输出完毕，等待回执信息");
                 dis =  new DataInputStream(process.getInputStream());
                 BufferedReader br = new BufferedReader(new InputStreamReader(dis));
                 String result = br.readLine();
-                Log.i("YCTempActivity","临时电量切换:" + result);
+                Log.i("YCTempActivity_Log","临时电量切换:" + result);
                 ToolsUtil.showToast(this,result,3000);
             } catch (Exception e) {
                 ToolsUtil.showToast(this,"当前设备还未刷入yc调度",3000);
@@ -59,6 +59,5 @@ public class YCTempActivity extends Activity {
                 }
                 finish();
             }
-        super.onCreate(savedInstanceState);
     }
 }

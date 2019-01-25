@@ -2,7 +2,6 @@ package com.track.mytools.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
@@ -20,7 +19,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.Switch;
-import android.widget.TextView;
 
 import com.track.mytools.R;
 import com.track.mytools.adapter.HttpMainAdapter;
@@ -41,36 +39,54 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * http多线程下载
  *
  */
 public class HttpActivity extends Activity{
 
-    private Button httpDownBtn;//下载按钮
-    private Button httpCopyBtn;//黏贴按钮
-    private Button httpUpdBtn; //修改按钮
+    @BindView(R.id.httpDownBtn)
+    Button httpDownBtn;//下载按钮
 
-    private EditText httpUrl;//下载链接
-    private EditText httpThread;//线程数量
-    private EditText httpDir;//下载地址
-    private EditText httpSuff;//下载文件后缀
+    @BindView(R.id.httpCopyBtn)
+    Button httpCopyBtn;//黏贴按钮
 
-    private SeekBar httpSeek;//线程数量拉条
+    @BindView(R.id.httpUpdBtn)
+    Button httpUpdBtn; //修改按钮
 
-    private Switch httpSwitch; // 单一下载选项
+    @BindView(R.id.httpUrl)
+    EditText httpUrl;//下载链接
+
+    @BindView(R.id.httpThread)
+    EditText httpThread;//线程数量
+
+    @BindView(R.id.httpDir)
+    EditText httpDir;//下载地址
+
+    @BindView(R.id.httpSuff)
+    EditText httpSuff;//下载文件后缀
+
+    @BindView(R.id.httpSeek)
+    SeekBar httpSeek;//线程数量拉条
+
+    @BindView(R.id.httpSwitch)
+    Switch httpSwitch; // 单一下载选项
+
+    @BindView(R.id.httpList)
+    ListView lv;
 
     private static int THREAD_NUM;
     private static String URL;
     private static String DIR_NAME;
 
-    private static HttpActivity ha;
+    private static HttpActivity httpActivity;
 
-    public static Handler handler;
+    public static Handler httpActivityHandler;
 
-    private static ListActivity la;
-
-    private static HttpMainAdapter hma;
+    private static HttpMainAdapter httpMainAdapter;
 
     private static ConcurrentHashMap<String,Object> chm = new ConcurrentHashMap<String,Object>(); //listview专用map
 
@@ -78,31 +94,15 @@ public class HttpActivity extends Activity{
 
     private static Boolean isSingle = false; // 是否采用单文件下载标识，默认为不采用
 
-    private ListView lv;
-
     private static boolean isUpd = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_http);
+        ButterKnife.bind(this);
 
-        lv = (ListView)findViewById(R.id.httpList);
-
-        httpDownBtn = (Button)findViewById(R.id.httpDownBtn);
-        httpCopyBtn = (Button)findViewById(R.id.httpCopyBtn);
-        httpUpdBtn = (Button)findViewById(R.id.httpUpdBtn);
-
-        httpUrl = (EditText)findViewById(R.id.httpUrl);
-        httpThread = (EditText)findViewById(R.id.httpThread);
-        httpDir = (EditText)findViewById(R.id.httpDir);
-        httpSuff = (EditText)findViewById(R.id.httpSuff);
-
-        httpSwitch = (Switch)findViewById(R.id.httpSwitch);
-
-        httpSeek = (SeekBar)findViewById(R.id.httpSeek);
-
-        ha = this;
+        httpActivity = this;
 
         SQLiteDatabase sdb = ToolsDao.getDatabase();
         HashMap<String,Object> map = ToolsDao.qryTable(sdb,HttpEntity.class,HttpActivity.this).get(0);
@@ -114,7 +114,7 @@ public class HttpActivity extends Activity{
         httpSeek.setEnabled(false);
 
         //线程视图复制更新
-        handler = new Handler(new Handler.Callback() {
+        httpActivityHandler = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message arg0) {
                 //下载结束后处理
@@ -128,7 +128,7 @@ public class HttpActivity extends Activity{
 
                     //清空Listview视图
                     l.clear();
-                    hma.notifyDataSetChanged();
+                    httpMainAdapter.notifyDataSetChanged();
                 }
 
                 //单一线程下载开始之前，对线程视图的初始化
@@ -153,19 +153,19 @@ public class HttpActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Log.i("httpUrl",httpUrl.getText().toString());
-                Log.i("httpThread",httpThread.getText().toString());
-                Log.i("httpDir",httpDir.getText().toString());
+                Log.i("HttpActivity_Log",httpUrl.getText().toString());
+                Log.i("HttpActivity_Log",httpThread.getText().toString());
+                Log.i("HttpActivity_Log",httpDir.getText().toString());
 
-                Log.i("httpSwitch",isSingle+"");
+                Log.i("HttpActivity_Log",isSingle+"");
 
                 if("0".equals(httpThread.getText().toString())){
-                    ToolsUtil.showToast(HttpActivity.ha,"下载线程数不能为0",2000);
+                    ToolsUtil.showToast(HttpActivity.this,"下载线程数不能为0",2000);
                     return;
                 }
 
                 if("".equals(httpUrl.getText().toString())){
-                    ToolsUtil.showToast(HttpActivity.ha,"下载链接不能为空",2000);
+                    ToolsUtil.showToast(HttpActivity.this,"下载链接不能为空",2000);
                     return;
                 }
 
@@ -174,7 +174,7 @@ public class HttpActivity extends Activity{
                 DIR_NAME = httpDir.getText().toString();//下载地址
 
                 if(map.get("httpDir").toString().equals(DIR_NAME.trim())){
-                    ToolsUtil.showToast(HttpActivity.ha,"下载地址没有修改",2000);
+                    ToolsUtil.showToast(HttpActivity.this,"下载地址没有修改",2000);
                     return;
                 }
 
@@ -186,6 +186,7 @@ public class HttpActivity extends Activity{
                             new AlertDialog.Builder(HttpActivity.this);
                     //normalDialog.setIcon(R.drawable.icon_dialog);
                     normalDialog.setTitle("选择").setMessage("本地存在同名文件或文件夹，请选择?");
+
                     normalDialog.setPositiveButton("取消",
                             new DialogInterface.OnClickListener() {
                                 @Override
@@ -193,6 +194,7 @@ public class HttpActivity extends Activity{
                                     // ...To-do
                                 }
                             });
+
                     normalDialog.setNeutralButton("删除本地文件",
                             new DialogInterface.OnClickListener() {
                                 @Override
@@ -205,6 +207,7 @@ public class HttpActivity extends Activity{
                                     }
                                 }
                             });
+
                     normalDialog.setNegativeButton("修改本地文件名", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -235,11 +238,11 @@ public class HttpActivity extends Activity{
                 if(data != null){
                     ClipData.Item item = data.getItemAt(0);
                     String content = item.getText().toString();
-                    Log.i("CP",content);
+                    Log.i("HttpActivity_Log",content);
                     //覆盖之前的链接
                     httpUrl.setText(content);
                 }else{
-                    ToolsUtil.showToast(HttpActivity.ha,"剪贴板暂无内容",3000);
+                    ToolsUtil.showToast(HttpActivity.this,"剪贴板暂无内容",3000);
                 }
 
             }
@@ -249,7 +252,7 @@ public class HttpActivity extends Activity{
         httpSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                Log.i("SEEK",progress+"");
+                Log.i("HttpActivity_Log",progress+"");
                 httpThread.setText(progress+"");
             }
 
@@ -282,7 +285,7 @@ public class HttpActivity extends Activity{
                     int a = Integer.parseInt(httpThread.getText().toString());
                     httpSeek.setProgress(a);
                 }catch (Exception e){
-                    ToolsUtil.showToast(ha,"请输入介于1~20之间的数字",3000);
+                    ToolsUtil.showToast(HttpActivity.this,"请输入介于1~20之间的数字",3000);
                 }
             }
         });
@@ -342,7 +345,7 @@ public class HttpActivity extends Activity{
     }
 
     /**
-     *
+     * 下载流程初始化
      */
     private void dialogRes(){
         URL = URL.substring(0,URL.lastIndexOf("/") + 1);
@@ -397,11 +400,11 @@ public class HttpActivity extends Activity{
             l.add(listMap);
         }
 
-        hma = new HttpMainAdapter(ha,l);
+        httpMainAdapter = new HttpMainAdapter(HttpActivity.this,l);
 
-        lv.setAdapter(hma);
+        lv.setAdapter(httpMainAdapter);
 
-        Log.i("size",l.size()+"");
+        Log.i("HttpActivity_Log",l.size()+"");
 
         ExecutorService es = Executors.newCachedThreadPool();
 
@@ -425,15 +428,15 @@ public class HttpActivity extends Activity{
 
                 if(i == THREAD_NUM) {
                     t = false;
-                    Message msg = HttpActivity.handler.obtainMessage();
+                    Message msg = HttpActivity.httpActivityHandler.obtainMessage();
                     msg.arg1 = 1;
-                    HttpActivity.handler.sendMessage(msg);
-                    Log.i("http","下载完成");
+                    HttpActivity.httpActivityHandler.sendMessage(msg);
+                    Log.i("HttpActivity_Log","下载完成");
 
                     //下载完成，清空所有静态参数
                     HttpMainAdapter.viewList.clear();
 
-                    ToolsUtil.showToast(HttpActivity.ha,"下载完成",3000);
+                    ToolsUtil.showToast(HttpActivity.this,"下载完成",3000);
 
                     es.shutdown();
                 }
@@ -490,7 +493,7 @@ public class HttpActivity extends Activity{
 
                         holder.pb.setMax(fileSize);
 
-                        Message msg = HttpActivity.handler.obtainMessage();
+                        Message msg = HttpActivity.httpActivityHandler.obtainMessage();
 
                         long startTime = System.currentTimeMillis();//文件起始下载时间
 
@@ -504,18 +507,18 @@ public class HttpActivity extends Activity{
                         msg.arg2 = 1;
                         msg.obj = hte;
 
-                        HttpActivity.handler.sendMessage(msg);
+                        HttpActivity.httpActivityHandler.sendMessage(msg);
 
                         //下载当前文件
                         try{
                             ToolsUtil.saveFile(inputStream,DIR_NAME,this.url,holder.pb,hte);
                         }catch(HttpException e){
-                            ToolsUtil.showToast(HttpActivity.ha,DIR_NAME+"下载失败",3000);
+                            ToolsUtil.showToast(HttpActivity.httpActivity,DIR_NAME+"下载失败",3000);
                             //String httpFail =  httpFailName.getText();
-                            Message msg1 = HttpActivity.handler.obtainMessage();
+                            Message msg1 = HttpActivity.httpActivityHandler.obtainMessage();
                             msg1.arg1 = 2;
                             msg1.obj = DIR_NAME;
-                            HttpActivity.handler.sendMessage(msg1);
+                            HttpActivity.httpActivityHandler.sendMessage(msg1);
                         }
 
                         //对当前线程链接++
@@ -556,23 +559,6 @@ public class HttpActivity extends Activity{
             return font+num+back;
         }
 
-    }
-
-    static class ViewThread extends Thread{
-
-        private TextView tv;
-        private String content;
-
-        public ViewThread(TextView tv,String content){
-            this.tv = tv;
-            this.content = content;
-        }
-
-        @Override
-        public void run() {
-            Message msg = HttpActivity.handler.obtainMessage();
-            msg.arg2 = 1;
-        }
     }
 
 }

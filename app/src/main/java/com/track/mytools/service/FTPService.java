@@ -69,7 +69,7 @@ public class FTPService extends Service {
                     MyThread t = new MyThread();
                     t.start();
 
-                    Log.i("FTPSERVICE1","文件大小:" + FTPActivity.remoteFileSize);
+                    Log.i("FTPService_Log","文件大小:" + FTPActivity.remoteFileSize);
                     //开始下载
                     boolean sucess = fTPUtil.downloadFile(fileName, localPath, serverPath);
 
@@ -80,7 +80,7 @@ public class FTPService extends Service {
                     }
 
                 }else{
-                    Log.e("FTPSERVICE2","FTP Login Fail");
+                    Log.e("FTPService_Log","FTP Login Fail");
                     ToolsUtil.showToast(FTPActivity.fTPActivity,"FTP登陆失败",2000);
                 }
             }
@@ -97,7 +97,7 @@ public class FTPService extends Service {
     class MyThread extends Thread{
         @Override
         public void run() {
-            Log.i("FTPSERVICE3","开启下载检测");
+            Log.i("FTPService_Log","开启下载检测");
             try{
                 File file = new File(localPath + fileName);
                 while(isFinish){
@@ -121,7 +121,7 @@ public class FTPService extends Service {
                 }
             }catch(Exception e){
                 e.getStackTrace();
-                Log.e("FTPSERVICE4",e.getMessage());
+                Log.e("FTPService_Log",e.getMessage());
             }
         }
     }

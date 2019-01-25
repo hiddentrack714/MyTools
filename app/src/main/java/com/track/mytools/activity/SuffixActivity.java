@@ -21,29 +21,43 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by Track on 2017/1/16.
  * 后缀删除/添加
  */
 public class SuffixActivity extends Activity {
 
-    private Button suffixAddBtn;   //添加后缀按钮
-    private Button suffixDelBtn;   //删除后缀按钮
-    private Button suffixEditBtn;   //编辑按钮
+    @BindView(R.id.suffixAddBtn)
+    Button suffixAddBtn;   //添加后缀按钮
 
-    private EditText suffixPath;  //后缀删除的目录控件
-    private EditText suffixType;  //需要删除的后缀控件
-    private EditText suffixFilter;  //过滤的后缀控件
+    @BindView(R.id.suffixDelBtn)
+    Button suffixDelBtn;   //删除后缀按钮
+
+    @BindView(R.id.suffixEditBtn)
+    Button suffixEditBtn;   //编辑按钮
+
+    @BindView(R.id.suffixPath)
+    EditText suffixPath;  //后缀删除的目录控件
+
+    @BindView(R.id.suffixType)
+    EditText suffixType;  //需要删除的后缀控件
+
+    @BindView(R.id.suffixFilter)
+    EditText suffixFilter;  //过滤的后缀控件
+
+    @BindView(R.id.suffixProBar)
+    ProgressBar suffixProBar;   //进度条
+
+    @BindView(R.id.viewPercent)
+    TextView viewPercent; // 百分比显示
 
     private String fianlPath; //后缀删除的目录
     private String fianlType; //需要删除的后缀
 
-    private ProgressBar suffixProBar;   //进度条
-    private TextView viewPercent; // 百分比显示
-
-    private Activity nowActivity;
-
-    public static Handler handler;
+    public static Handler suffixActivityHandler;
 
     public static String[] suffixArrayFilter;   //过滤的后缀名数组
 
@@ -57,19 +71,8 @@ public class SuffixActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_suffix);
-
-        suffixAddBtn = (Button) findViewById(R.id.suffixAddBtn);
-        suffixDelBtn = (Button) findViewById(R.id.suffixDelBtn);
-        suffixEditBtn = (Button) findViewById(R.id.suffixEditBtn);
-
-        suffixPath = (EditText) findViewById(R.id.suffixPath);
-        suffixType = (EditText) findViewById(R.id.suffixType);
-        suffixFilter = (EditText) findViewById(R.id.suffixFilter);
-
-        suffixProBar = (ProgressBar) findViewById(R.id.suffixProBar);
-        viewPercent = (TextView) findViewById(R.id.viewPercent);
+        ButterKnife.bind(this);
 
         SQLiteDatabase sdb = ToolsDao.getDatabase();
         HashMap<String,Object> map = ToolsDao.qryTable(sdb,SuffixEntity.class,SuffixActivity.this).get(0);
@@ -82,10 +85,8 @@ public class SuffixActivity extends Activity {
 
         preMethod(strFilter,suffixType.getText().toString());
 
-        nowActivity = this;
-
         //运行在主线程的Handler,它将监听所有的消息（Message）
-        handler = new Handler(new Handler.Callback() {
+        suffixActivityHandler = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message arg0) {
                 //接受到另一个线程的Message，拿到它的参数，这个参数代表了进度
@@ -116,10 +117,10 @@ public class SuffixActivity extends Activity {
 
                 viewPercent.setText("0/" + dealFileNum);
 
-                Log.i("su", "待处理文件数量:" + dealFileNum);
+                Log.i("SuffixActivity_Log", "待处理文件数量:" + dealFileNum);
 
                 if (dealFileNum == 0) {
-                    ToolsUtil.showToast(nowActivity, "暂无可操作文件", 1000);
+                    ToolsUtil.showToast(SuffixActivity.this, "暂无可操作文件", 1000);
                     return;
                 }
 
@@ -131,7 +132,7 @@ public class SuffixActivity extends Activity {
                         try{
                             ToolsUtil.addSuffix(fianlPath, fianlType, suffixProBar, viewPercent);
 
-                            ToolsUtil.showToast(nowActivity, "后缀添加完成!", 5000);
+                            ToolsUtil.showToast(SuffixActivity.this, "后缀添加完成!", 2000);
                         }catch(Exception e){
 
                         }
@@ -159,10 +160,10 @@ public class SuffixActivity extends Activity {
 
                 viewPercent.setText("0/" + dealFileNum);
 
-                Log.i("su", "待处理文件数量:" + dealFileNum);
+                Log.i("SuffixActivity_Log", "待处理文件数量:" + dealFileNum);
 
                 if (dealFileNum == 0) {
-                    ToolsUtil.showToast(nowActivity, "暂无可操作文件", 1000);
+                    ToolsUtil.showToast(SuffixActivity.this, "暂无可操作文件", 1000);
                     return;
                 }
 
@@ -174,7 +175,7 @@ public class SuffixActivity extends Activity {
                         try {
                             ToolsUtil.delSuffix(fianlPath, fianlType, suffixProBar, viewPercent);
 
-                            ToolsUtil.showToast(nowActivity, "后缀删除完成!", 5000);
+                            ToolsUtil.showToast(SuffixActivity.this, "后缀删除完成!", 2000);
                         }catch(Exception e){
 
                         }
