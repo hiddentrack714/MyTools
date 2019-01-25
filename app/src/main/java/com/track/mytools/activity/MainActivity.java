@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.track.mytools.R;
 import com.track.mytools.entity.ShortCutEntity;
+import com.track.mytools.enums.AssetsEnum;
 import com.track.mytools.util.FingerprintUtil;
 import com.track.mytools.util.ToolsUtil;
 
@@ -35,10 +36,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends Activity {
-
-    public static String ASSETS_DB_PATH = "/sdcard/Android/data/com.track.mytools/databases/mytools.db";
-
-    public static String ASSETS_PROPERTIES_PATH = "/sdcard/Android/data/com.track.mytools/properties/mytools.properties";
 
     @BindView(R.id.warnTitle)
     TextView warnTitle;
@@ -58,8 +55,8 @@ public class MainActivity extends Activity {
         dynamicAddShortCut();
 
         //检测是否把db和properties文件复制到手机磁盘
-        File dbFile = new File(ASSETS_DB_PATH);
-        File proFile = new File(ASSETS_PROPERTIES_PATH);
+        File dbFile = new File(String.valueOf(AssetsEnum.ASSETS_DB_PATH));
+        File proFile = new File(String.valueOf(AssetsEnum.ASSETS_PROPERTIES_PATH));
 
         if(dbFile.exists() && proFile.exists()){
             //db和 pro文件都存在，直接分析
@@ -68,7 +65,7 @@ public class MainActivity extends Activity {
         }else{
             if(!dbFile.exists()){
                 Log.i("MainActivity_Log","db文件不在，开始复制" );
-                boolean isSuccess = initCopyFile(ASSETS_DB_PATH,"mytools.db",MainActivity.this);
+                boolean isSuccess = initCopyFile(String.valueOf(AssetsEnum.ASSETS_DB_PATH),"mytools.db",MainActivity.this);
                 if(!isSuccess){
                     ToolsUtil.showToast(this,"数据库复制失败!",5000);
                     finish();
@@ -82,7 +79,7 @@ public class MainActivity extends Activity {
 
             if (!proFile.exists()) {
                 Log.i("MainActivity_Log","pro文件不在，开始复制" );
-                boolean isSuccess = initCopyFile(ASSETS_PROPERTIES_PATH, "mytools.properties",MainActivity.this);
+                boolean isSuccess = initCopyFile(String.valueOf(AssetsEnum.ASSETS_PROPERTIES_PATH), "mytools.properties",MainActivity.this);
                 if(!isSuccess){
                     ToolsUtil.showToast(this, "参数文件复制失败!", 5000);
                     finish();
@@ -112,7 +109,7 @@ public class MainActivity extends Activity {
         //加载初始文件
         Properties pro = new Properties();
         try{
-            pro = loadConfig(this,ASSETS_PROPERTIES_PATH);
+            pro = loadConfig(this, String.valueOf(AssetsEnum.ASSETS_PROPERTIES_PATH));
 
             String isUseFinIdMou = pro.getProperty("isUseFinIdMou");
 

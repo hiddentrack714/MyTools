@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.track.mytools.activity.MainActivity;
 import com.track.mytools.annotation.TableNameAnnotation;
+import com.track.mytools.enums.AssetsEnum;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class ToolsDao {
             synchronized (ToolsDao.class){
                 if(sdb == null || !sdb.isOpen()){
                     try{
-                        sdb = SQLiteDatabase.openOrCreateDatabase(MainActivity.ASSETS_DB_PATH,null);
+                        sdb = SQLiteDatabase.openOrCreateDatabase(String.valueOf(AssetsEnum.ASSETS_DB_PATH),null);
                     }catch(Exception e){
                         Log.e("ToolsDao_Log",e.getMessage());
                     }
@@ -86,7 +87,7 @@ public class ToolsDao {
             //数据库查询失败，采取重新复制db策略
             //应用更新的时候，防止db有更新
             Log.e("ToolsDao_Log","db查询异常:" + e.getMessage());
-            boolean isSuccess = MainActivity.initCopyFile(MainActivity.ASSETS_DB_PATH,"mytools.db",context);
+            boolean isSuccess = MainActivity.initCopyFile(String.valueOf(AssetsEnum.ASSETS_DB_PATH),"mytools.db",context);
 
             if(isSuccess){
                 Log.e("ToolsDao_Log","db初始化完成,请重新进入该界面");
