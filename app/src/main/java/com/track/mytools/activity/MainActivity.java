@@ -40,8 +40,6 @@ public class MainActivity extends Activity {
     @BindView(R.id.warnTitle)
     TextView warnTitle;
 
-    private ShortcutManager shortcutManager;//shortcut模块
-
     private static boolean dbReady = false;
     private static boolean proReady = false;
 
