@@ -149,6 +149,8 @@ public class IPActivity extends Activity {
         List<String> tempList = new ArrayList<String>();
         int wifiIndex = 0;
         for(ScanResult sr : wifiList){
+            Log.i("IPActivity_Log",sr.SSID +"-"+sr.capabilities);
+
             tempList.add(sr.SSID);
             wifiIdMap.put(sr.SSID,wifiIndex);
             wifiIndex++;
@@ -173,7 +175,7 @@ public class IPActivity extends Activity {
                 if(wifiId.indexOf(ssid) > 0){
                     Log.i("IPActivity_Log","WIFI:" + wifiIdMap);
                     int index = wifiIdMap.get(ssid);
-                    staticWifiId.setSelection(wifiIdMap.get(ssid));
+                    staticWifiId.setSelection(index);
                     staticPassword.setText(wifiMap.get("passwrd").toString());
                 }
             }

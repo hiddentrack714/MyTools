@@ -278,5 +278,4 @@ public class MainActivity extends Activity {
         }
         return false;
     }
-
 }

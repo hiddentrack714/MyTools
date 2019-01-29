@@ -102,12 +102,30 @@ public class WifiActivity extends Activity {
                     }
                     i = -1;
                 } else if (i >= 0) {
-                    if (str.indexOf("ssid=\"") > -1) {
-                        str = str.trim().substring(str.indexOf("ssid=\\\"") + 7, str.lastIndexOf("\"") - 1);
+                        str = str.trim();
+                    if (str.indexOf("ssid=") == 0) {
+                        //wifi名称有可能是中文名
+                        if(str.indexOf("ssid=\"") == 0){
+                            //不带中文
+                            str = str.substring(str.indexOf("ssid=\\\"") + 7, str.lastIndexOf("\""));
+                        }else{
+                            //带中文，中文被保存为16进制
+                            str = str.substring(5, str.length());
+
+                            byte[] b = new byte[str.length()/2];
+
+                            for(int i = 0 ;i<str.length()/2;i++) {
+                                String finallyStr = str.substring(i*2, i*2+2);
+                                b[i] = (byte)Integer.parseInt(finallyStr, 16);
+                            }
+
+                            str = new String(b,"utf-8");
+                        }
+
                         map.put("ssid", str);
-                        //Log.i("ssid",str);
+                        Log.i("WifiActivity_Log",str);
                     } else if (str.indexOf("psk") > -1) {
-                        str = str.trim().substring(str.indexOf("ssid=\\\"") + 6, str.lastIndexOf("\"") - 1);
+                        str = str.trim().substring(str.indexOf("ssid=\\\"") + 6, str.lastIndexOf("\""));
                         map.put("passwrd", str);
                         //Log.i("passwrd",str);
                     }
