@@ -74,8 +74,42 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@string/wifiId"/>
+                android:text="@string/wifiList"/>
             <Spinner
+                android:id="@+id/staticWifiList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayoutWifiSafe"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/wifiSafe"/>
+            <Spinner
+                android:id="@+id/staticwifiSafeList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/spinnerSafe"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayoutWifiId"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/wifiId"/>
+            <EditText
                 android:id="@+id/staticWifiId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -157,7 +191,7 @@
             android:id="@+id/staticDNS1"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:entries="@array/spingarr">
+            android:entries="@array/spinnerDNS1">
         </Spinner>
     </LinearLayout>
     </LinearLayout>

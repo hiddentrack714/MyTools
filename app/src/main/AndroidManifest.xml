@@ -101,7 +101,16 @@
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
-        </receiver> -->
+        </receiver>
+
+        <receiver android:name=".broadcast.IPReceiver" >
+            <intent-filter>
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED"/>
+                <action android:name="android.net.wifi.STATE_CHANGE"/>
+                <action android:name="android.net.wifi.supplicant.STATE_CHANGE"/>
+                <action android:name="android.net.wifi.NETWORK_IDS_CHANGED"/>
+            </intent-filter>
+        </receiver>
 
         <!-- 是否是xposed模块，xposed根据这个来判断是否是模块 -->
         <!--<meta-data

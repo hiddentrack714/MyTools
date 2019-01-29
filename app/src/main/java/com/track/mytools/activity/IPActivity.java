@@ -22,6 +22,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -51,8 +52,8 @@ import butterknife.ButterKnife;
 
 public class IPActivity extends Activity {
 
-    @BindView(R.id.staticWifiId)
-    Spinner staticWifiId;//WifiID
+    @BindView(R.id.staticWifiList)
+    Spinner staticWifiList;//WifiList
 
     @BindView(R.id.staticPassword)
     EditText staticPassword;//密码
@@ -90,6 +91,18 @@ public class IPActivity extends Activity {
     @BindView(R.id.staticWifiStatus)
     Switch staticWifiStatus; //wifi开关
 
+    @BindView(R.id.linearLayoutWifiSafe)
+    LinearLayout linearLayoutWifiSafe; //安全性
+
+    @BindView(R.id.linearLayoutWifiId)
+    LinearLayout linearLayoutWifiId; //ssid
+
+    @BindView(R.id.staticwifiSafeList)
+    Spinner staticwifiSafeList;//安全性
+
+    @BindView(R.id.staticWifiId)
+    EditText staticWifiId;//wifiid
+
     private WifiManager mwifiManager;
     private String wifiId;
 
@@ -111,11 +124,23 @@ public class IPActivity extends Activity {
 
     private HashMap<String,Integer> wifiIdMap = new HashMap<String,Integer>();//wifi:id键值对
 
+    private int spinnerTime = 0; // 判断spinner初始化状态
+
+    private List<String> tempList;
+
+    public static Handler ipActivityStateHandler;
+
+    public static IPActivity ipActivity;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ip);
         ButterKnife.bind(this);
+
+        ipActivity = this;
+
+        spinnerTime++;
 
         mwifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
 
@@ -146,18 +171,29 @@ public class IPActivity extends Activity {
         }
 
         //获取Wifi列表，并且赋值到下拉列表
-        List<String> tempList = new ArrayList<String>();
+        tempList = new ArrayList<String>();
         int wifiIndex = 0;
         for(ScanResult sr : wifiList){
-            Log.i("IPActivity_Log",sr.SSID +"-"+sr.capabilities);
+            //Log.i("IPActivity_Log",sr.SSID + "-" + sr.capabilities);
+            String wifiId = "";
 
-            tempList.add(sr.SSID);
+            if (sr.capabilities.contains("WPA") || sr.capabilities.contains("wpa")) {
+                wifiId = sr.SSID + " - WPA/WPA2 PSK";
+            } else if (sr.capabilities.contains("WEP") || sr.capabilities.contains("wep")) {
+                wifiId = sr.SSID + " - WEP";
+            } else {
+                wifiId = sr.SSID + " - 无";
+            }
+
+            tempList.add(wifiId);
             wifiIdMap.put(sr.SSID,wifiIndex);
             wifiIndex++;
         }
 
+        tempList.add("添加网络");
+
         ArrayAdapter adpter = new ArrayAdapter(this,R.layout.activity_wifilist,R.id.wifilistText,tempList);
-        staticWifiId.setAdapter(adpter);
+        staticWifiList.setAdapter(adpter);
 
         //检测当前Wifi是DHCP还是静态连接
         String wifiStr = getWifiSetting(this);
@@ -165,17 +201,18 @@ public class IPActivity extends Activity {
 
         //判断是否在Wifi连接下
         if(isWifi){
-            Log.i("IPActivity_Log","当前Wifi状态:" + wifiStr);
-            List<HashMap<String,String>> list = WifiActivity.getWifigroup();
+            //Log.i("IPActivity_Log","当前Wifi状态:" + wifiStr);
+            List<HashMap<String,String>> list = WifiActivity.getWifigroup();//手机已经记住名字的WiFi集合
 
             //针对已有WiFi列表做键值对
             wifiId = getWifiId();
-            for(HashMap wifiMap:list){
+            for(HashMap wifiMap : list){
                 String ssid = wifiMap.get("ssid").toString();
                 if(wifiId.indexOf(ssid) > 0){
                     Log.i("IPActivity_Log","WIFI:" + wifiIdMap);
+                    Log.i("IPActivity_Log","ssid:" + ssid);
                     int index = wifiIdMap.get(ssid);
-                    staticWifiId.setSelection(index);
+                    staticWifiList.setSelection(index);
                     staticPassword.setText(wifiMap.get("passwrd").toString());
                 }
             }
@@ -209,10 +246,22 @@ public class IPActivity extends Activity {
                     for(HashMap wifiMap:list){
                         String ssid = wifiMap.get("ssid").toString();
                         if(wifiId.indexOf(ssid) > 0){
-                            staticWifiId.setSelection(wifiIdMap.get(ssid));
+                            staticWifiList.setSelection(wifiIdMap.get(ssid));
                             staticPassword.setText(wifiMap.get("passwrd").toString());
                         }
                     }
+                }
+                return false;
+            }
+        });
+
+        ipActivityStateHandler = new Handler(new Handler.Callback(){
+
+            @Override
+            public boolean handleMessage(Message msg) {
+                int id =  ipRG.getCheckedRadioButtonId();
+                if(id == R.id.wifiMode3){
+                    ipRG.check(R.id.wifiMode1);
                 }
                 return false;
             }
@@ -240,49 +289,91 @@ public class IPActivity extends Activity {
             public void onClick(View v) {
                 int id =  ipRG.getCheckedRadioButtonId();
                 WifiConfiguration mWifiConfiguration;
+
+                String staticWifiIdStr = staticWifiList.getSelectedItem().toString(); // ssid
+                String staticPasswordStr = staticPassword.getText().toString();       //password
+                Log.i("IPActivity_Log","WIFILIST:" + staticWifiIdStr);
+                if("".equals(staticPasswordStr)){
+                    ToolsUtil.showToast(IPActivity.this,"请输入密码",2000);
+                    return;
+                }
+
+                String wifiSafe = staticwifiSafeList.getSelectedItem().toString();
+                if("添加网络".equals(staticWifiIdStr)){
+                    //手动添加
+                    wifiSafe = staticwifiSafeList.getSelectedItem().toString();
+                    if("".equals(staticWifiId.getText().toString())){
+                        ToolsUtil.showToast(IPActivity.this,"请输入SSID",2000);
+                        return;
+                    }
+                    staticWifiIdStr = staticWifiId.getText().toString();
+                    Log.i("IPActivity_Log","手动添加模式");
+                }else{
+                    //自动
+                    wifiSafe = staticWifiIdStr.split(" - ")[1];
+                    staticWifiIdStr = staticWifiIdStr.split(" - ")[0];
+
+                    Log.i("IPActivity_Log","选择模式");
+                }
+
+                int wifiSafeInt = 0;
+
+                if("无".equals(wifiSafe)){
+                    wifiSafeInt = 1;
+                }else if("WEP".equals(wifiSafe)){
+                    wifiSafeInt = 2;
+                }else{
+                    wifiSafeInt = 3;
+                }
+
+                Log.i("IPActivity_Log","SSID:" + staticWifiIdStr);
+                Log.i("IPActivity_Log","PASSWORD:" + staticPasswordStr);
+                Log.i("IPActivity_Log","SAFE:" + wifiSafeInt);
+
+
                 if(id == R.id.wifiMode1){
                     //DHCP
-                    String staticWifiIdStr = staticWifiId.getSelectedItem().toString();
-                    String staticPasswordStr = staticPassword.getText().toString();
-
-                    mWifiConfiguration = CreateWifiInfo(staticWifiIdStr, staticPasswordStr, 3);
+                    mWifiConfiguration = CreateWifiInfo(staticWifiIdStr, staticPasswordStr, wifiSafeInt);
                     int wcgID = mwifiManager.addNetwork(mWifiConfiguration);
                     boolean bbb = mwifiManager.enableNetwork(wcgID, true);
-
+                    Log.i("IPActivity_Log",bbb+"");
+                    if(!bbb){
+                        ToolsUtil.showToast(IPActivity.this,"连接异常，请重试!",2000);
+                    }
                 }else if(id == R.id.wifiMode2){
                     //静态
-                    String staticWifiIdStr = staticWifiId.getSelectedItem().toString();
-                    String staticPasswordStr = staticPassword.getText().toString();
                     String staticIpStr = staticIp.getText().toString();
                     String staticGateWayStr = staticGateWay.getText().toString();
                     int staticSuffixInt = Integer.parseInt(staticSuffix.getText().toString());
                     String staticDNS1Str = staticDNS1.getSelectedItem().toString().split(":")[1];
 
-                    mWifiConfiguration = CreateWifiInfo(staticWifiIdStr, staticPasswordStr, 3);
+                    mWifiConfiguration = CreateWifiInfo(staticWifiIdStr, staticPasswordStr, wifiSafeInt);
 
                     int wcgID = mwifiManager.addNetwork(mWifiConfiguration);
                     boolean bbb = mwifiManager.enableNetwork(wcgID, true);
-
-                    try {
-                        setStaticIpConfiguration(mwifiManager, mWifiConfiguration,
-                                InetAddress.getByName(staticIpStr), staticSuffixInt,
-                                InetAddress.getByName(staticGateWayStr),
-                                InetAddress.getAllByName(staticDNS1Str));
-                    }catch(Exception e){
-                        Log.e("IPActivity_Log",e.getMessage());
+                    if(!bbb){
+                        ToolsUtil.showToast(IPActivity.this,"连接异常，请重试!",2000);
+                    }else{
+                        try {
+                            setStaticIpConfiguration(mwifiManager, mWifiConfiguration,
+                                    InetAddress.getByName(staticIpStr), staticSuffixInt,
+                                    InetAddress.getByName(staticGateWayStr),
+                                    InetAddress.getAllByName(staticDNS1Str));
+                        }catch(Exception e){
+                            Log.e("IPActivity_Log",e.getMessage());
+                        }
                     }
                 }else{
+                    //未连接
                     if(mwifiManager.isWifiEnabled()){
                         //是否是连接状态
                         if(!isWifi(IPActivity.this)){
-                            String staticWifiIdStr = staticWifiId.getSelectedItem().toString();
-                            String staticPasswordStr = staticPassword.getText().toString();
-
-                            mWifiConfiguration = CreateWifiInfo(staticWifiIdStr, staticPasswordStr, 3);
+                            mWifiConfiguration = CreateWifiInfo(staticWifiIdStr, staticPasswordStr, wifiSafeInt);
                             int wcgID = mwifiManager.addNetwork(mWifiConfiguration);
                             boolean bbb = mwifiManager.enableNetwork(wcgID, true);
-                            if(id == R.id.wifiMode3){
-                                ipRG.check(R.id.wifiMode1);
+                            Log.i("IPActivity_Log",bbb+"");
+                            if(!bbb){
+                                ToolsUtil.showToast(IPActivity.this,"连接异常，请重试!",2000);
                             }
                         }else{
                             ToolsUtil.showToast(IPActivity.this,"操作无效!",2000);
@@ -362,6 +453,31 @@ public class IPActivity extends Activity {
                     ipRG.check(R.id.wifiMode3);
                     staticPassword.setText("");
                 }
+            }
+        });
+
+        //wifi列表点击监听
+        staticWifiList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.i("IPActivity_Log","index:" + position);
+                if(spinnerTime > 0){
+                    String ssidStr = tempList.get(position);
+                    if("添加网络".equals(ssidStr)){
+                        //展示手动输入ssid，密码类型和密码
+                        linearLayoutWifiSafe.setVisibility(View.VISIBLE);
+                        linearLayoutWifiId.setVisibility(View.VISIBLE);
+                    }else{
+                        linearLayoutWifiSafe.setVisibility(View.GONE);
+                        linearLayoutWifiId.setVisibility(View.GONE);
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
     }

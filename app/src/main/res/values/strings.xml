@@ -53,6 +53,8 @@
     <string name="jt">静态</string>
     <string name="wlj">未连接</string>
     <string name="wifiId">WIFIID:</string>
+    <string name="wifiSafe">WIFISAFE:</string>
+    <string name="wifiList">WIFILIST:</string>
     <string name="jtipdz">静态IP地址:</string>
     <string name="wg">网关:</string>
     <string name="wlqzcd">网络前置长度:</string>
