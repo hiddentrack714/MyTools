@@ -52,7 +52,7 @@ public class IPReceiver extends BroadcastReceiver {
                 Log.i("IPReceiver","正在获取ip地址");
                 Message msg = IPActivity.ipActivityStateHandler.obtainMessage();
                 IPActivity.ipActivityStateHandler.sendMessage(msg);
-                ToolsUtil.showToast(IPActivity.ipActivity,"密码正确",2000);
+                //ToolsUtil.showToast(IPActivity.ipActivity,"密码正确",2000);
             } else if (state == NetworkInfo.DetailedState.IDLE) {
                 //闲置的
                 Log.i("IPReceiver","闲置的");

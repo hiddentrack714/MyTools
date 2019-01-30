@@ -261,7 +261,12 @@ public class IPActivity extends Activity {
             public boolean handleMessage(Message msg) {
                 int id =  ipRG.getCheckedRadioButtonId();
                 if(id == R.id.wifiMode3){
-                    ipRG.check(R.id.wifiMode1);
+                    String wifiStr = getWifiSetting(IPActivity.this);
+                    if("DHCP".equals(wifiStr)){
+                        ipRG.check(R.id.wifiMode1);
+                    }else{
+                        ipRG.check(R.id.wifiMode2);
+                    }
                 }
                 return false;
             }
