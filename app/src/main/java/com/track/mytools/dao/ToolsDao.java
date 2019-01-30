@@ -87,13 +87,13 @@ public class ToolsDao {
             //数据库查询失败，采取重新复制db策略
             //应用更新的时候，防止db有更新
             Log.e("ToolsDao_Log","db查询异常:" + e.getMessage());
-            boolean isSuccess = MainActivity.initCopyFile(String.valueOf(AssetsEnum.ASSETS_DB_PATH),"mytools.db",context);
+            HashMap<String,Object> isSuccess = MainActivity.initCopyFile(String.valueOf(AssetsEnum.ASSETS_DB_PATH),"mytools.db",context);
+            if((boolean)isSuccess.get("b") == true){
+                    Log.e("ToolsDao_Log","db初始化完成,请重新进入该界面");
 
-            if(isSuccess){
-                Log.e("ToolsDao_Log","db初始化完成,请重新进入该界面");
-
-                cursor = db.query(tableName, null, null, null, null, null, null);
+                    cursor = db.query(tableName, null, null, null, null, null, null);
             }
+
         }catch(Exception e){
 
             Log.e("ToolsDao_Log",e.getMessage());
