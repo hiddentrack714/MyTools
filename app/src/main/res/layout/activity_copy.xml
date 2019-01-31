@@ -24,16 +24,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center">
         <Button
             android:id="@+id/copyUpdBtn"
-            android:layout_width="75dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/xg"
             style="?android:attr/buttonStyle"/>
         <Button
             android:id="@+id/copyUseBtn"
-            android:layout_width="250dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/kqfw"
             style="?android:attr/buttonStyle"/>

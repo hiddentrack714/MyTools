@@ -1,48 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.track.mytools.activity.MainActivity">
+    tools:context="com.track.mytools.activity.MainActivity"
+    android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center_vertical">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:textSize="30dp"
-        android:text="MyTools"
-        android:layout_marginTop="100dp"/>
+        android:textSize="45sp"
+        android:text="@string/mt"/>
+    </LinearLayout>
 
-    <ImageView
-        android:id="@+id/fp_icon"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
-        android:layout_marginTop="450dp"
-        android:layout_centerHorizontal="true"
-        android:contentDescription="指纹图片"
-        android:src="@drawable/ic_fp_40px"
-        android:layout_marginEnd="30dp"
-        />
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="530dp"
-        android:textSize="15dp"
-        android:text="点击Home键验证指纹" />
-    <TextView
-        android:id="@+id/warnTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="560dp"
-        android:textSize="12dp"
-        android:visibility="gone"
-        android:text=""
-        android:textColor="#FF0000"/>
-</RelativeLayout>
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginBottom="25dp">
+        <ImageView
+            android:id="@+id/fp_icon"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:contentDescription="@string/zwtp"
+            android:src="@drawable/ic_fp_40px"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/djyzzw"
+            android:layout_marginTop="5dp"/>
+        <TextView
+            android:id="@+id/warnTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:visibility="invisible"
+            android:textColor="#FF0000"
+            android:layout_marginTop="5dp"/>
+    </LinearLayout>
+
+</LinearLayout>

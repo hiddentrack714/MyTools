@@ -510,4 +510,63 @@ public class ToolsUtil {
 
     }
 
+    /**
+     * 判断当前手机是否有ROOT权限
+     * @return
+     */
+    public static boolean hasRoot()
+    {
+        Process process = null;
+        DataOutputStream os = null;
+        try
+        {
+            process = Runtime.getRuntime().exec("su");
+            os = new DataOutputStream(process.getOutputStream());
+            os.writeBytes("exit\n");
+            os.flush();
+            int exitValue = process.waitFor();
+            if (exitValue == 0)
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
+        } catch (Exception e)
+        {
+            Log.d("*** DEBUG ***", "Unexpected error - Here is what I know: "
+                    + e.getMessage());
+            return false;
+        } finally
+        {
+            try
+            {
+                if (os != null)
+                {
+                    os.close();
+                }
+                process.destroy();
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 判断是否刷入yc调度
+     * @return
+     */
+    public static boolean hasYC(){
+        File file1 = new File("/data/wipe_mode");
+        File file2 = new File("/data/powercfg");
+
+        if(file1.exists() || file2.exists()){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
 }

@@ -12,14 +12,11 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -31,7 +28,6 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import com.track.mytools.R;
 import com.track.mytools.dao.ToolsDao;
@@ -161,14 +157,7 @@ public class IPActivity extends Activity {
         }
 
         //获取定位服务权限
-        mHasPermission = checkPermission();
-        if (!mHasPermission) {
-            Log.i("IPActivity_Log","没有权限");
-            requestLocationPermission();
-        }else{
-            Log.i("IPActivity_Log","拥有权限");
-            wifiList = getWifiList();
-        }
+        wifiList = getWifiList();
 
         //获取Wifi列表，并且赋值到下拉列表
         tempList = new ArrayList<String>();
@@ -757,37 +746,6 @@ public class IPActivity extends Activity {
             return true;
         }
         return false;
-    }
-
-    /**
-     * 请求定位权限
-     *
-     */
-    public void requestLocationPermission(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {//如果 API level 是大于等于 23(Android 6.0) 时
-            //判断是否具有权限
-            if (ContextCompat.checkSelfPermission(IPActivity.this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                //判断是否需要向用户解释为什么需要申请该权限
-                if (ActivityCompat.shouldShowRequestPermissionRationale(IPActivity.this,
-                        Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                    Toast.makeText(IPActivity.this, "自Android 6.0开始需要打开位置权限才可以搜索到WIFI设备", Toast.LENGTH_SHORT);
-
-                }
-                //请求权限
-                ActivityCompat.requestPermissions(IPActivity.this,
-                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                        PERMISSION_REQUEST_CODE);
-            }
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-       Log.i("IPActivity_Log","定位权限回调");
-        wifiList = getWifiList();
     }
 
     /**

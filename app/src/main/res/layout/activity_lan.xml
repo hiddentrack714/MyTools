@@ -11,36 +11,39 @@
         android:layout_height="wrap_content"
         android:text="@string/sm"
         android:layout_marginTop="5dp"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:layout_marginStart="5dp">
+        android:layout_marginStart="5dp"
+        android:gravity="center">
         <TextView
-            android:layout_width="130dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/zjmc"
+            android:layout_weight="1"
             android:gravity="center"
             android:textStyle="bold"/>
         <TextView
-            android:layout_width="80dp"
-            android:layout_marginStart="30dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="2"
             android:text="@string/lanip"
             android:gravity="center"
             android:textStyle="bold"/>
         <TextView
-            android:layout_width="110dp"
-            android:layout_marginStart="30dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="2"
             android:text="@string/mac"
             android:gravity="center"
             android:textStyle="bold"/>
     </LinearLayout>
     <ProgressBar
         android:id="@+id/lanPro"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="100dp"
         android:visibility="invisible"/>

@@ -56,23 +56,24 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center">
         <Button
             android:id="@+id/suffixEditBtn"
-            android:layout_width="75dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/xg"
             android:layout_gravity="center"
             style="?android:attr/buttonStyle"/>
         <Button
             android:id="@+id/suffixDelBtn"
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/schz"
             style="?android:attr/buttonStyle"/>
         <Button
             android:id="@+id/suffixAddBtn"
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/tjhz"
             style="?android:attr/buttonStyle"/>

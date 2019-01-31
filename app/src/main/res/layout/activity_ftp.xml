@@ -127,17 +127,18 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center">
         <Button
             android:id="@+id/ftpUpdBtn"
-            android:layout_width="75dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/xg"
             android:layout_gravity="center"
             style="?android:attr/buttonStyle"/>
         <Button
             android:id="@+id/ftpDownBtn"
-            android:layout_width="250dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/xz"
             style="?android:attr/buttonStyle"/>

@@ -15,7 +15,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
@@ -65,7 +64,7 @@ public class AppExtractActivity extends Activity {
     EditText appSearch;
 
     @BindView(R.id.appPro)
-    LinearLayout appPro;
+    ProgressBar appPro;
 
     @BindView(R.id.appCopyPro)
     ProgressBar appCopyPro;
@@ -118,7 +117,7 @@ public class AppExtractActivity extends Activity {
                     appUpdBtn.setEnabled(true);
                 }else if(msg.arg1 == 1){
                     //app listview 加载结束更新视图
-                    appPro.setVisibility(View.GONE);
+                    appPro.setVisibility(View.INVISIBLE);
                     appList.setVisibility(View.VISIBLE);
                     extractBtn.setEnabled(true);
                     appList.setAdapter(appMainAdapter);

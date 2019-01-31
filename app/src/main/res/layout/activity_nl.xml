@@ -171,19 +171,20 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center">
     <Button
-            android:id="@+id/nlUpdBtn"
-            android:layout_marginTop="5dp"
-            android:layout_width="75dp"
-            android:layout_height="wrap_content"
-            android:text="@string/xg"
-            android:layout_gravity="center"
-           style="?android:attr/buttonStyle"/>
+        android:id="@+id/nlUpdBtn"
+        android:layout_marginTop="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/xg"
+        android:layout_gravity="center"
+        style="?android:attr/buttonStyle"/>
     <Button
         android:id="@+id/nlStartBtn"
         android:layout_marginTop="5dp"
-        android:layout_width="250dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/kqfw"
         android:layout_gravity="center"

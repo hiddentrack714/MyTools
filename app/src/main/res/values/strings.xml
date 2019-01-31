@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">MyTools</string>
     <string name="title_activity_tools">ToolsActivity</string>
+    <!--主页-->
+    <string name="zwtp">指纹图片</string>
+    <string name="djyzzw">点击Home键验证指纹</string>
+    <string name="mt">MyTools</string>
     <!--功能-->
     <string name="t1">后缀名一键删除/添加</string>
     <string name="t2">查询类型数量</string>
@@ -13,8 +17,10 @@
     <string name="t9">yc调度模式切换</string>
     <string name="t10">WifiIP静态/DHCP切换</string>
     <string name="t12">App提取</string>
+    <string name="f1">指纹开启关闭</string>
+    <string name="f2">指纹开启启动</string>
     <!--公共-->
-    <string name="xg">修改</string>
+    <string name="xg">修改参数</string>
     <string name="off">off</string>
     <string name="on">on</string>
     <string name="zhz">0/0</string>
@@ -42,7 +48,7 @@
     <string name="xzdz">下载地址:</string>
     <string name="bh">编号</string>
     <string name="xzjd">下载进度</string>
-    <string name="wjdx">文件大小(byte)</string>
+    <string name="wjdx">文件大小</string>
     <string name="wjmc">文件名称</string>
     <!--ip切换-->
     <string name="wifizt">WIFI状态:</string>

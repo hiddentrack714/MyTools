@@ -198,22 +198,23 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center">
         <Button
             android:id="@+id/ipUpdBtn"
-            android:layout_width="75dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/xg"
             style="?android:attr/buttonStyle"/>
         <Button
             android:id="@+id/ipForgetBtn"
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/wjmm"
             style="?android:attr/buttonStyle"/>
         <Button
             android:id="@+id/ipSetBtn"
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/ljwifi"
             style="?android:attr/buttonStyle"/>

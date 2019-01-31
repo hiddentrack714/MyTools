@@ -75,11 +75,13 @@ public class MainActivity extends Activity {
             //是否需要开启指纹识别
             if("y".equalsIgnoreCase(isUseFinIdMou)){
                 //开启指纹识别
+                ToolsActivity.useFP = true;
                 setContentView(R.layout.activity_main);
                 ButterKnife.bind(this);
                 checkFiger();
             }else{
                 //关闭指纹识别,直接跳转到下一级
+                ToolsActivity.useFP = false;
                 Intent intent = new Intent();
                 intent.setClass(this, ToolsActivity.class);
                 this.startActivity(intent);
