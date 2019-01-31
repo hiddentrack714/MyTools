@@ -4,21 +4,24 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import com.track.mytools.R;
 import com.track.mytools.dao.ToolsDao;
 import com.track.mytools.entity.SuffixEntity;
-import com.track.mytools.util.ToolsUtil;
+import com.track.mytools.service.QrySuffixService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by Track on 2017/1/18.
@@ -37,65 +40,69 @@ public class QrySuffixActivity extends ListActivity {
 
     public static SimpleAdapter adapter;
 
+    public static QrySuffixActivity qrySuffixActivity;
+
+    @BindView(R.id.suffixMainLayout)
+    LinearLayout suffixMainLayout;
+
+    public static Handler qrySuffixActivityHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_suffixmain);
 
-        //创建ArrayList对象；
-        list=new ArrayList<HashMap<String,String>>();
-        //将数据存放进ArrayList对象中，数据安排的结构是，ListView的一行数据对应一个HashMap对象，
-        //HashMap对象，以列名作为键，以该列的值作为Value，将各列信息添加进map中，然后再把每一列对应
-        //的map对象添加到ArrayList中
+        ButterKnife.bind(this);
 
-        SuffixActivity.list.clear();  //初始化
-
-        Set<Map.Entry<String,List<String>>> tempSet = SuffixActivity.pathMap.entrySet();
-
-        for (Map.Entry<String,List<String>> entry:tempSet) {
-            entry.getValue().clear();
-        }
+        qrySuffixActivity = this;
 
         SQLiteDatabase sdb = ToolsDao.getDatabase();
-        HashMap<String,Object> dataMap = ToolsDao.qryTable(sdb,SuffixEntity.class,QrySuffixActivity.this).get(0);
+        HashMap<String,Object> dataMap = ToolsDao.qryTable(sdb, SuffixEntity.class, QrySuffixActivity.qrySuffixActivity).get(0);
 
-        SuffixActivity.preMethod(dataMap.get("suffixFilter").toString(),dataMap.get("suffixType").toString());
-
-        List<HashMap<String,String>> listType = ToolsUtil.qrySuffixNum(dataMap.get("suffixPath").toString(),dataMap.get("suffixType").toString());
-
-        Log.i("ch","后缀类型数量:" + listType.size());
-        typeName = new String[listType.size()];
-        typeNum = new String[listType.size()];
-
-        for (int i = 0; i<listType.size(); i++){
-            typeName[i] = listType.get(i).get("TYPE");
-            typeNum[i] = listType.get(i).get("NUM");
-        }
-
-        int count = 0;
+        list=new ArrayList<HashMap<String,String>>();
 
         map=new HashMap<String,String>();       //为避免产生空指针异常，有几列就创建几个map对象
         map.put("typeName", "当前目录:");
         map.put("typeNum", dataMap.get("suffixPath").toString());
         list.add(map);
 
-        for(int j=0; j<listType.size(); j++){
-            map=new HashMap<String,String>();       //为避免产生空指针异常，有几列就创建几个map对象
-            map.put("typeName", typeName[j]);
-            map.put("typeNum", typeNum[j]);
-            count = count + Integer.parseInt(typeNum[j]);
-            list.add(map);
-        }
-
-        map=new HashMap<String,String>();       //为避免产生空指针异常，有几列就创建几个map对象
-        map.put("typeName", "合计");
-        map.put("typeNum", count+"");
-        list.add(map);
-
         //创建一个SimpleAdapter对象
-        adapter=new SimpleAdapter(this,list,R.layout.activity_suffixlist,from,to);
+        adapter=new SimpleAdapter(QrySuffixActivity.qrySuffixActivity,list,R.layout.activity_suffixlist,from,to);
         //调用ListActivity的setListAdapter方法，为ListView设置适配器
         setListAdapter(adapter);
+
+        //休眠1秒钟，防止无法进入，卡上一界面activity，
+        new Thread(){
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                    Intent intentService = new Intent(QrySuffixActivity.this, QrySuffixService.class);
+
+                    startService(intentService);
+                }catch(Exception e){
+
+                }
+            }
+        }.start();
+
+        qrySuffixActivityHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+
+                Log.i("QrySuffixActivity_Log","后缀计算完成，开始展示");
+
+                suffixMainLayout.setVisibility(View.GONE);
+
+                list.clear();
+
+                list.addAll(QrySuffixService.list);
+
+                adapter.notifyDataSetChanged();
+            }
+        };
+
     }
 
     @Override
@@ -109,6 +116,5 @@ public class QrySuffixActivity extends ListActivity {
             this.startActivity(intent);
         }
     }
-
 
 }
