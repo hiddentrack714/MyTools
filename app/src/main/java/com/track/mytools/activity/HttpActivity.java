@@ -5,13 +5,18 @@ import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -41,6 +46,8 @@ import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.bartwell.exfilepicker.ExFilePicker;
+import ru.bartwell.exfilepicker.data.ExFilePickerResult;
 
 /**
  * http多线程下载
@@ -62,6 +69,9 @@ public class HttpActivity extends Activity{
 
     @BindView(R.id.httpThread)
     EditText httpThread;//线程数量
+
+    @BindView(R.id.httpPath)
+    EditText httpPath;//下载地址
 
     @BindView(R.id.httpDir)
     EditText httpDir;//下载地址
@@ -96,6 +106,9 @@ public class HttpActivity extends Activity{
 
     private static boolean isUpd = false;
 
+    private final int EX_FILE_PICKER_RESULT = 0xfa01;
+    private String startDirectory = null;// 记忆上一次访问的文件目录路径
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,7 +121,7 @@ public class HttpActivity extends Activity{
         HashMap<String,Object> map = ToolsDao.qryTable(sdb,HttpEntity.class,HttpActivity.this).get(0);
 
         httpThread.setText(map.get("httpThread").toString());
-        httpDir.setText(map.get("httpDir").toString());
+        httpPath.setText(map.get("httpPath").toString());
         httpSuff.setText(map.get("httpSuff").toString());
         httpSeek.setProgress(Integer.parseInt(map.get("httpThread").toString()));
         httpSeek.setEnabled(false);
@@ -122,7 +135,7 @@ public class HttpActivity extends Activity{
                     httpDownBtn.setEnabled(true);
                     httpUrl.setEnabled(true);
                     httpUpdBtn.setEnabled(true);
-                    httpDir.setEnabled(true);
+                    httpPath.setEnabled(true);
                     httpCopyBtn.setEnabled(true);
                     httpSwitch.setEnabled(true);
 
@@ -155,28 +168,28 @@ public class HttpActivity extends Activity{
 
                 Log.i("HttpActivity_Log",httpUrl.getText().toString());
                 Log.i("HttpActivity_Log",httpThread.getText().toString());
-                Log.i("HttpActivity_Log",httpDir.getText().toString());
+                Log.i("HttpActivity_Log",httpPath.getText().toString());
 
                 Log.i("HttpActivity_Log",isSingle+"");
-
-                if("0".equals(httpThread.getText().toString())){
-                    ToolsUtil.showToast(HttpActivity.this,"下载线程数不能为0",2000);
-                    return;
-                }
 
                 if("".equals(httpUrl.getText().toString())){
                     ToolsUtil.showToast(HttpActivity.this,"下载链接不能为空",2000);
                     return;
                 }
 
-                URL = httpUrl.getText().toString();   //http连接
-                THREAD_NUM = Integer.parseInt(httpThread.getText().toString());//线程数量
-                DIR_NAME = httpDir.getText().toString();//下载地址
-
-                if(map.get("httpDir").toString().equals(DIR_NAME.trim())){
-                    ToolsUtil.showToast(HttpActivity.this,"下载地址没有修改",2000);
+                if("0".equals(httpThread.getText().toString())){
+                    ToolsUtil.showToast(HttpActivity.this,"下载线程数不能为0",2000);
                     return;
                 }
+
+                if("".equals(httpDir.getText().toString())){
+                    ToolsUtil.showToast(HttpActivity.this,"下载目录不能为空",2000);
+                    return;
+                }
+
+                URL = httpUrl.getText().toString();   //http连接
+                THREAD_NUM = Integer.parseInt(httpThread.getText().toString());//线程数量
+                DIR_NAME = httpPath.getText().toString() +  httpDir.getText().toString();//下载地址
 
                 File file = new File(DIR_NAME);
 
@@ -314,20 +327,23 @@ public class HttpActivity extends Activity{
                     httpThread.setEnabled(true);
                     httpSuff.setEnabled(true);
                     httpSeek.setEnabled(true);
+                    httpPath.setEnabled(true);
 
                     isUpd = true;
 
                     httpUpdBtn.setText("完成");
+                    httpDownBtn.setEnabled(false);
                 }else{
 
                     httpThread.setEnabled(false);
                     httpSuff.setEnabled(false);
                     httpSeek.setEnabled(false);
+                    httpPath.setEnabled(false);
 
                     HashMap<String,Object> dataMap = new HashMap<String,Object>();
 
                     dataMap.put("httpThread",httpThread.getText().toString());
-                    dataMap.put("httpDir",httpDir.getText().toString());
+                    dataMap.put("httpPath",httpPath.getText().toString());
                     dataMap.put("httpSuff",httpSuff.getText().toString());
                     dataMap.put("id",map.get("id"));
 
@@ -338,7 +354,31 @@ public class HttpActivity extends Activity{
                     isUpd = false;
 
                     httpUpdBtn.setText("修改");
+                    httpDownBtn.setEnabled(true);
                 }
+            }
+        });
+
+        httpPath.setOnTouchListener(new View.OnTouchListener(){
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    ExFilePicker exFilePicker = new ExFilePicker();
+                    exFilePicker.setCanChooseOnlyOneItem(true);// 单选
+                    exFilePicker.setQuitButtonEnabled(true);
+                    exFilePicker.setChoiceType(ExFilePicker.ChoiceType.DIRECTORIES);
+
+                    if (TextUtils.isEmpty(startDirectory)) {
+                        exFilePicker.setStartDirectory(Environment.getExternalStorageDirectory().getPath());
+                    } else {
+                        exFilePicker.setStartDirectory(startDirectory);
+                    }
+
+                    exFilePicker.start(HttpActivity.this, EX_FILE_PICKER_RESULT);
+                }
+                return false;
             }
         });
 
@@ -362,7 +402,7 @@ public class HttpActivity extends Activity{
         httpDownBtn.setEnabled(false);
         httpUrl.setEnabled(false);
         httpUpdBtn.setEnabled(false);
-        httpDir.setEnabled(false);
+        httpPath.setEnabled(false);
         httpCopyBtn.setEnabled(false);
         httpSwitch.setEnabled(false);
 
@@ -559,6 +599,29 @@ public class HttpActivity extends Activity{
             return font+num+back;
         }
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == EX_FILE_PICKER_RESULT) {
+            ExFilePickerResult result = ExFilePickerResult.getFromIntent(data);
+            if (result != null && result.getCount() > 0) {
+                String path = result.getPath();
+
+                List<String> names = result.getNames();
+                for (int i = 0; i < names.size(); i++) {
+                    File f = new File(path, names.get(i));
+                    try {
+                        Uri uri = Uri.fromFile(f); //这里获取了真实可用的文件资源
+
+                        httpPath.setText(uri.getPath() + "/");
+                        startDirectory = path;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
 }

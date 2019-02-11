@@ -3,13 +3,17 @@ package com.track.mytools.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -36,6 +40,8 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.bartwell.exfilepicker.ExFilePicker;
+import ru.bartwell.exfilepicker.data.ExFilePickerResult;
 
 /**
  * APP提取
@@ -90,6 +96,9 @@ public class AppExtractActivity extends Activity {
 
     public static long totalSize = 0;
     public static long nowSize = 0;
+
+    private final int EX_FILE_PICKER_RESULT = 0xfa01;
+    private String startDirectory = null;// 记忆上一次访问的文件目录路径
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -327,6 +336,51 @@ public class AppExtractActivity extends Activity {
 
             }
         });
+
+        appPath.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    ExFilePicker exFilePicker = new ExFilePicker();
+                    exFilePicker.setCanChooseOnlyOneItem(true);// 单选
+                    exFilePicker.setQuitButtonEnabled(true);
+                    exFilePicker.setChoiceType(ExFilePicker.ChoiceType.DIRECTORIES);
+
+                    if (TextUtils.isEmpty(startDirectory)) {
+                        exFilePicker.setStartDirectory(Environment.getExternalStorageDirectory().getPath());
+                    } else {
+                        exFilePicker.setStartDirectory(startDirectory);
+                    }
+
+                    exFilePicker.start(AppExtractActivity.this, EX_FILE_PICKER_RESULT);
+                }
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == EX_FILE_PICKER_RESULT) {
+            ExFilePickerResult result = ExFilePickerResult.getFromIntent(data);
+            if (result != null && result.getCount() > 0) {
+                String path = result.getPath();
+
+                List<String> names = result.getNames();
+                for (int i = 0; i < names.size(); i++) {
+                    File f = new File(path, names.get(i));
+                    try {
+                        Uri uri = Uri.fromFile(f); //这里获取了真实可用的文件资源
+
+                        appPath.setText(uri.getPath());
+                        startDirectory = path;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
 

@@ -1,11 +1,16 @@
 package com.track.mytools.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,12 +22,15 @@ import com.track.mytools.dao.ToolsDao;
 import com.track.mytools.entity.SuffixEntity;
 import com.track.mytools.util.ToolsUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.bartwell.exfilepicker.ExFilePicker;
+import ru.bartwell.exfilepicker.data.ExFilePickerResult;
 
 /**
  * Created by Track on 2017/1/16.
@@ -67,6 +75,9 @@ public class SuffixActivity extends Activity {
     public static int finshFileNum = 0;  //处理完成的数量
     public static List<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
     public static HashMap<String,List<String>> pathMap = new HashMap<String,List<String>>();  //不同对应文件的数量
+
+    private final int EX_FILE_PICKER_RESULT = 0xfa01;
+    private String startDirectory = null;// 记忆上一次访问的文件目录路径
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -195,6 +206,8 @@ public class SuffixActivity extends Activity {
                     suffixFilter.setEnabled(true);
                     isUpd = true;
                     suffixEditBtn.setText("完成");
+                    suffixAddBtn.setEnabled(false);
+                    suffixDelBtn.setEnabled(false);
                 } else {
                     //编辑状态
                     suffixPath.setEnabled(false);
@@ -211,7 +224,34 @@ public class SuffixActivity extends Activity {
 
                     ToolsDao.saveOrUpdIgnoreExsit(sdb,dataMap,SuffixEntity.class);
                     suffixEditBtn.setText("修改");
+                    suffixAddBtn.setEnabled(true);
+                    suffixDelBtn.setEnabled(true);
                 }
+            }
+        });
+
+        suffixPath.setOnTouchListener(new View.OnTouchListener(){
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                if(event.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    ExFilePicker exFilePicker = new ExFilePicker();
+                    exFilePicker.setCanChooseOnlyOneItem(true);// 单选
+                    exFilePicker.setQuitButtonEnabled(true);
+                    exFilePicker.setChoiceType(ExFilePicker.ChoiceType.DIRECTORIES);
+
+                    if (TextUtils.isEmpty(startDirectory)) {
+                        exFilePicker.setStartDirectory(Environment.getExternalStorageDirectory().getPath());
+                    } else {
+                        exFilePicker.setStartDirectory(startDirectory);
+                    }
+
+                    exFilePicker.start(SuffixActivity.this, EX_FILE_PICKER_RESULT);
+                }
+
+                return false;
             }
         });
     }
@@ -232,5 +272,28 @@ public class SuffixActivity extends Activity {
         pathMap.put(suffixType,list);
         List<String> list1 = new ArrayList<String>();
         pathMap.put("未知",list1);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == EX_FILE_PICKER_RESULT) {
+            ExFilePickerResult result = ExFilePickerResult.getFromIntent(data);
+            if (result != null && result.getCount() > 0) {
+                String path = result.getPath();
+
+                List<String> names = result.getNames();
+                for (int i = 0; i < names.size(); i++) {
+                    File f = new File(path, names.get(i));
+                    try {
+                        Uri uri = Uri.fromFile(f); //这里获取了真实可用的文件资源
+
+                        suffixPath.setText(uri.getPath());
+                        startDirectory = path;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 }

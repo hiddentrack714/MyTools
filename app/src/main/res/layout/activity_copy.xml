@@ -14,7 +14,24 @@
             android:layout_height="wrap_content"
             android:text="@string/wjwz"/>
         <EditText
-            android:id="@+id/copyPhoneFile"
+            android:id="@+id/copyPath"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:singleLine="true"
+            android:inputType="text"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bcmc"/>
+        <EditText
+            android:id="@+id/copyFile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"

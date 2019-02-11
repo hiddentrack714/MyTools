@@ -50,9 +50,13 @@ public class IPReceiver extends BroadcastReceiver {
             } else if (state == NetworkInfo.DetailedState.OBTAINING_IPADDR) {
                 //正在获取ip地址
                 Log.i("IPReceiver","正在获取ip地址");
-                Message msg = IPActivity.ipActivityStateHandler.obtainMessage();
-                IPActivity.ipActivityStateHandler.sendMessage(msg);
-                //ToolsUtil.showToast(IPActivity.ipActivity,"密码正确",2000);
+                String activity = ToolsUtil.getCurrentActivity().toString();
+                if(activity.indexOf("IPActivity")>-1){
+                    Log.i("IPReceiver","当前Activity:IPActivity");
+                    Message msg = IPActivity.ipActivityStateHandler.obtainMessage();
+                    IPActivity.ipActivityStateHandler.sendMessage(msg);
+                    //ToolsUtil.showToast(IPActivity.ipActivity,"密码正确",2000);
+                }
             } else if (state == NetworkInfo.DetailedState.IDLE) {
                 //闲置的
                 Log.i("IPReceiver","闲置的");

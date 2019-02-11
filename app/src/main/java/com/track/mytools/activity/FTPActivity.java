@@ -6,11 +6,15 @@ import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,9 +29,12 @@ import com.track.mytools.util.ToolsUtil;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.bartwell.exfilepicker.ExFilePicker;
+import ru.bartwell.exfilepicker.data.ExFilePickerResult;
 
 /**
  * FTP下载
@@ -80,6 +87,9 @@ public class FTPActivity extends Activity {
     public static NotificationCompat.Builder mBuilder;
 
     private static boolean isUpd = false; // 是否修改中
+
+    private final int EX_FILE_PICKER_RESULT = 0xfa01;
+    private String startDirectory = null;// 记忆上一次访问的文件目录路径
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -267,6 +277,51 @@ public class FTPActivity extends Activity {
                 }
             }
         });
+
+        ftpLocalPath.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    ExFilePicker exFilePicker = new ExFilePicker();
+                    exFilePicker.setCanChooseOnlyOneItem(true);// 单选
+                    exFilePicker.setQuitButtonEnabled(true);
+                    exFilePicker.setChoiceType(ExFilePicker.ChoiceType.DIRECTORIES);
+
+                    if (TextUtils.isEmpty(startDirectory)) {
+                        exFilePicker.setStartDirectory(Environment.getExternalStorageDirectory().getPath());
+                    } else {
+                        exFilePicker.setStartDirectory(startDirectory);
+                    }
+
+                    exFilePicker.start(FTPActivity.this, EX_FILE_PICKER_RESULT);
+                }
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == EX_FILE_PICKER_RESULT) {
+            ExFilePickerResult result = ExFilePickerResult.getFromIntent(data);
+            if (result != null && result.getCount() > 0) {
+                String path = result.getPath();
+
+                List<String> names = result.getNames();
+                for (int i = 0; i < names.size(); i++) {
+                    File f = new File(path, names.get(i));
+                    try {
+                        Uri uri = Uri.fromFile(f); //这里获取了真实可用的文件资源
+
+                        ftpLocalPath.setText(uri.getPath() + "/");
+                        startDirectory = path;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
     /**

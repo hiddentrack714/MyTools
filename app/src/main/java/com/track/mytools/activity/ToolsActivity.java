@@ -103,12 +103,16 @@ public class ToolsActivity extends Activity implements OnClickListener{
 
         if(!ToolsUtil.hasRoot()){
             wifiBtn.setEnabled(false);
-            wifiBtn.setText(wifiBtn.getText()+"-未获取Root，无法正常使用");
+            nlBtn.setEnabled(false);
+            ipBtn.setEnabled(false);
+            wifiBtn.setText(wifiBtn.getText()+"-未获取Root，无法使用");
+            nlBtn.setText(nlBtn.getText()+"-未获取Root，无法使用");
+            ipBtn.setText(ipBtn.getText()+"-未获取Root，无法使用");
         }
 
         if(!ToolsUtil.hasYC()){
             ycBtn.setEnabled(false);
-            ycBtn.setText(ycBtn.getText()+"-未刷入YC调度，无法正常使用");
+            ycBtn.setText(ycBtn.getText()+"-未刷入YC调度，无法使用");
         }
 
         suffixBtn.setOnClickListener(this);//删除添加后缀

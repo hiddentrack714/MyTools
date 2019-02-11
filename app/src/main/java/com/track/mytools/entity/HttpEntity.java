@@ -6,5 +6,5 @@ import com.track.mytools.annotation.TableNameAnnotation;
 public class HttpEntity extends BaseEntity {
     private String httpThread;
     private String httpSuff;
-    private String httpDir;
+    private String httpPath;
 }
