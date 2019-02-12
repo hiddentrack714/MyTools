@@ -147,6 +147,7 @@ public class ToolsActivity extends Activity{
             toolsFP.setEnabled(false);
         }
 
+        //检测是否是非法页面跳转
         if(!ToolsUtil.isLegal()){
             ToolsUtil.showToast(ToolsActivity.this,"非法页面跳转",5000);
             finish();

@@ -37,6 +37,8 @@ public class ToolsMainAdapter extends BaseAdapter {
 
     public static HashMap<Integer, Boolean> isUse;
 
+    private static String isRoot = null;
+
     public ToolsMainAdapter(Context context, List<HashMap<String,Object>> listData){
         this.context = context;
         this.listData= listData;
@@ -102,7 +104,11 @@ public class ToolsMainAdapter extends BaseAdapter {
         holder.toolsBtn.setId(btnId);
         holder.toolsBtn.setEnabled(isUse.get(position));
 
-        if(!ToolsUtil.hasRoot()){
+        if(isRoot == null){
+            isRoot = (ToolsUtil.hasRoot() == true ? "y" : "n");
+        }
+
+        if("n".equals(isRoot)){
             if(btnName.equals("wifiBtn")){
                 holder.toolsBtn.setEnabled(false);
                 holder.toolsBtn.setText(holder.toolsBtn.getText()+"-未获取Root，无法使用");

@@ -11,13 +11,16 @@ import android.widget.Toast;
 import com.track.mytools.activity.SuffixActivity;
 import com.track.mytools.activity.ToolsActivity;
 import com.track.mytools.entity.HttpThreadEntity;
+import com.track.mytools.enums.AssetsEnum;
 import com.track.mytools.exception.HttpException;
 
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
@@ -26,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 /**
@@ -618,7 +622,17 @@ public class ToolsUtil {
      * @return
      */
     public static boolean isLegal(){
-        if(ToolsActivity.useFP){
+        File file = new File(String.valueOf(AssetsEnum.ASSETS_PROPERTIES_PATH));
+        Properties properties = new Properties();
+
+        try {
+            Reader s = new FileReader(file);
+            properties.load(s);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if("y".equals(properties.get("isUseFinIdMou"))){
             if(!ToolsActivity.passFP){
                 //非法界面跳转
                 return false;
