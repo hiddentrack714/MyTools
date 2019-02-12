@@ -51,7 +51,9 @@ public class ToolsActivity extends Activity{
     @BindView(R.id.toolsList)
     ListView toolsList;
 
-    public static boolean useFP;
+    public static boolean useFP;//是否开启指纹
+
+    public static boolean passFP = false;//是否通过指纹验证
 
     //两个危险权限需要动态申请
     private static final String[] NEEDED_PERMISSIONS = new String[]{
@@ -138,10 +140,16 @@ public class ToolsActivity extends Activity{
 
         FingerprintManager fingerprintManager = (FingerprintManager) getSystemService(Context.FINGERPRINT_SERVICE);
 
+        //检测是否存在指纹模块
         if(fingerprintManager.isHardwareDetected()){
             toolsFP.setChecked(useFP);
         }else{
             toolsFP.setEnabled(false);
+        }
+
+        if(!ToolsUtil.isLegal()){
+            ToolsUtil.showToast(ToolsActivity.this,"非法页面跳转",5000);
+            finish();
         }
 
         toolsActivityHandler = new Handler(){
@@ -198,6 +206,7 @@ public class ToolsActivity extends Activity{
 
         toolsList.setAdapter(toolsMainAdapter);
 
+        //监听是否使用指纹首屏
         toolsFP.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

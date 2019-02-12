@@ -49,6 +49,7 @@ public class FingerprintUtil extends FingerprintManager.AuthenticationCallback {
         fingerStaus = 1;
         Intent intent = new Intent();
         intent.setClass(mainActivity, ToolsActivity.class);
+        ToolsActivity.passFP = true; // 防止直接进入tools界面
         mainActivity.startActivity(intent);
         mainActivity.finish();
     }

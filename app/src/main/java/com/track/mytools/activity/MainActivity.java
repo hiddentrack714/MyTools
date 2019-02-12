@@ -119,11 +119,10 @@ public class MainActivity extends Activity {
         FingerprintManager fm = (FingerprintManager)this.getSystemService(Service.FINGERPRINT_SERVICE);
 
         int fingerGrant = checkSelfPermission(Manifest.permission.USE_FINGERPRINT );
-        // Log.i("test", "----------->" + fingerGrant);
+
         //动态检测权限
         if(PackageManager.PERMISSION_GRANTED != fingerGrant){
-            //ToolsUtil.showToast(this,"没有权限访问指纹",1000);
-           // return false;
+
             warnTitle.setText("没有权限访问指纹");
             warnTitle.setVisibility(TextView.VISIBLE);
             return;
@@ -131,8 +130,7 @@ public class MainActivity extends Activity {
 
         //检查是否有指纹模块和是否有录入
         if(!fm.isHardwareDetected() || !fm.isHardwareDetected()){
-            //ToolsUtil.showToast(this,"没有指纹模块，或者至少应该有一个指纹",1000);
-            //return false;
+
             warnTitle.setText("没有指纹模块，或者至少应该有一个指纹");
             warnTitle.setVisibility(TextView.VISIBLE);
             return;

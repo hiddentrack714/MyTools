@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.track.mytools.activity.SuffixActivity;
+import com.track.mytools.activity.ToolsActivity;
 import com.track.mytools.entity.HttpThreadEntity;
 import com.track.mytools.exception.HttpException;
 
@@ -610,6 +611,20 @@ public class ToolsUtil {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 判断跳转是合法，防止跳过指纹检测
+     * @return
+     */
+    public static boolean isLegal(){
+        if(ToolsActivity.useFP){
+            if(!ToolsActivity.passFP){
+                //非法界面跳转
+                return false;
+            }
+        }
+        return true;
     }
 
 }
