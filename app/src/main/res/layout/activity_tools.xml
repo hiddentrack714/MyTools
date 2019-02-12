@@ -6,57 +6,13 @@
     android:layout_marginTop="5dp"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp">
-    <Button android:id="@+id/suffixBtn"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text="@string/t1"/>
-    <Button android:id="@+id/qrySuBtn"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text="@string/t2"/>
-    <Button android:id="@+id/httpBtn"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text="@string/t3"/>
-    <Button android:id="@+id/copyBtn"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text="@string/t4"/>
-    <Button android:id="@+id/ftpBtn"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text="@string/t5"/>
-    <Button android:id="@+id/wifiBtn"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text="@string/t6"/>
-    <Button android:id="@+id/lanBtn"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text="@string/t7"/>
-    <Button android:id="@+id/nlBtn"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text="@string/t8"/>
-    <Button android:id="@+id/ycBtn"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text="@string/t9"/>
-    <Button android:id="@+id/ipBtn"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text="@string/t10"/>
-    <Button android:id="@+id/appExtractBtn"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text="@string/t12"/>
 
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
-    </LinearLayout>
+    <ListView
+        android:id="@+id/toolsList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+    </ListView>
 
     <LinearLayout
         android:layout_width="match_parent"

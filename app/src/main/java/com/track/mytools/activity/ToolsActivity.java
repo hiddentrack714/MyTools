@@ -5,27 +5,35 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.hardware.fingerprint.FingerprintManager;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.Toast;
 
 import com.track.mytools.R;
+import com.track.mytools.adapter.ToolsMainAdapter;
+import com.track.mytools.dao.ToolsDao;
+import com.track.mytools.entity.ToolsEntity;
 import com.track.mytools.enums.AssetsEnum;
 import com.track.mytools.util.ToolsUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 
 import butterknife.BindView;
@@ -35,43 +43,13 @@ import butterknife.ButterKnife;
  * 功能主界面
  *
  */
-public class ToolsActivity extends Activity implements OnClickListener{
-
-    @BindView(R.id.suffixBtn)
-    Button suffixBtn;
-
-    @BindView(R.id.qrySuBtn)
-    Button qrySuBtn;
-
-    @BindView(R.id.httpBtn)
-    Button httpBtn;
-
-    @BindView(R.id.copyBtn)
-    Button copyBtn;
-
-    @BindView(R.id.ftpBtn)
-    Button ftpBtn;
-
-    @BindView(R.id.wifiBtn)
-    Button wifiBtn;
-
-    @BindView(R.id.lanBtn)
-    Button lanBtn;
-
-    @BindView(R.id.nlBtn)
-    Button nlBtn;
-
-    @BindView(R.id.ycBtn)
-    Button ycBtn;
-
-    @BindView(R.id.ipBtn)
-    Button ipBtn;
-
-    @BindView(R.id.appExtractBtn)
-    Button appExtractBtn;
+public class ToolsActivity extends Activity{
 
     @BindView(R.id.toolsFP)
     Switch toolsFP;
+
+    @BindView(R.id.toolsList)
+    ListView toolsList;
 
     public static boolean useFP;
 
@@ -85,6 +63,71 @@ public class ToolsActivity extends Activity implements OnClickListener{
 
     //权限请求码
     private static final int PERMISSION_REQUEST_CODE = 0;
+
+    public static Handler toolsActivityHandler = null;
+
+    public static ToolsMainAdapter toolsMainAdapter;
+
+    public static HashMap<String,HashMap<String,Object>> resMap = null;
+
+    static{
+        resMap = new HashMap<String,HashMap<String,Object>>();
+
+        HashMap<String,Object> rMap1 = new HashMap<String,Object>();
+        rMap1.put("btnValue",R.string.t1);
+        rMap1.put("btnId",R.id.suffixBtn);
+        resMap.put("suffixBtn",rMap1);
+
+        HashMap<String,Object> rMap2 = new HashMap<String,Object>();
+        rMap2.put("btnValue",R.string.t2);
+        rMap2.put("btnId",R.id.qrySuBtn);
+        resMap.put("qrySuBtn",rMap2);
+
+        HashMap<String,Object> rMap3 = new HashMap<String,Object>();
+        rMap3.put("btnValue",R.string.t3);
+        rMap3.put("btnId",R.id.httpBtn);
+        resMap.put("httpBtn",rMap3);
+
+        HashMap<String,Object> rMap4 = new HashMap<String,Object>();
+        rMap4.put("btnValue",R.string.t4);
+        rMap4.put("btnId",R.id.copyBtn);
+        resMap.put("copyBtn",rMap4);
+
+        HashMap<String,Object> rMap5 = new HashMap<String,Object>();
+        rMap5.put("btnValue",R.string.t5);
+        rMap5.put("btnId",R.id.ftpBtn);
+        resMap.put("ftpBtn",rMap5);
+
+        HashMap<String,Object> rMap6 = new HashMap<String,Object>();
+        rMap6.put("btnValue",R.string.t6);
+        rMap6.put("btnId",R.id.wifiBtn);
+        resMap.put("wifiBtn",rMap6);
+
+        HashMap<String,Object> rMap7 = new HashMap<String,Object>();
+        rMap7.put("btnValue",R.string.t7);
+        rMap7.put("btnId",R.id.lanBtn);
+        resMap.put("lanBtn",rMap7);
+
+        HashMap<String,Object> rMap8 = new HashMap<String,Object>();
+        rMap8.put("btnValue",R.string.t8);
+        rMap8.put("btnId",R.id.nlBtn);
+        resMap.put("nlBtn",rMap8);
+
+        HashMap<String,Object> rMap9 = new HashMap<String,Object>();
+        rMap9.put("btnValue",R.string.t9);
+        rMap9.put("btnId",R.id.ycBtn);
+        resMap.put("ycBtn",rMap9);
+
+        HashMap<String,Object> rMap10 = new HashMap<String,Object>();
+        rMap10.put("btnValue",R.string.t10);
+        rMap10.put("btnId",R.id.ipBtn);
+        resMap.put("ipBtn",rMap10);
+
+        HashMap<String,Object> rMap12 = new HashMap<String,Object>();
+        rMap12.put("btnValue",R.string.t12);
+        rMap12.put("btnId",R.id.appExtractBtn);
+        resMap.put("appExtractBtn",rMap12);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,31 +144,59 @@ public class ToolsActivity extends Activity implements OnClickListener{
             toolsFP.setEnabled(false);
         }
 
-        if(!ToolsUtil.hasRoot()){
-            wifiBtn.setEnabled(false);
-            nlBtn.setEnabled(false);
-            ipBtn.setEnabled(false);
-            wifiBtn.setText(wifiBtn.getText()+"-未获取Root，无法使用");
-            nlBtn.setText(nlBtn.getText()+"-未获取Root，无法使用");
-            ipBtn.setText(ipBtn.getText()+"-未获取Root，无法使用");
+        toolsActivityHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+
+                if(msg.obj == IPActivity.class){
+                    mHasPermission = checkPermission();
+                    if (!mHasPermission) {
+                        Log.i("ToolsActivity_Log","没有权限");
+                        requestLocationPermission();
+                    }else{
+                        Log.i("ToolsActivity_Log","拥有权限");
+                        checkLocation();
+                    }
+                }else{
+                    Intent intent = new Intent();
+                    intent.setClass(ToolsActivity.this, (Class)msg.obj);
+                    startActivity(intent);
+                }
+            }
+        };
+
+        SQLiteDatabase sqd = ToolsDao.getDatabase();
+        List<HashMap<String,Object>> list = ToolsDao.qryTable(sqd, ToolsEntity.class,this);
+        int i = 0;
+        List<Integer> passList = new ArrayList<Integer>();
+        for (int j = 0; j < list.size(); j++) {
+            HashMap<String,Object> map = list.get(j);
+            String btnName = map.get("btnName").toString();
+            String btnUse = map.get("btnUse").toString();
+
+            map.put("btnValue",resMap.get(btnName).get("btnValue"));
+            map.put("btnId",resMap.get(btnName).get("btnId"));
+            map.put("id",i);
+            if("n".equalsIgnoreCase(btnUse)){
+                passList.add(j);
+                Log.i("ToolsActivity_Log","去除功能:" + btnName);
+            }else {
+                i++;
+            }
         }
 
-        if(!ToolsUtil.hasYC()){
-            ycBtn.setEnabled(false);
-            ycBtn.setText(ycBtn.getText()+"-未刷入YC调度，无法使用");
+        Collections.reverse(passList);
+
+        for(Integer x:passList){
+            list.remove(x.intValue());
         }
 
-        suffixBtn.setOnClickListener(this);//删除添加后缀
-        qrySuBtn.setOnClickListener(this);//查询类型数量
-        httpBtn.setOnClickListener(this);//http下载
-        copyBtn.setOnClickListener(this);//快捷复制
-        ftpBtn.setOnClickListener(this);//ftp下载
-        wifiBtn.setOnClickListener(this);//WiFi密码
-        lanBtn.setOnClickListener(this);//局域网搜索
-        nlBtn.setOnClickListener(this);//支付宝获取能量
-        ycBtn.setOnClickListener(this);//yc调度
-        ipBtn.setOnClickListener(this);//切换ip
-        appExtractBtn.setOnClickListener(this);//app提取
+        Log.i("ToolsActivity_Log","最终功能:" + list);
+
+        toolsMainAdapter = new ToolsMainAdapter(this,list);
+
+        toolsList.setAdapter(toolsMainAdapter);
 
         toolsFP.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             @Override
@@ -161,62 +232,6 @@ public class ToolsActivity extends Activity implements OnClickListener{
         });
     }
 
-    @Override
-    public void onClick(View v) {
-        Intent intent = new Intent();
-        if(v.getId() == R.id.suffixBtn){
-            Log.i("ToolsActivity_Log","后缀删添");
-            intent.setClass(ToolsActivity.this, SuffixActivity.class);
-            this.startActivity(intent);
-        }else if(v.getId() == R.id.qrySuBtn){
-            Log.i("ToolsActivity_Log","后缀列表");
-            intent.setClass(ToolsActivity.this, QrySuffixActivity.class);
-            this.startActivity(intent);
-        }else if(v.getId() == R.id.httpBtn){
-            Log.i("ToolsActivity_Log","http下载");
-            intent.setClass(ToolsActivity.this, HttpActivity.class);
-            this.startActivity(intent);
-        }else if(v.getId() == R.id.copyBtn){
-            Log.i("ToolsActivity_Log","快捷复制");
-            intent.setClass(ToolsActivity.this, CopyActivity.class);
-            this.startActivity(intent);
-        }else if(v.getId() == R.id.ftpBtn){
-            Log.i("ToolsActivity_Log","FTP下载");
-            intent.setClass(ToolsActivity.this, FTPActivity.class);
-            this.startActivity(intent);
-        }else if(v.getId() == R.id.wifiBtn){
-            Log.i("ToolsActivity_Log","Wifi密码");
-            intent.setClass(ToolsActivity.this, WifiActivity.class);
-            this.startActivity(intent);
-        }else if(v.getId() == R.id.lanBtn){
-            Log.i("ToolsActivity_Log","局域网设备");
-            intent.setClass(ToolsActivity.this, LanActivity.class);
-            this.startActivity(intent);
-        }else if(v.getId() == R.id.nlBtn){
-            Log.i("ToolsActivity_Log","支付宝获取能量");
-            intent.setClass(ToolsActivity.this,NLActivity.class);
-            this.startActivity(intent);
-        }else if(v.getId() == R.id.ycBtn){
-            Log.i("ToolsActivity_Log","yc调度模式切换");
-            intent.setClass(ToolsActivity.this,YCActivity.class);
-            this.startActivity(intent);
-        }else if(v.getId() == R.id.ipBtn){
-            //判断有没有获取定位权限
-            mHasPermission = checkPermission();
-            if (!mHasPermission) {
-                Log.i("ToolsActivity_Log","没有权限");
-                requestLocationPermission();
-            }else{
-                Log.i("ToolsActivity_Log","拥有权限");
-                checkLocation();
-            }
-        }else if(v.getId() == R.id.appExtractBtn){
-            Log.i("ToolsActivity_Log","App提取");
-            intent.setClass(ToolsActivity.this,AppExtractActivity.class);
-            this.startActivity(intent);
-        }
-    }
-
     /**
      * 检查是否开启定位服务
      */
@@ -226,7 +241,7 @@ public class ToolsActivity extends Activity implements OnClickListener{
         Intent intent = new Intent();
         if(ok){
             Log.i("ToolsActivity_Log","WifiIP静态/DHCP切换");
-            intent.setClass(ToolsActivity.this,IPActivity.class);
+            intent.setClass(ToolsActivity.this, IPActivity.class);
             this.startActivity(intent);
         }else{
             Log.i("ToolsActivity_Log","还未开启定位，请先开启服务!");
@@ -283,4 +298,5 @@ public class ToolsActivity extends Activity implements OnClickListener{
             ToolsUtil.showToast(ToolsActivity.this,"未开启定位权限,请手动到设置去开启权限",2000);
         }
     }
+
 }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="suffixBtn" />
+    <item type="id" name="qrySuBtn" />
+    <item type="id" name="httpBtn" />
+    <item type="id" name="copyBtn" />
+    <item type="id" name="ftpBtn" />
+    <item type="id" name="wifiBtn" />
+    <item type="id" name="lanBtn" />
+    <item type="id" name="nlBtn" />
+    <item type="id" name="ycBtn" />
+    <item type="id" name="ipBtn" />
+    <item type="id" name="appExtractBtn" />
+</resources>

@@ -548,7 +548,10 @@ public class ToolsUtil {
                 {
                     os.close();
                 }
-                process.destroy();
+                if(process != null)
+                {
+                    process.destroy();
+                }
             } catch (Exception e)
             {
                 e.printStackTrace();
