@@ -6,4 +6,6 @@ import com.track.mytools.annotation.TableNameAnnotation;
 public class ToolsEntity extends BaseEntity {
     private String btnName;
     private String btnUse;
+    private String needRoot;
+    private String needYC;
 }

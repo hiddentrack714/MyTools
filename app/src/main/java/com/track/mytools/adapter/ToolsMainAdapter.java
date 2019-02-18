@@ -17,6 +17,7 @@ import com.track.mytools.activity.HttpActivity;
 import com.track.mytools.activity.IPActivity;
 import com.track.mytools.activity.LanActivity;
 import com.track.mytools.activity.NLActivity;
+import com.track.mytools.activity.PwdActivity;
 import com.track.mytools.activity.QrySuffixActivity;
 import com.track.mytools.activity.SuffixActivity;
 import com.track.mytools.activity.ToolsActivity;
@@ -108,24 +109,14 @@ public class ToolsMainAdapter extends BaseAdapter {
             isRoot = (ToolsUtil.hasRoot() == true ? "y" : "n");
         }
 
-        if("n".equals(isRoot)){
-            if(btnName.equals("wifiBtn")){
+        if("n".equals(isRoot) && "y".equalsIgnoreCase(listMap.get("needRoot").toString())){
                 holder.toolsBtn.setEnabled(false);
                 holder.toolsBtn.setText(holder.toolsBtn.getText()+"-未获取Root，无法使用");
-            }else if(btnName.equals("nlBtn")){
-                holder.toolsBtn.setEnabled(false);
-                holder.toolsBtn.setText(holder.toolsBtn.getText()+"-未获取Root，无法使用");
-            }else if(btnName.equals("ipBtn")){
-                holder.toolsBtn.setEnabled(false);
-                holder.toolsBtn.setText(holder.toolsBtn.getText()+"-未获取Root，无法使用");
-            }
         }
 
-        if(!ToolsUtil.hasYC()){
-            if(btnName.equals("ycBtn")) {
+        if(!ToolsUtil.hasYC()  && "y".equalsIgnoreCase(listMap.get("needYC").toString())){
                 holder.toolsBtn.setEnabled(false);
                 holder.toolsBtn.setText(holder.toolsBtn.getText() + "-未刷入YC调度，无法使用");
-            }
         }
 
         holder.toolsBtn.setOnClickListener(new View.OnClickListener(){
@@ -166,6 +157,9 @@ public class ToolsMainAdapter extends BaseAdapter {
                 }else if(v.getId() == R.id.appExtractBtn){
                     Log.i("ToolsActivity_Log","App提取");
                     msg.obj = AppExtractActivity.class;
+                }else if(v.getId() == R.id.pwdBtn){
+                    Log.i("ToolsActivity_Log","密码本");
+                    msg.obj = PwdActivity.class;
                 }
                 ToolsActivity.toolsActivityHandler.sendMessage(msg);
             }

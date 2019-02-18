@@ -11,4 +11,5 @@
     <item type="id" name="ycBtn" />
     <item type="id" name="ipBtn" />
     <item type="id" name="appExtractBtn" />
+    <item type="id" name="pwdBtn" />
 </resources>

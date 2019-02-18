@@ -129,6 +129,11 @@ public class ToolsActivity extends Activity{
         rMap12.put("btnValue",R.string.t12);
         rMap12.put("btnId",R.id.appExtractBtn);
         resMap.put("appExtractBtn",rMap12);
+
+        HashMap<String,Object> rMap13 = new HashMap<String,Object>();
+        rMap13.put("btnValue",R.string.t13);
+        rMap13.put("btnId",R.id.pwdBtn);
+        resMap.put("pwdBtn",rMap13);
     }
 
     @Override

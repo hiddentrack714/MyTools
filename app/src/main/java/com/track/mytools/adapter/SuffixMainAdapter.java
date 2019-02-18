@@ -95,7 +95,7 @@ public class SuffixMainAdapter extends BaseAdapter {
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
-            Log.i("SuffixMainAdapter_Log", "holder != null--" + position);
+            //Log.i("SuffixMainAdapter_Log", "holder != null--" + position);
         }
 
         HashMap<String, String> map = list.get(position);

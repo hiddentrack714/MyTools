@@ -17,6 +17,7 @@
     <string name="t9">yc调度模式切换</string>
     <string name="t10">WifiIP静态/DHCP切换</string>
     <string name="t12">App提取</string>
+    <string name="t13">密码本</string>
     <string name="f1">指纹开启关闭</string>
     <string name="f2">指纹开启启动</string>
     <!--公共-->
@@ -24,6 +25,7 @@
     <string name="off">off</string>
     <string name="on">on</string>
     <string name="zhz">0/0</string>
+    <string name="xgcs">修改</string>
     <!--快捷复制-->
     <string name="wjwz">文件位置:</string>
     <string name="bcmc">保存名称:</string>

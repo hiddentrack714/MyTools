@@ -90,6 +90,10 @@
             android:name=".activity.AppExtractActivity"
             android:label="AppExtractActivity"
             android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
+        <activity
+            android:name=".activity.PwdActivity"
+            android:label="PwdActivity"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
 
         <service android:name=".service.CopyService"></service>
         <service android:name=".service.FTPService"></service>
