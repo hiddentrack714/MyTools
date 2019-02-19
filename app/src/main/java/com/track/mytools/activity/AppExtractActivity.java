@@ -36,7 +36,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -245,10 +244,10 @@ public class AppExtractActivity extends Activity {
                     Log.i("AppExtractActivity_Log","展示系统APP");
                     if(!sortSwitch.isChecked()){
                         //小->大
-                        tempList.addAll(sortBySize(deepCopy(systemAppList),true));
+                        tempList.addAll(sortBySize(ToolsUtil.deepCopy(systemAppList),true));
                     }else{
                         //大->小
-                        tempList.addAll(sortBySize(deepCopy(systemAppList),false));
+                        tempList.addAll(sortBySize(ToolsUtil.deepCopy(systemAppList),false));
                     }
                 }else {
                     //普通
@@ -256,10 +255,10 @@ public class AppExtractActivity extends Activity {
 
                     if(!sortSwitch.isChecked()){
                         //小->大
-                        tempList.addAll(sortBySize(deepCopy(normalAppList),true));
+                        tempList.addAll(sortBySize(ToolsUtil.deepCopy(normalAppList),true));
                     }else{
                         //大->小
-                        tempList.addAll(sortBySize(deepCopy(normalAppList),false));
+                        tempList.addAll(sortBySize(ToolsUtil.deepCopy(normalAppList),false));
                     }
                 }
                 appMainAdapter.notifyDataSetChanged();
@@ -279,16 +278,16 @@ public class AppExtractActivity extends Activity {
                 if (isChecked){
                     //大->小
                     if(appSwitch.isChecked()){
-                        tempList.addAll(sortBySize(deepCopy(systemAppList),false));
+                        tempList.addAll(sortBySize(ToolsUtil.deepCopy(systemAppList),false));
                     }else{
-                        tempList.addAll(sortBySize(deepCopy(normalAppList),false));
+                        tempList.addAll(sortBySize(ToolsUtil.deepCopy(normalAppList),false));
                     }
                 }else {
                     //小->大
                     if(appSwitch.isChecked()){
-                        tempList.addAll(sortBySize(deepCopy(systemAppList),true));
+                        tempList.addAll(sortBySize(ToolsUtil.deepCopy(systemAppList),true));
                     }else{
-                        tempList.addAll(sortBySize(deepCopy(normalAppList),true));
+                        tempList.addAll(sortBySize(ToolsUtil.deepCopy(normalAppList),true));
                     }
                 }
                 appMainAdapter.notifyDataSetChanged();
@@ -327,7 +326,7 @@ public class AppExtractActivity extends Activity {
                    }
                }
                 tempList.clear();
-                tempList.addAll(sortBySize(deepCopy(realTempList),sortSwitch.isChecked()?false:true));
+                tempList.addAll(sortBySize(ToolsUtil.deepCopy(realTempList),sortSwitch.isChecked()?false:true));
                 appMainAdapter.notifyDataSetChanged();
             }
 
@@ -467,21 +466,6 @@ public class AppExtractActivity extends Activity {
         return tempList;
     }
 
-    /**
-     * 深复制
-     * @param list yuan源集合
-     * @return
-     */
-    public static ArrayList<HashMap<String,Object>> deepCopy(ArrayList<HashMap<String,Object>> list){
-        ArrayList<HashMap<String,Object>> deepList = new ArrayList<HashMap<String,Object>>(list.size());
-        for(HashMap<String,Object> map : list){
-            HashMap<String,Object> temp = new HashMap<String,Object>();
-            for(Map.Entry<String,Object> entry:map.entrySet()){
-                temp.put(entry.getKey(),entry.getValue());
-            }
-            deepList.add(temp);
-        }
-        return deepList;
-    }
+
 
 }

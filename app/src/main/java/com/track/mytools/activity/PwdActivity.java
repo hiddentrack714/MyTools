@@ -3,9 +3,12 @@ package com.track.mytools.activity;
 import android.app.Activity;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.track.mytools.R;
@@ -15,8 +18,12 @@ import com.track.mytools.entity.PwdEntity;
 import com.track.mytools.util.DesUtil;
 import com.track.mytools.util.ToolsUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by Track on 2017/2/9.
@@ -25,18 +32,29 @@ import java.util.List;
 
 public class PwdActivity extends Activity {
 
-    private Button pwdAddBtn;  //添加
-    private Button pwdSaveBtn;//保存
-    private ListView pwdList;
+    @BindView(R.id.pwdAddBtn)
+    Button pwdAddBtn;  //添加
+
+    @BindView(R.id.pwdSaveBtn)
+    Button pwdSaveBtn;//保存
+
+    @BindView(R.id.pwdList)
+    ListView pwdList;
+
+    @BindView(R.id.pwdSearch)
+    EditText pwdSearch;
 
     public static PwdActivity pwdActivity;
 
     public static List<HashMap<String,Object>> qryList;
 
+    public static List<HashMap<String,Object>> tempQryList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pwdmain);
+        ButterKnife.bind(this);
 
         pwdActivity = this;
 
@@ -53,30 +71,33 @@ public class PwdActivity extends Activity {
 
         SQLiteDatabase sdb = ToolsDao.getDatabase();
 
-        List<HashMap<String,Object>> qryList = ToolsDao.qryTable(sdb,PwdEntity.class,PwdActivity.this);
+        qryList = ToolsDao.qryTable(sdb,PwdEntity.class,PwdActivity.this);
 
         //解密
         for(HashMap<String,Object> map:qryList){
             map.put("pwdPsd",DesUtil.desDecrypt(map.get("pwdPsd").toString()));
         }
 
+        //深度复制
+        tempQryList = ToolsUtil.deepCopy((ArrayList) qryList);
+
         Log.i("PwdActivity_Log","存储密码数量:" + qryList.size());
 
-        PwdMainAdapter pma = new PwdMainAdapter(PwdActivity.this,qryList);
+        PwdMainAdapter pwdMainAdapter = new PwdMainAdapter(PwdActivity.this,tempQryList);
 
-        pwdList.setAdapter(pma);
+        pwdList.setAdapter(pwdMainAdapter);
 
         //点击添加密码区域
         pwdAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("pwd","pwdAddBtn");
                 HashMap<String,Object> map = new HashMap<String,Object>();
                 map.put("pwdName","");
                 map.put("pwdAccount","");
                 map.put("pwdPsd","");
+                tempQryList.add(map);
                 qryList.add(map);
-                pma.notifyDataSetChanged();
+                pwdMainAdapter.notifyDataSetChanged();
             }
         });
 
@@ -85,7 +106,6 @@ public class PwdActivity extends Activity {
         pwdSaveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("pwd","pwdSaveBtn");
 
                 if(PwdMainAdapter.updMap.size()!=0){
 
@@ -95,15 +115,50 @@ public class PwdActivity extends Activity {
 
                     for(int i=0 ;i<qryList.size();i++){
                         SQLiteDatabase sdb = ToolsDao.getDatabase();
+                        //加密
                         qryList.get(i).put("pwdPsd",DesUtil.desEncrypt(qryList.get(i).get("pwdPsd").toString()));
                         ToolsDao.saveOrUpdIgnoreExsit(sdb,qryList.get(i),PwdEntity.class);
-                        Log.i("PwdActivity",qryList.get(i).toString());
                     }
 
                     ToolsUtil.showToast(PwdActivity.this,"保存完成!",3000);
                 }
             }
         });
+
+        //监听搜索名称
+        pwdSearch.addTextChangedListener(new TextWatcher(){
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String str = s.toString();
+
+                List<HashMap<String,Object>> tempList = new ArrayList<HashMap<String,Object>>();
+                for(HashMap<String,Object> map :qryList){
+                    String pwdNameStr = map.get("pwdName").toString();
+
+                    if(pwdNameStr.indexOf(str) >-1){
+                        tempList.add(map);
+                    }
+                }
+
+                tempQryList.clear();
+
+                tempQryList.addAll(tempList);
+
+                pwdMainAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
     }
 
 }

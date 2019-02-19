@@ -641,4 +641,21 @@ public class ToolsUtil {
         return true;
     }
 
+    /**
+     * 深复制
+     * @param list yuan源集合
+     * @return
+     */
+    public static ArrayList<HashMap<String,Object>> deepCopy(ArrayList<HashMap<String,Object>> list){
+        ArrayList<HashMap<String,Object>> deepList = new ArrayList<HashMap<String,Object>>(list.size());
+        for(HashMap<String,Object> map : list){
+            HashMap<String,Object> temp = new HashMap<String,Object>();
+            for(Map.Entry<String,Object> entry:map.entrySet()){
+                temp.put(entry.getKey(),entry.getValue());
+            }
+            deepList.add(temp);
+        }
+        return deepList;
+    }
+
 }

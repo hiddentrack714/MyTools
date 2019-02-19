@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.track.mytools.activity.AppExtractActivity;
 import com.track.mytools.adapter.AppMainAdapter;
+import com.track.mytools.util.ToolsUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ public class AppExtractLoadService extends Service {
 
         //默认显示普通应用
         try {
-            AppExtractActivity.tempList = (ArrayList<HashMap<String, Object>>) AppExtractActivity.deepCopy(AppExtractActivity.normalAppList);
+            AppExtractActivity.tempList = (ArrayList<HashMap<String, Object>>) ToolsUtil.deepCopy(AppExtractActivity.normalAppList);
         }catch(Exception e){
             Log.i("AppExtractLoadService_Log","深复制失败：" + e.getMessage());
         }

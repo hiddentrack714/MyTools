@@ -124,4 +124,9 @@
     <string name="js">极速</string>
     <string name="ty">停用</string>
     <string name="sz">设置</string>
+    <!--密码本-->
+    <string name="ssmc">搜索名称</string>
+    <string name="mc">名称</string>
+    <string name="zh">账号</string>
+    <string name="mm">密码</string>
 </resources>

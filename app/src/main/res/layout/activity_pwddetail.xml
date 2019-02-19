@@ -12,7 +12,8 @@
         android:enabled="false"
         android:gravity="center_vertical"
         android:inputType="text"
-        android:textSize="15dp" />
+        android:textSize="15dp"
+        android:hint="@string/mc"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,7 +27,8 @@
             android:layout_height="wrap_content"
             android:enabled="false"
             android:inputType="text"
-            android:paddingLeft="15dp" />
+            android:paddingLeft="15dp"
+            android:hint="@string/zh"/>
 
         <EditText
             android:id="@+id/pwdPsd"
@@ -34,7 +36,8 @@
             android:layout_height="wrap_content"
             android:enabled="false"
             android:inputType="text"
-            android:paddingStart="15dp" />
+            android:paddingStart="15dp"
+            android:hint="@string/mm"/>
     </LinearLayout>
 
     <LinearLayout

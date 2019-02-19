@@ -174,6 +174,10 @@ public class PwdMainAdapter extends BaseAdapter {
                     listData.get(position).put("pwdAccount", pwdAccountStr);
                     listData.get(position).put("pwdPsd", pwdPsdStr);
 
+                    PwdActivity.qryList.get(position).put("pwdName", pwdNameStr);
+                    PwdActivity.qryList.get(position).put("pwdAccount", pwdAccountStr);
+                    PwdActivity.qryList.get(position).put("pwdPsd", pwdPsdStr);
+
                     updMap.clear();
                 }
             } else{
@@ -219,6 +223,8 @@ public class PwdMainAdapter extends BaseAdapter {
                                 sdb.close();
                             }
                             listData.remove(position);
+                            PwdActivity.qryList.remove(position);
+                            viewMap.remove(new Integer(position));
                             notifyDataSetChanged();
                         }
                     });
