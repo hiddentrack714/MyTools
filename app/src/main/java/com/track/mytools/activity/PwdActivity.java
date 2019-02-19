@@ -12,6 +12,7 @@ import com.track.mytools.R;
 import com.track.mytools.adapter.PwdMainAdapter;
 import com.track.mytools.dao.ToolsDao;
 import com.track.mytools.entity.PwdEntity;
+import com.track.mytools.util.DesUtil;
 import com.track.mytools.util.ToolsUtil;
 
 import java.util.HashMap;
@@ -54,6 +55,11 @@ public class PwdActivity extends Activity {
 
         List<HashMap<String,Object>> qryList = ToolsDao.qryTable(sdb,PwdEntity.class,PwdActivity.this);
 
+        //解密
+        for(HashMap<String,Object> map:qryList){
+            map.put("pwdPsd",DesUtil.desDecrypt(map.get("pwdPsd").toString()));
+        }
+
         Log.i("PwdActivity_Log","存储密码数量:" + qryList.size());
 
         PwdMainAdapter pma = new PwdMainAdapter(PwdActivity.this,qryList);
@@ -89,6 +95,7 @@ public class PwdActivity extends Activity {
 
                     for(int i=0 ;i<qryList.size();i++){
                         SQLiteDatabase sdb = ToolsDao.getDatabase();
+                        qryList.get(i).put("pwdPsd",DesUtil.desEncrypt(qryList.get(i).get("pwdPsd").toString()));
                         ToolsDao.saveOrUpdIgnoreExsit(sdb,qryList.get(i),PwdEntity.class);
                         Log.i("PwdActivity",qryList.get(i).toString());
                     }
