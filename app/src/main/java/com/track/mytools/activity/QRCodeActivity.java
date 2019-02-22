@@ -126,7 +126,7 @@ public class QRCodeActivity extends Activity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
-                                bitmap = QRCodeUtil.createQRImage(qrContentStr, 300, 300, null, null);
+                                bitmap = QRCodeUtil.createQRImage(qrContentStr, 230, 230, null, null);
 
                                 qrImg.setImageBitmap(bitmap);
 
@@ -220,15 +220,15 @@ public class QRCodeActivity extends Activity {
                             //2，解析二维码
 
                             if(flag){
-                                bitmap = QRCodeUtil.createQRImage(qrContent.getText().toString(), 300, 300, null, null);
+                                bitmap = QRCodeUtil.createQRImage(qrContent.getText().toString(), 230, 230, null, null);
 
                                 Bitmap logoBitmap = BitmapFactory.decodeFile(uri.getPath());
                                 //加灰色边框
-                                logoBitmap = QRCodeUtil.whiteEdgeBitmap(logoBitmap,30, Color.GRAY);
+                                logoBitmap = QRCodeUtil.whiteEdgeBitmap(logoBitmap,15, Color.GRAY);
                                 //改圆角
                                 logoBitmap = QRCodeUtil.getRoundedCornerBitmap(logoBitmap,15);
                                 //加白色边框
-                                logoBitmap = QRCodeUtil.whiteEdgeBitmap(logoBitmap,80, Color.WHITE);
+                                logoBitmap = QRCodeUtil.whiteEdgeBitmap(logoBitmap,30, Color.WHITE);
                                 //改圆角
                                 logoBitmap = QRCodeUtil.getRoundedCornerBitmap(logoBitmap,15);
 

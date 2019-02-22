@@ -54,8 +54,8 @@
             android:gravity="center">
             <ImageView
                 android:id="@+id/qrImg"
-                android:layout_width="300dp"
-                android:layout_height="300dp"
+                android:layout_width="230dp"
+                android:layout_height="230dp"
                 android:src="@drawable/android_robot"/>
         </LinearLayout>
 
