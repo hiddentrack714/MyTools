@@ -14,12 +14,11 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
 
     <application
         android:allowBackup="true"
@@ -94,6 +93,14 @@
             android:name=".activity.PwdActivity"
             android:label="PwdActivity"
             android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
+        <activity
+            android:name=".activity.QRCodeActivity"
+            android:label="QRCodeActivity"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
+        <activity
+            android:name="com.google.zxing.client.android.CaptureActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" />
 
         <service android:name=".service.CopyService"></service>
         <service android:name=".service.FTPService"></service>
@@ -131,6 +138,15 @@
         <!--<meta-data
             android:name="xposedminversion"
             android:value="30" />-->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.track.mytools.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
     </application>
 
 </manifest>

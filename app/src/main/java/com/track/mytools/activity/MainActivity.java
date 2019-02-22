@@ -42,8 +42,7 @@ public class MainActivity extends Activity {
 
     private static String[] PERMISSIONS_CAMERA_AND_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.CAMERA};
+            Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     @BindView(R.id.warnTitle)
     TextView warnTitle;
@@ -56,7 +55,9 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         //首先动态申请存储访问权限
-        isGrantExternalRW(this, 1);
+        if(isGrantExternalRW(this, 0xfa02)){
+            mainActivityMission();
+        }
     }
 
     /**
@@ -230,7 +231,7 @@ public class MainActivity extends Activity {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("MainActivity",e.getMessage());
+            Log.e("MainActivity_Log",e.getMessage());
             map.put("b",false);
             map.put("i",e.getMessage());
             return map;
@@ -258,11 +259,9 @@ public class MainActivity extends Activity {
     public static boolean isGrantExternalRW(Activity activity, int requestCode) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-            int storagePermission = activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            int cameraPermission = activity.checkSelfPermission(Manifest.permission.CAMERA);
+            int storagePermission = activity.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
             //检测是否有权限，如果没有权限，就需要申请
-            if (storagePermission != PackageManager.PERMISSION_GRANTED ||
-                    cameraPermission != PackageManager.PERMISSION_GRANTED) {
+            if (storagePermission != PackageManager.PERMISSION_GRANTED) {
                 //申请权限
                 activity.requestPermissions(PERMISSIONS_CAMERA_AND_STORAGE, requestCode);
                 //返回false。说明没有授权
@@ -276,69 +275,9 @@ public class MainActivity extends Activity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
-            case 1:
+            case 0xfa02:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //检验是否获取权限，如果获取权限，外部存储会处于开放状态，会弹出一个toast提示获得授权
-                    String sdCard = Environment.getExternalStorageState();
-                    if (sdCard.equals(Environment.MEDIA_MOUNTED)){
-                        //添加ShortCut
-                        dynamicAddShortCut();
-                        //检测是否把db和properties文件复制到手机磁盘
-                        File dbFile = new File(String.valueOf(AssetsEnum.ASSETS_DB_PATH));
-                        File proFile = new File(String.valueOf(AssetsEnum.ASSETS_PROPERTIES_PATH));
-
-                        if(dbFile.exists() && proFile.exists()){
-                            //db和 pro文件都存在，直接分析
-                            Log.i("MainActivity_Log","双文件都在，可以分析" );
-                            analysispro();
-                        }else{
-                            if(!dbFile.exists()){
-                                Log.i("MainActivity_Log","db文件不在，开始复制" );
-                                HashMap<String,Object> isSuccess = initCopyFile(String.valueOf(AssetsEnum.ASSETS_DB_PATH),"mytools.db",MainActivity.this);
-                                if(isSuccess.size()>=1){
-                                    if((boolean)isSuccess.get("b") == false){
-                                        ToolsUtil.showToast(this,"数据库复制失败!-" + isSuccess.get("i"),5000);
-                                        finish();
-                                    }else{
-                                        Log.i("MainActivity_Log","db复制成功" );
-                                        dbReady = true;
-                                    }
-                                }else{
-                                    ToolsUtil.showToast(this,"数据库复制失败!",5000);
-                                }
-                            }else{
-                                dbReady = true;
-                            }
-
-                            if (!proFile.exists()) {
-                                Log.i("MainActivity_Log","pro文件不在，开始复制" );
-                                HashMap<String,Object> isSuccess = initCopyFile(String.valueOf(AssetsEnum.ASSETS_PROPERTIES_PATH), "mytools.properties",MainActivity.this);
-                                if(isSuccess.size()>=1){
-                                    if((boolean)isSuccess.get("b") == false){
-                                        ToolsUtil.showToast(this, "参数文件复制失败!-" + isSuccess.get("i"), 5000);
-                                        finish();
-                                    }else{
-                                        Log.i("MainActivity_Log","pro复制成功" );
-                                        proReady = true;
-                                    }
-                                }else{
-                                    ToolsUtil.showToast(this, "参数文件复制失败!", 5000);
-                                }
-
-                            }else{
-                                proReady = true;
-                            }
-
-                            if(dbReady && proReady){
-                                Log.i("MainActivity_Log","文件复制完成，可以分析" );
-                                analysispro();
-                            }else{
-                                ToolsUtil.showToast(this,"文件复制失败，请删除后重试!",5000);
-                                finish();
-                            }
-                        }
-
-                    }
+                    mainActivityMission();
                 } else {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -351,7 +290,71 @@ public class MainActivity extends Activity {
                 }
                 break;
         }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+
+    public void mainActivityMission(){
+        //检验是否获取权限，如果获取权限，外部存储会处于开放状态，会弹出一个toast提示获得授权
+        String sdCard = Environment.getExternalStorageState();
+        if (sdCard.equals(Environment.MEDIA_MOUNTED)){
+            //添加ShortCut
+            dynamicAddShortCut();
+            //检测是否把db和properties文件复制到手机磁盘
+            File dbFile = new File(String.valueOf(AssetsEnum.ASSETS_DB_PATH));
+            File proFile = new File(String.valueOf(AssetsEnum.ASSETS_PROPERTIES_PATH));
+
+            if(dbFile.exists() && proFile.exists()){
+                //db和 pro文件都存在，直接分析
+                Log.i("MainActivity_Log","双文件都在，可以分析" );
+                analysispro();
+            }else{
+                if(!dbFile.exists()){
+                    Log.i("MainActivity_Log","db文件不在，开始复制" );
+                    HashMap<String,Object> isSuccess = initCopyFile(String.valueOf(AssetsEnum.ASSETS_DB_PATH),"mytools.db",MainActivity.this);
+                    if(isSuccess.size()>=1){
+                        if((boolean)isSuccess.get("b") == false){
+                            ToolsUtil.showToast(this,"数据库复制失败!-" + isSuccess.get("i"),5000);
+                            finish();
+                        }else{
+                            Log.i("MainActivity_Log","db复制成功" );
+                            dbReady = true;
+                        }
+                    }else{
+                        ToolsUtil.showToast(this,"数据库复制失败!",5000);
+                    }
+                }else{
+                    dbReady = true;
+                }
+
+                if (!proFile.exists()) {
+                    Log.i("MainActivity_Log","pro文件不在，开始复制" );
+                    HashMap<String,Object> isSuccess = initCopyFile(String.valueOf(AssetsEnum.ASSETS_PROPERTIES_PATH), "mytools.properties",MainActivity.this);
+                    if(isSuccess.size()>=1){
+                        if((boolean)isSuccess.get("b") == false){
+                            ToolsUtil.showToast(this, "参数文件复制失败!-" + isSuccess.get("i"), 5000);
+                            finish();
+                        }else{
+                            Log.i("MainActivity_Log","pro复制成功" );
+                            proReady = true;
+                        }
+                    }else{
+                        ToolsUtil.showToast(this, "参数文件复制失败!", 5000);
+                    }
+
+                }else{
+                    proReady = true;
+                }
+
+                if(dbReady && proReady){
+                    Log.i("MainActivity_Log","文件复制完成，可以分析" );
+                    analysispro();
+                }else{
+                    ToolsUtil.showToast(this,"文件复制失败，请删除后重试!",5000);
+                    finish();
+                }
+            }
+
+        }
     }
 
 }

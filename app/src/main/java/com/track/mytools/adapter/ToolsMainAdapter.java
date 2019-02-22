@@ -18,6 +18,7 @@ import com.track.mytools.activity.IPActivity;
 import com.track.mytools.activity.LanActivity;
 import com.track.mytools.activity.NLActivity;
 import com.track.mytools.activity.PwdActivity;
+import com.track.mytools.activity.QRCodeActivity;
 import com.track.mytools.activity.QrySuffixActivity;
 import com.track.mytools.activity.SuffixActivity;
 import com.track.mytools.activity.ToolsActivity;
@@ -160,6 +161,11 @@ public class ToolsMainAdapter extends BaseAdapter {
                 }else if(v.getId() == R.id.pwdBtn){
                     Log.i("ToolsActivity_Log","密码本");
                     msg.obj = PwdActivity.class;
+                }else if(v.getId() == R.id.qrCodeBtn){
+                    Log.i("ToolsActivity_Log","二维码");
+                    msg.obj = QRCodeActivity.class;
+                }else{
+                    msg.obj = ToolsActivity.class;
                 }
                 ToolsActivity.toolsActivityHandler.sendMessage(msg);
             }

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:focusable="true"
+    android:focusableInTouchMode="true" >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp">
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="内容:"/>
+             <EditText
+                 android:id="@+id/qrContent"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:background="@drawable/shape"
+                 android:scrollbars="vertical"
+                 android:minLines="10"
+                 android:maxLines="10"
+                 android:gravity="top"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+            <Button
+                android:id="@+id/qrScanBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="扫描二维码"/>
+            <Button
+                android:id="@+id/qrGenBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="生成二维码"/>
+            <Button
+                android:id="@+id/qrAnaBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="解析二维码"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+            <ImageView
+                android:id="@+id/qrImg"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:src="@drawable/android_robot"/>
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+        <Button
+            android:id="@+id/qrSaveBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="保存二维码"
+            android:enabled="false"/>
+    </LinearLayout>
+
+</LinearLayout>

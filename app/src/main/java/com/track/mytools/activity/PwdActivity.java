@@ -113,11 +113,15 @@ public class PwdActivity extends Activity {
 
                 }else{
 
-                    for(int i=0 ;i<qryList.size();i++){
+                    List<HashMap<String,Object>> daoList = new ArrayList<HashMap<String,Object>>();
+
+                    daoList = ToolsUtil.deepCopy((ArrayList) qryList);
+
+                    for(int i=0 ;i<daoList.size();i++){
                         SQLiteDatabase sdb = ToolsDao.getDatabase();
                         //加密
-                        qryList.get(i).put("pwdPsd",DesUtil.desEncrypt(qryList.get(i).get("pwdPsd").toString()));
-                        ToolsDao.saveOrUpdIgnoreExsit(sdb,qryList.get(i),PwdEntity.class);
+                        daoList.get(i).put("pwdPsd",DesUtil.desEncrypt(daoList.get(i).get("pwdPsd").toString()));
+                        ToolsDao.saveOrUpdIgnoreExsit(sdb,daoList.get(i),PwdEntity.class);
                     }
 
                     ToolsUtil.showToast(PwdActivity.this,"保存完成!",3000);
