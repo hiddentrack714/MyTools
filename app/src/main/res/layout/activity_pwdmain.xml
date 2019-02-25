@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/pwdmain">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,6 +38,16 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:text="保存"
+            android:layout_gravity="center"/>
+        <Button android:id="@+id/pwdLeadBtn"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="导入"
+            android:layout_gravity="center"/>
+        <Button android:id="@+id/pwdExpBtn"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="导出"
             android:layout_gravity="center"/>
     </LinearLayout>
 

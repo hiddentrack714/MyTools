@@ -92,7 +92,8 @@
         <activity
             android:name=".activity.PwdActivity"
             android:label="PwdActivity"
-            android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
+            android:theme="@android:style/Theme.Material.Light.NoActionBar"
+            android:windowSoftInputMode="adjustResize"></activity>
         <activity
             android:name=".activity.QRCodeActivity"
             android:label="QRCodeActivity"

@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,11 +38,14 @@ public class PwdMainAdapter extends BaseAdapter {
 
     public static HashMap<Integer,String> updMap= new HashMap<Integer,String>();
 
+    private static HashMap<Integer,HashMap<String,String>> edMap= new HashMap<Integer,HashMap<String,String>>();//实时保存修改的内容
+
     public PwdMainAdapter(Context context,List<HashMap<String,Object>> listData){
         this.context = context;
         this.listData = listData;
         viewMap.clear();
         updMap.clear();
+        edMap.clear();
     }
 
     @Override
@@ -100,6 +105,12 @@ public class PwdMainAdapter extends BaseAdapter {
             holder.pwdChangeBtn.setOnClickListener(new ChangeBtnListener(position,holder.pwdName,holder.pwdAccount,holder.pwdPsd,holder.pwdChangeBtn));
 
             holder.pwdDelBtn.setOnClickListener(new DelBtnListener(position,holder.pwdDelBtn,holder.pwdName.getText().toString()));
+
+            holder.pwdName.addTextChangedListener(new EditTextListener("pwdName",position));
+
+            holder.pwdAccount.addTextChangedListener(new EditTextListener("pwdAccount",position));
+
+            holder.pwdPsd.addTextChangedListener(new EditTextListener("pwdpwdPsdName",position));
         }
 
         return convertView;
@@ -157,6 +168,9 @@ public class PwdMainAdapter extends BaseAdapter {
                     changeBtn.setText("完成");
 
                     updMap.put(new Integer(position),"y");
+
+                    new KeyBoardThread(pwdName,pwdAccount,pwdPsd,position).start();
+
                 } else {
                     //完成修改
                     pwdName.setEnabled(false);
@@ -239,5 +253,79 @@ public class PwdMainAdapter extends BaseAdapter {
             normalDialog.show();
         }
 
+    }
+
+    class EditTextListener implements TextWatcher {
+
+        private String etName;
+        private int position;
+
+        public EditTextListener(String etName,int position){
+            this.etName = etName;
+            this.position = position;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            String str = s.toString();
+            HashMap<String,String> map = edMap.get(new Integer(position));
+
+            if(map==null){
+                map = new HashMap<String,String>();
+            }
+
+            if("pwdName".equals(etName)){
+                map.put("pwdName",str);
+            }else if("pwdAccount".equals(etName)){
+                map.put("pwdAccount",str);
+            }else{
+                map.put("pwdPsd",str);
+            }
+            edMap.put(new Integer(position),map);
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    }
+
+    /**
+     *
+     */
+    class KeyBoardThread extends Thread{
+
+        private EditText pwdName;
+        private EditText pwdAccount;
+        private EditText pwdPsd;
+        private int position;
+
+        public KeyBoardThread(EditText pwdName,EditText pwdAccount,EditText pwdPsd,int position){
+            this.pwdName=pwdName;
+            this.pwdAccount=pwdAccount;
+            this.pwdPsd=pwdPsd;
+            this.position=position;
+        }
+
+        @Override
+        public void run() {
+            boolean temp = true;
+            while(temp){
+                if(PwdActivity.isKeybordShow == false){
+                    if(edMap.get(new Integer(position)) != null){
+                        pwdName.setText(edMap.get(new Integer(position)).get("pwdName"));
+                        pwdAccount.setText(edMap.get(new Integer(position)).get("pwdAccount"));
+                        pwdPsd.setText(edMap.get(new Integer(position)).get("pwdPsd"));
+                        //stop();
+                        temp=false;
+                    }
+                }
+            }
+        }
     }
 }
