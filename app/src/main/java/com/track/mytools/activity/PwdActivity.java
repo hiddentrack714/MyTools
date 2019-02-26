@@ -80,6 +80,7 @@ public class PwdActivity extends BaseKeyboardActivity {
         setContentView(R.layout.activity_pwdmain);
         ButterKnife.bind(this);
 
+        BaseKeyboardActivity.rooID = R.id.pwdmain;
         attachKeyboardListeners();
 
         pwdActivity = this;
@@ -98,6 +99,11 @@ public class PwdActivity extends BaseKeyboardActivity {
         SQLiteDatabase sdb = ToolsDao.getDatabase();
 
         qryList = ToolsDao.qryTable(sdb,PwdEntity.class,PwdActivity.this);
+
+        if(qryList.size() > 0 && !ToolsActivity.useFP){
+            ToolsUtil.showToast(PwdActivity.this,"密码本存有密码，但是未启用指纹识别",5000);
+            finish();
+        }
 
         //解密
         for(HashMap<String,Object> map:qryList){
@@ -150,7 +156,12 @@ public class PwdActivity extends BaseKeyboardActivity {
                         ToolsDao.saveOrUpdIgnoreExsit(sdb,daoList.get(i),PwdEntity.class);
                     }
 
-                    ToolsUtil.showToast(PwdActivity.this,"保存完成!",3000);
+                    if(!ToolsActivity.useFP){
+                        ToolsUtil.setProperties("y");
+                        ToolsUtil.showToast(PwdActivity.this,"保存完成,并且启用指纹识别!",2000);
+                    }else{
+                        ToolsUtil.showToast(PwdActivity.this,"保存完成!",2000);
+                    }
                 }
             }
         });
@@ -210,8 +221,34 @@ public class PwdActivity extends BaseKeyboardActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                chooseFlag = "leadFile";
-                                choose(ExFilePicker.ChoiceType.FILES);
+
+                                final AlertDialog.Builder normalDialog =
+                                        new AlertDialog.Builder(PwdActivity.this);
+                                normalDialog.setTitle("选项");
+                                normalDialog.setMessage("导入前,是否需要删除原始密码本数据?");
+                                normalDialog.setPositiveButton("是",
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                                SQLiteDatabase sqd = ToolsDao.getDatabase();
+                                                ToolsDao.delTable(sqd,PwdEntity.class);
+
+                                                chooseFlag = "leadFile";
+                                                choose(ExFilePicker.ChoiceType.FILES);
+                                            }
+                                        });
+                                normalDialog.setNegativeButton("否",
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                chooseFlag = "leadFile";
+                                                choose(ExFilePicker.ChoiceType.FILES);
+                                            }
+                                        });
+                                // 显示
+                                normalDialog.show();
+
                             }
                         });
                 // 显示

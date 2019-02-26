@@ -128,6 +128,7 @@ public class AppExtractActivity extends Activity {
                     appPro.setVisibility(View.INVISIBLE);
                     appList.setVisibility(View.VISIBLE);
                     extractBtn.setEnabled(true);
+                    appSearch.setEnabled(true);
                     appList.setAdapter(appMainAdapter);
                 }else if(msg.arg1 == 2){
                     //更新提取进程

@@ -7,13 +7,14 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 
-import com.track.mytools.R;
-
 /**
  * 屏幕高端检测
  */
 
 public class BaseKeyboardActivity extends Activity {
+
+    public static int rooID;
+
     private ViewTreeObserver.OnGlobalLayoutListener keyboardLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
         @Override
         public void onGlobalLayout() {
@@ -49,7 +50,7 @@ public class BaseKeyboardActivity extends Activity {
             return;
         }
 
-        rootLayout = (ViewGroup) findViewById(R.id.pwdmain);
+        rootLayout = (ViewGroup) findViewById(rooID);
         rootLayout.getViewTreeObserver().addOnGlobalLayoutListener(keyboardLayoutListener);
 
         keyboardListenersAttached = true;

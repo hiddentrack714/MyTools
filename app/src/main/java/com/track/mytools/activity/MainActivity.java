@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Icon;
 import android.hardware.fingerprint.FingerprintManager;
 import android.net.Uri;
@@ -19,6 +20,8 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.track.mytools.R;
+import com.track.mytools.dao.ToolsDao;
+import com.track.mytools.entity.PwdEntity;
 import com.track.mytools.entity.ShortCutEntity;
 import com.track.mytools.enums.AssetsEnum;
 import com.track.mytools.util.FingerprintUtil;
@@ -73,6 +76,8 @@ public class MainActivity extends Activity {
 
             Log.i("MainActivity_Log","是否开启指纹:" + isUseFinIdMou);
 
+            ToolsActivity.useFP = "y".equalsIgnoreCase(isUseFinIdMou) ? true : false;
+
             //是否需要开启指纹识别
             if("y".equalsIgnoreCase(isUseFinIdMou)){
                 //开启指纹识别
@@ -81,16 +86,31 @@ public class MainActivity extends Activity {
                 ButterKnife.bind(this);
                 checkFiger();
             }else{
-                //关闭指纹识别,直接跳转到下一级
-                ToolsActivity.useFP = false;
-                Intent intent = new Intent();
-                intent.setClass(this, ToolsActivity.class);
-                this.startActivity(intent);
-                this.finish();
+                //检查密码本是否有密码存储
+                SQLiteDatabase sqd = ToolsDao.getDatabase();
+                if(ToolsDao.qryTable(sqd, PwdEntity.class,this).size() > 0){
+
+                    ToolsActivity.useFP = true;
+                    setContentView(R.layout.activity_main);
+                    ButterKnife.bind(this);
+                    checkFiger();
+                    ToolsUtil.setProperties("y");
+
+                    ToolsUtil.showToast(this,"密码本存有密码,为保障安全,需要进行指纹识别!",2000);
+                }else{
+
+                    //关闭指纹识别,直接跳转到下一级
+                    ToolsActivity.useFP = false;
+                    Intent intent = new Intent();
+                    intent.setClass(this, ToolsActivity.class);
+                    this.startActivity(intent);
+                    this.finish();
+                }
             }
+
         }catch(Exception e){
-            Log.e("MainActivity_Log","获取初始化文件失败...");
-            ToolsUtil.showToast(this, "获取初始化文件失败...", 2000);
+            Log.e("MainActivity_Log","获取初始化文件失败");
+            ToolsUtil.showToast(this, "获取初始化文件失败", 2000);
         }
 
     }

@@ -632,12 +632,15 @@ public class ToolsUtil {
             e.printStackTrace();
         }
 
-        if("y".equals(properties.get("isUseFinIdMou"))){
+        String isUseFinIdMou = properties.getProperty("isUseFinIdMou");
+
+        if("y".equals(isUseFinIdMou)){
             if(!ToolsActivity.passFP){
                 //非法界面跳转
                 return false;
             }
         }
+
         return true;
     }
 
@@ -656,6 +659,31 @@ public class ToolsUtil {
             deepList.add(temp);
         }
         return deepList;
+    }
+
+    /**
+     * 设置properties
+     * @param strVal
+     */
+    public static void setProperties(String strVal){
+        FileOutputStream oFile = null;
+        ToolsActivity.useFP = "y".equalsIgnoreCase(strVal) ? true : false;
+        try{
+            oFile = new FileOutputStream(new File(String.valueOf(AssetsEnum.ASSETS_PROPERTIES_PATH)));
+            Properties p = new Properties();
+            p.setProperty("isUseFinIdMou", strVal);
+            p.store(oFile, "");
+        }catch(Exception e){
+
+        }finally {
+            if(oFile!=null){
+                try{
+                    oFile.close();
+                }catch(Exception e1){
+
+                }
+            }
+        }
     }
 
 }

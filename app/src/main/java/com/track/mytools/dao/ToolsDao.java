@@ -212,4 +212,29 @@ public class ToolsDao {
         return result;
     }
 
+    /**
+     * @param db 数据库连接
+     * @param cl 实体类
+     * 删除的sql
+     *
+     */
+    public static void delTable(SQLiteDatabase db,Class cl){
+        TableNameAnnotation tn =  (TableNameAnnotation)cl.getAnnotation(TableNameAnnotation.class);
+
+        String tableName = tn.value();
+
+        //删除SQL语句
+        String sqlMain = "delete from " + tableName;
+        //执行SQL语句
+        db.execSQL(sqlMain);
+
+        //删除SQL语句
+        String sqlSeq = "delete from sqlite_sequence where name= '" + tableName + "'";
+        //执行SQL语句
+        db.execSQL(sqlSeq);
+
+        db.close();
+    }
+
+
 }

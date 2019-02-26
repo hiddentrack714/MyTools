@@ -25,16 +25,12 @@ import com.track.mytools.R;
 import com.track.mytools.adapter.ToolsMainAdapter;
 import com.track.mytools.dao.ToolsDao;
 import com.track.mytools.entity.ToolsEntity;
-import com.track.mytools.enums.AssetsEnum;
 import com.track.mytools.util.ToolsUtil;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -225,29 +221,13 @@ public class ToolsActivity extends Activity{
                 if (isChecked){
                     //开启
                     useFP = true;
-                    strVal = "y";
+                    strVal = "y" ;
                 }else {
                     //关闭
                     useFP = false;
                     strVal = "n";
                 }
-                FileOutputStream oFile = null;
-                try{
-                    oFile = new FileOutputStream(new File(String.valueOf(AssetsEnum.ASSETS_PROPERTIES_PATH)));
-                    Properties p = new Properties();
-                    p.setProperty("isUseFinIdMou", strVal);
-                    p.store(oFile, "");
-                }catch(Exception e){
-
-                }finally {
-                    if(oFile!=null){
-                        try{
-                            oFile.close();
-                        }catch(Exception e1){
-
-                        }
-                    }
-                }
+                ToolsUtil.setProperties(strVal);
             }
         });
     }

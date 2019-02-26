@@ -1,6 +1,5 @@
 package com.track.mytools.activity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -53,7 +52,7 @@ import ru.bartwell.exfilepicker.data.ExFilePickerResult;
  * http多线程下载
  *
  */
-public class HttpActivity extends Activity{
+public class HttpActivity extends BaseKeyboardActivity{
 
     @BindView(R.id.httpDownBtn)
     Button httpDownBtn;//下载按钮
@@ -114,6 +113,9 @@ public class HttpActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_http);
         ButterKnife.bind(this);
+
+        BaseKeyboardActivity.rooID = R.id.http;
+        attachKeyboardListeners();
 
         httpActivity = this;
 
@@ -622,6 +624,23 @@ public class HttpActivity extends Activity{
                 }
             }
         }
+    }
+
+    @Override
+    protected void onShowKeyboard(int keyboardHeight) {
+        // do things when keyboard is shown
+        //bottomContainer.setVisibility(View.GONE);
+        Log.i("PwdActivity_Log","显示键盘");
+        httpDownBtn.setEnabled(false);
+    }
+
+    @Override
+    protected void onHideKeyboard() {
+        // do things when keyboard is hidden
+        //bottomContainer.setVisibility(View.VISIBLE);
+        Log.i("PwdActivity_Log","隐藏键盘");
+        httpDownBtn.setEnabled(true);
+
     }
 
 }
