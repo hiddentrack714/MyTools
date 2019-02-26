@@ -149,18 +149,24 @@ public class PwdActivity extends BaseKeyboardActivity {
 
                     daoList = ToolsUtil.deepCopy((ArrayList) qryList);
 
-                    for(int i=0 ;i<daoList.size();i++){
-                        SQLiteDatabase sdb = ToolsDao.getDatabase();
-                        //加密
-                        daoList.get(i).put("pwdPsd",DesUtil.desEncrypt(daoList.get(i).get("pwdPsd").toString()));
-                        ToolsDao.saveOrUpdIgnoreExsit(sdb,daoList.get(i),PwdEntity.class);
-                    }
+                    if(daoList.size()>0){
+                        for(int i=0 ;i<daoList.size();i++){
+                            SQLiteDatabase sdb = ToolsDao.getDatabase();
+                            //加密
+                            daoList.get(i).put("pwdPsd",DesUtil.desEncrypt(daoList.get(i).get("pwdPsd").toString()));
+                            ToolsDao.saveOrUpdIgnoreExsit(sdb,daoList.get(i),PwdEntity.class);
+                        }
 
-                    if(!ToolsActivity.useFP){
-                        ToolsUtil.setProperties("y");
-                        ToolsUtil.showToast(PwdActivity.this,"保存完成,并且启用指纹识别!",2000);
+                        if(!ToolsActivity.useFP){
+                            ToolsUtil.setProperties("y");
+                            //默认为识别成功，防止未退出应用再次进入该界面时报错
+                            ToolsActivity.passFP = true;
+                            ToolsUtil.showToast(PwdActivity.this,"保存完成,并且启用指纹识别!",2000);
+                        }else{
+                            ToolsUtil.showToast(PwdActivity.this,"保存完成!",2000);
+                        }
                     }else{
-                        ToolsUtil.showToast(PwdActivity.this,"保存完成!",2000);
+                        ToolsUtil.showToast(PwdActivity.this,"没有新添加的密码数据，未保存!",2000);
                     }
                 }
             }

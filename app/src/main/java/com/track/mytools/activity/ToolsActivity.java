@@ -299,4 +299,9 @@ public class ToolsActivity extends Activity{
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        toolsFP.setChecked(useFP);
+    }
 }
