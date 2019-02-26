@@ -72,6 +72,9 @@ public class IPActivity extends Activity {
     @BindView(R.id.wifilayout)
     LinearLayout wifilayout;//WiFiID和password属性布局框
 
+    @BindView(R.id.dnsLayout)
+    LinearLayout dnsLayout;//WiFiID和password属性布局框
+
     @BindView(R.id.ipRG)
     RadioGroup ipRG;
 
@@ -98,6 +101,9 @@ public class IPActivity extends Activity {
 
     @BindView(R.id.staticWifiId)
     EditText staticWifiId;//wifiid
+
+    @BindView(R.id.staticDNS1ET)
+    EditText staticDNS1ET;//staticDNS1Str
 
     private WifiManager mwifiManager;
     private String wifiId;
@@ -268,6 +274,9 @@ public class IPActivity extends Activity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if(checkedId == R.id.wifiMode1){
                     iplayout.setVisibility(View.GONE);
+                    dnsLayout.setVisibility(View.INVISIBLE);
+                    staticDNS1ET.setText("");
+                    staticDNS1.setSelection(0);
                 }else if(checkedId == R.id.wifiMode2){
                     iplayout.setVisibility(View.VISIBLE);
                 }else{
@@ -339,7 +348,25 @@ public class IPActivity extends Activity {
                     String staticIpStr = staticIp.getText().toString();
                     String staticGateWayStr = staticGateWay.getText().toString();
                     int staticSuffixInt = Integer.parseInt(staticSuffix.getText().toString());
-                    String staticDNS1Str = staticDNS1.getSelectedItem().toString().split(":")[1];
+
+
+                    String staticDNS1Str = "";
+                    if("其他".equals(staticDNS1.getSelectedItem().toString())){
+
+                        staticDNS1Str = staticDNS1ET.getText().toString();
+
+                        if("".equals(staticDNS1Str)){
+                            ToolsUtil.showToast(IPActivity.this,"还未输入DNS1",2000);
+                            return;
+                        }
+
+                        if(!dnsCheck(staticDNS1Str)){
+                            ToolsUtil.showToast(IPActivity.this,"DNS1格式不正确",2000);
+                            return;
+                        }
+                    }else{
+                         staticDNS1Str = staticDNS1.getSelectedItem().toString().split(":")[1];
+                    }
 
                     mWifiConfiguration = CreateWifiInfo(staticWifiIdStr, staticPasswordStr, wifiSafeInt);
 
@@ -384,8 +411,7 @@ public class IPActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                wifiId = getWifiId();
-                if(mwifiManager.isWifiEnabled()){
+                if(isWifi(IPActivity.this)){
                     if(!forgetWifi()){
                         ToolsUtil.showToast(IPActivity.this,"请手动忘记Wifi密码!",3000);
                     }
@@ -466,6 +492,24 @@ public class IPActivity extends Activity {
                         linearLayoutWifiSafe.setVisibility(View.GONE);
                         linearLayoutWifiId.setVisibility(View.GONE);
                     }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        //监听dns下拉框
+        staticDNS1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 11){
+                    dnsLayout.setVisibility(View.VISIBLE);
+                }else{
+                    dnsLayout.setVisibility(View.INVISIBLE);
                 }
             }
 
@@ -746,6 +790,36 @@ public class IPActivity extends Activity {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 检测dns是否输入正确
+     * @param dnsStr
+     * @return
+     */
+    private static boolean dnsCheck(String dnsStr) {
+
+        if(dnsStr.split("\\.").length>4){
+            return false;
+        }
+
+        if(dnsStr.split("\\.").length==4 && ".".equals(dnsStr.substring(dnsStr.length()-1))){
+            return false;
+        }
+
+        String arr[] = dnsStr.split("\\.");
+        for(int i = 0; i<arr.length; i++){
+            String str = arr[i];
+            try{
+                int j = Integer.parseInt(str);
+                if(j<=0 || j>=256){
+                    return false;
+                }
+            }catch(Exception e){
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

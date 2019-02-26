@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string-array name="spinnerDNS1">
+        <item>默认1:8.8.8.8</item>
+        <item>默认2:114.114.114.114</item>
+        <item>美国:208.67.222.222</item>
         <item>美国:208.67.222.222</item>
         <item>美国:208.67.220.220</item>
         <item>美国:165.87.13.129</item>
@@ -9,6 +12,7 @@
         <item>美国:208.96.10.221</item>
         <item>美国:205.171.3.65</item>
         <item>美国:165.87.13.129</item>
+        <item>其他</item>
     </string-array>
 
     <string-array name="spinnerSafe">
