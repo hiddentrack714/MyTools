@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -37,10 +38,12 @@ public class PwdMainAdapter extends BaseAdapter {
     public static HashMap<Integer, Boolean> pwdMap;
 
     public static HashMap<Integer,String> updMap= new HashMap<Integer,String>();
+    public static HashMap<String,EditText> updWidMap= new HashMap<String,EditText>();
+    public static int updWidInt;
 
-    private static HashMap<Integer,HashMap<String,String>> edMap= new HashMap<Integer,HashMap<String,String>>();//实时保存修改的内容
+    public static HashMap<Integer,HashMap<String,String>> edMap= new HashMap<Integer,HashMap<String,String>>();//实时保存修改的内容
 
-    public PwdMainAdapter(Context context,List<HashMap<String,Object>> listData){
+    public PwdMainAdapter(Context context, List<HashMap<String,Object>> listData){
         this.context = context;
         this.listData = listData;
         viewMap.clear();
@@ -87,9 +90,9 @@ public class PwdMainAdapter extends BaseAdapter {
         HashMap<String, Object> map = listData.get(position);
 
         if (map != null) {
-            holder.pwdName.setText(listData.get(position).get("pwdName").toString());
-            holder.pwdAccount.setText(listData.get(position).get("pwdAccount").toString());
-            holder.pwdPsd.setText(listData.get(position).get("pwdPsd").toString());
+            holder.pwdName.setText((String)listData.get(position).get("pwdName"));
+            holder.pwdAccount.setText((String)listData.get(position).get("pwdAccount"));
+            holder.pwdPsd.setText((String)listData.get(position).get("pwdPsd"));
         }
 
         if(viewMap.get(new Integer(position)) == null){
@@ -104,13 +107,13 @@ public class PwdMainAdapter extends BaseAdapter {
 
             holder.pwdChangeBtn.setOnClickListener(new ChangeBtnListener(position,holder.pwdName,holder.pwdAccount,holder.pwdPsd,holder.pwdChangeBtn));
 
-            holder.pwdDelBtn.setOnClickListener(new DelBtnListener(position,holder.pwdDelBtn,holder.pwdName.getText().toString()));
+            holder.pwdDelBtn.setOnClickListener(new DelBtnListener(position,holder.pwdDelBtn,holder.pwdName));
 
             holder.pwdName.addTextChangedListener(new EditTextListener("pwdName",position));
 
             holder.pwdAccount.addTextChangedListener(new EditTextListener("pwdAccount",position));
 
-            holder.pwdPsd.addTextChangedListener(new EditTextListener("pwdpwdPsdName",position));
+            holder.pwdPsd.addTextChangedListener(new EditTextListener("pwdPsd",position));
         }
 
         return convertView;
@@ -148,6 +151,7 @@ public class PwdMainAdapter extends BaseAdapter {
         @Override
         public void onClick(View v)
         {
+            Log.i("PwdMainAdapter_Log","修改:" + position);
             if(updMap.size() == 0 || updMap.containsKey(new Integer(position))) {
 
                 if (updMap.size() == 0) {
@@ -168,8 +172,11 @@ public class PwdMainAdapter extends BaseAdapter {
                     changeBtn.setText("完成");
 
                     updMap.put(new Integer(position),"y");
+                    updWidMap.put("pwdName",pwdName);
+                    updWidMap.put("pwdAccount",pwdAccount);
+                    updWidMap.put("pwdPsd",pwdPsd);
 
-                    new KeyBoardThread(pwdName,pwdAccount,pwdPsd,position).start();
+                    PwdMainAdapter.updWidInt = position;
 
                 } else {
                     //完成修改
@@ -193,6 +200,7 @@ public class PwdMainAdapter extends BaseAdapter {
                     PwdActivity.qryList.get(position).put("pwdPsd", pwdPsdStr);
 
                     updMap.clear();
+                    updWidMap.clear();
                 }
             } else{
                 ToolsUtil.showToast(PwdActivity.pwdActivity,"请先保存上一条修改，再开启新的编辑",2000);
@@ -208,14 +216,14 @@ public class PwdMainAdapter extends BaseAdapter {
     {
         private int position;
         private Button Btn;
-        private String pwdNameStr;
+        private EditText pwdName;
 
 
-        public DelBtnListener(int position, Button currentBtn,String pwdNameStr)
+        public DelBtnListener(int position, Button currentBtn,EditText pwdName)
         {
             this.position = position;
             this.Btn = currentBtn;
-            this.pwdNameStr = pwdNameStr;
+            this.pwdName = pwdName;
         }
 
 
@@ -226,7 +234,7 @@ public class PwdMainAdapter extends BaseAdapter {
             final AlertDialog.Builder normalDialog =
                     new AlertDialog.Builder(PwdActivity.pwdActivity);
             normalDialog.setTitle("提示");
-            normalDialog.setMessage("确认删除[" + pwdNameStr + "]的账号及其密码?");
+            normalDialog.setMessage("确认删除[" + pwdName.getText() + "]的账号及其密码?");
             normalDialog.setPositiveButton("确定",
                     new DialogInterface.OnClickListener() {
                         @Override
@@ -236,10 +244,14 @@ public class PwdMainAdapter extends BaseAdapter {
                                 ToolsDao.delTable(sdb,listData.get(position),PwdEntity.class);
                                 sdb.close();
                             }
-                            listData.remove(position);
-                            PwdActivity.qryList.remove(position);
-                            viewMap.remove(new Integer(position));
-                            notifyDataSetChanged();
+
+//                            listData.remove(position);
+//                            PwdActivity.qryList.remove(position);
+//                            viewMap.remove(new Integer(position));
+//                            notifyDataSetChanged();
+                            Message msg = PwdActivity.pwdActivityHandler.obtainMessage();
+                            msg.arg1=1;
+                            PwdActivity.pwdActivityHandler.sendMessage(msg);
                         }
                     });
             normalDialog.setNegativeButton("取消",
@@ -276,11 +288,16 @@ public class PwdMainAdapter extends BaseAdapter {
 
             if("pwdName".equals(etName)){
                 map.put("pwdName",str);
-            }else if("pwdAccount".equals(etName)){
+            }
+
+            if("pwdAccount".equals(etName)){
                 map.put("pwdAccount",str);
-            }else{
+            }
+
+            if("pwdPsd".equals(etName)){
                 map.put("pwdPsd",str);
             }
+
             edMap.put(new Integer(position),map);
         }
 
@@ -292,40 +309,6 @@ public class PwdMainAdapter extends BaseAdapter {
         @Override
         public void afterTextChanged(Editable s) {
 
-        }
-    }
-
-    /**
-     *
-     */
-    class KeyBoardThread extends Thread{
-
-        private EditText pwdName;
-        private EditText pwdAccount;
-        private EditText pwdPsd;
-        private int position;
-
-        public KeyBoardThread(EditText pwdName,EditText pwdAccount,EditText pwdPsd,int position){
-            this.pwdName=pwdName;
-            this.pwdAccount=pwdAccount;
-            this.pwdPsd=pwdPsd;
-            this.position=position;
-        }
-
-        @Override
-        public void run() {
-            boolean temp = true;
-            while(temp){
-                if(PwdActivity.isKeybordShow == false){
-                    if(edMap.get(new Integer(position)) != null){
-                        pwdName.setText(edMap.get(new Integer(position)).get("pwdName"));
-                        pwdAccount.setText(edMap.get(new Integer(position)).get("pwdAccount"));
-                        pwdPsd.setText(edMap.get(new Integer(position)).get("pwdPsd"));
-                        //stop();
-                        temp=false;
-                    }
-                }
-            }
         }
     }
 }

@@ -17,10 +17,8 @@ import com.track.mytools.exception.HttpException;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
@@ -622,23 +620,9 @@ public class ToolsUtil {
      * @return
      */
     public static boolean isLegal(){
-        File file = new File(String.valueOf(AssetsEnum.ASSETS_PROPERTIES_PATH));
-        Properties properties = new Properties();
 
-        try {
-            Reader s = new FileReader(file);
-            properties.load(s);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        String isUseFinIdMou = properties.getProperty("isUseFinIdMou");
-
-        if("y".equals(isUseFinIdMou)){
-            if(!ToolsActivity.passFP){
-                //非法界面跳转
-                return false;
-            }
+        if(ToolsActivity.useFP && !ToolsActivity.passFP){
+            return false;
         }
 
         return true;

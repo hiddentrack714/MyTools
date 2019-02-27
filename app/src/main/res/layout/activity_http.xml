@@ -137,8 +137,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/xz"
-            style="?android:attr/buttonStyle"
-            android:enabled="false"/>
+            style="?android:attr/buttonStyle"/>
     </LinearLayout>
 
     <LinearLayout

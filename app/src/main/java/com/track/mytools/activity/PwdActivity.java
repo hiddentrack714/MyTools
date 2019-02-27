@@ -7,10 +7,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -51,10 +54,10 @@ public class PwdActivity extends BaseKeyboardActivity {
     Button pwdSaveBtn;//保存
 
     @BindView(R.id.pwdLeadBtn)
-    Button pwdLeadBtn;//导入(txt/excel)
+    Button pwdLeadBtn;//导入(excel)
 
     @BindView(R.id.pwdExpBtn)
-    Button pwdExpBtn;//导出(txt/excel)
+    Button pwdExpBtn;//导出(excel)
 
     @BindView(R.id.pwdList)
     ListView pwdList;
@@ -74,6 +77,8 @@ public class PwdActivity extends BaseKeyboardActivity {
 
     public static boolean isKeybordShow = false;
 
+    public static Handler pwdActivityHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,10 +90,23 @@ public class PwdActivity extends BaseKeyboardActivity {
 
         pwdActivity = this;
 
-        pwdAddBtn = (Button)findViewById(R.id.pwdAddBtn);
-        pwdSaveBtn = (Button)findViewById(R.id.pwdSaveBtn);
-
         pwdList = (ListView)findViewById(R.id.pwdList);
+
+        pwdActivityHandler = new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+
+                //删除后重新进入activity
+                if(msg.arg1==1){
+                    finish();
+                    Intent intent = new Intent();
+                    intent.setClass(PwdActivity.this,PwdActivity.class);
+                    startActivity(intent);
+                }
+
+                return false;
+            }
+        });
 
         //检测是否是非法页面跳转
         if(!ToolsUtil.isLegal()){
@@ -271,6 +289,27 @@ public class PwdActivity extends BaseKeyboardActivity {
             }
         });
 
+
+        pwdList.setOnTouchListener(new View.OnTouchListener(){
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_DOWN|| event.getAction() == MotionEvent.ACTION_MOVE) {
+
+                    if(PwdMainAdapter.updMap.size() > 0){
+                        ToolsUtil.showToast(PwdActivity.this,"请先完成当前的修改!",2000);
+                        return true;
+                    }else{
+                        return false;
+                    }
+
+                }
+
+                return false;
+            }
+        });
+
     }
 
     /**
@@ -326,9 +365,14 @@ public class PwdActivity extends BaseKeyboardActivity {
                                 //解析成功后开始加密，然后向数据库添加
                                 for(HashMap<String,Object> map:list){
                                     SQLiteDatabase sqd = ToolsDao.getDatabase();
-                                    map.put("pwdPsd",DesUtil.desEncrypt(map.get("pwdPsd").toString()));
+                                    map.put("pwdPsd",DesUtil.desEncrypt((String)map.get("pwdPsd")));
                                     ToolsDao.saveOrUpdIgnoreExsit(sqd,map,PwdEntity.class);
                                 }
+
+                                ToolsUtil.setProperties("y");
+                                ToolsActivity.useFP = true;
+                                //默认为识别成功，防止未退出应用再次进入该界面时报错
+                                ToolsActivity.passFP = true;
 
                                 ToolsUtil.showToast(PwdActivity.this,"密码导入成功",2000);
                                 finish();
@@ -337,6 +381,8 @@ public class PwdActivity extends BaseKeyboardActivity {
                                 startActivity(intent);
 
                             }catch(Exception e){
+                                e.printStackTrace();
+                                Log.i("PwdActivity_Log",e.getMessage());
                                 ToolsUtil.showToast(PwdActivity.this,"xls解析失败，请检查格式或是重新下载模板填写",2000);
                             }
 
@@ -387,7 +433,7 @@ public class PwdActivity extends BaseKeyboardActivity {
         // do things when keyboard is shown
         //bottomContainer.setVisibility(View.GONE);
         Log.i("PwdActivity_Log","显示键盘");
-        isKeybordShow = true;
+        //isKeybordShow = true;
     }
 
     @Override
@@ -395,6 +441,25 @@ public class PwdActivity extends BaseKeyboardActivity {
         // do things when keyboard is hidden
         //bottomContainer.setVisibility(View.VISIBLE);
         Log.i("PwdActivity_Log","隐藏键盘");
-        isKeybordShow = false;
+        //isKeybordShow = false;
+
+        HashMap<String,String> temp = PwdMainAdapter.edMap.get(new Integer(PwdMainAdapter.updWidInt));
+
+        if(temp != null){
+            Log.i("PwdActivity_Log",temp.toString());
+
+            if((temp).get("pwdName")!=null&&PwdMainAdapter.updWidMap.get("pwdName")!=null){
+                PwdMainAdapter.updWidMap.get("pwdName").setText((temp).get("pwdName"));
+            }
+
+            if((temp).get("pwdAccount")!=null&&PwdMainAdapter.updWidMap.get("pwdAccount")!=null){
+                PwdMainAdapter.updWidMap.get("pwdAccount").setText((temp).get("pwdAccount"));
+            }
+
+            if((temp).get("pwdPsd")!=null&&PwdMainAdapter.updWidMap.get("pwdPsd")!=null){
+                PwdMainAdapter.updWidMap.get("pwdPsd").setText((temp).get("pwdPsd"));
+            }
+        }
+
     }
 }

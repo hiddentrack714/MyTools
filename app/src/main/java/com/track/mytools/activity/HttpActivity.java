@@ -108,6 +108,8 @@ public class HttpActivity extends BaseKeyboardActivity{
     private final int EX_FILE_PICKER_RESULT = 0xfa01;
     private String startDirectory = null;// 记忆上一次访问的文件目录路径
 
+    private static boolean isUseDownbtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,6 +142,7 @@ public class HttpActivity extends BaseKeyboardActivity{
                     httpPath.setEnabled(true);
                     httpCopyBtn.setEnabled(true);
                     httpSwitch.setEnabled(true);
+                    httpDir.setEnabled(true);
 
                     //清空Listview视图
                     l.clear();
@@ -188,6 +191,12 @@ public class HttpActivity extends BaseKeyboardActivity{
                     ToolsUtil.showToast(HttpActivity.this,"下载目录不能为空",2000);
                     return;
                 }
+
+                if(isUseDownbtn == false ){
+                    ToolsUtil.showToast(HttpActivity.this,"请先关闭键盘，再下载",2000);
+                    return;
+                }
+
 
                 URL = httpUrl.getText().toString();   //http连接
                 THREAD_NUM = Integer.parseInt(httpThread.getText().toString());//线程数量
@@ -407,6 +416,7 @@ public class HttpActivity extends BaseKeyboardActivity{
         httpPath.setEnabled(false);
         httpCopyBtn.setEnabled(false);
         httpSwitch.setEnabled(false);
+        httpDir.setEnabled(false);
 
         //文件后缀名
         String fileSuff = httpSuff.getText() + "";
@@ -629,18 +639,18 @@ public class HttpActivity extends BaseKeyboardActivity{
     @Override
     protected void onShowKeyboard(int keyboardHeight) {
         // do things when keyboard is shown
-        //bottomContainer.setVisibility(View.GONE);
         Log.i("PwdActivity_Log","显示键盘");
-        httpDownBtn.setEnabled(false);
+        //httpDownBtn.setEnabled(false);
+        isUseDownbtn = false;
+
     }
 
     @Override
     protected void onHideKeyboard() {
         // do things when keyboard is hidden
-        //bottomContainer.setVisibility(View.VISIBLE);
         Log.i("PwdActivity_Log","隐藏键盘");
-        httpDownBtn.setEnabled(true);
-
+        //httpDownBtn.setEnabled(true);
+        isUseDownbtn = true;
     }
 
 }
