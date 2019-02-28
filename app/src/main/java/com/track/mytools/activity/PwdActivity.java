@@ -285,7 +285,31 @@ public class PwdActivity extends BaseKeyboardActivity {
 
             @Override
             public void onClick(View v) {
-                choose(ExFilePicker.ChoiceType.DIRECTORIES);
+
+                final AlertDialog.Builder normalDialog =
+                        new AlertDialog.Builder(PwdActivity.this);
+                normalDialog.setTitle("选项");
+                normalDialog.setMessage("导出后,是否需要删除原始密码本数据?");
+                normalDialog.setPositiveButton("是",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                chooseFlag = "expDir";
+                                choose(ExFilePicker.ChoiceType.DIRECTORIES);
+                            }
+                        });
+                normalDialog.setNegativeButton("否",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                choose(ExFilePicker.ChoiceType.DIRECTORIES);
+                            }
+                        });
+                // 显示
+                normalDialog.show();
+
+
             }
         });
 
@@ -392,17 +416,38 @@ public class PwdActivity extends BaseKeyboardActivity {
                             List<HashMap<String,Object>> list = ToolsDao.qryTable(sqd,PwdEntity.class,PwdActivity.this);
 
                             for(HashMap<String,Object> map:list){
-                                map.put("pwdPsd",DesUtil.desDecrypt(map.get("pwdPsd").toString()));
+                                if(null != map.get("pwdPsd")){
+                                    map.put("pwdPsd",DesUtil.desDecrypt(map.get("pwdPsd").toString()));
+                                }else{
+                                    map.put("pwdPsd","");
+                                }
+
+                                if(null == map.get("pwdAccount")){
+                                    map.put("pwdAccount","");
+                                }
+
+                                if(null == map.get("pwdName")){
+                                    map.put("pwdName","");
+                                }
                             }
 
                             if(ExcelUtil.saveExcel(list,uri.getPath()+"/密码本.xls")){
+                                if("expDir".equals(chooseFlag)){
+                                    SQLiteDatabase sqd1 = ToolsDao.getDatabase();
+                                    ToolsDao.delTable(sqd1,PwdEntity.class);
+                                }
+
+                                finish();
+                                Intent intent = new Intent();
+                                intent.setClass(PwdActivity.this,PwdActivity.class);
+                                startActivity(intent);
+
                                 ToolsUtil.showToast(PwdActivity.this,"密码成功导出到:"+uri.getPath()+"/密码本.xls",2000);
                             }else{
                                 ToolsUtil.showToast(PwdActivity.this,"密码导出失败",2000);
                             }
 
                         }
-                       uri.getPath();
                         startDirectory = path;
                     } catch (Exception e) {
                         e.printStackTrace();

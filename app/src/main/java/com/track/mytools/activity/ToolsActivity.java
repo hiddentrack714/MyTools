@@ -68,6 +68,8 @@ public class ToolsActivity extends Activity{
 
     public static HashMap<String,HashMap<String,Object>> resMap = null;
 
+    public static FingerprintManager fingerprintManager = null;
+
     static{
         resMap = new HashMap<String,HashMap<String,Object>>();
 
@@ -144,13 +146,17 @@ public class ToolsActivity extends Activity{
 
         ButterKnife.bind(this);
 
-        FingerprintManager fingerprintManager = (FingerprintManager) getSystemService(Context.FINGERPRINT_SERVICE);
+        fingerprintManager = (FingerprintManager) getSystemService(Context.FINGERPRINT_SERVICE);
 
         //检测是否存在指纹模块
-        if(fingerprintManager.isHardwareDetected()){
-            toolsFP.setChecked(useFP);
-        }else{
+        if(!fingerprintManager.isHardwareDetected()){
             toolsFP.setEnabled(false);
+            ToolsUtil.showToast(ToolsActivity.this,"当前手机没有指纹模块,无法使用指纹验证",2000);
+        }else if(!fingerprintManager.hasEnrolledFingerprints()){
+            toolsFP.setEnabled(false);
+            ToolsUtil.showToast(ToolsActivity.this,"当前手机未启用指纹，无法使用指纹验证",2000);
+        }else{
+            toolsFP.setChecked(useFP);
         }
 
         //检测是否是非法页面跳转

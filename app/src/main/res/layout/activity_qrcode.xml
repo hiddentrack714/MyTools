@@ -22,8 +22,8 @@
                  android:layout_height="wrap_content"
                  android:background="@drawable/shape"
                  android:scrollbars="vertical"
-                 android:minLines="10"
-                 android:maxLines="10"
+                 android:minLines="7"
+                 android:maxLines="7"
                  android:gravity="top"/>
         </LinearLayout>
 

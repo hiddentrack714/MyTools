@@ -120,6 +120,21 @@ public class ToolsMainAdapter extends BaseAdapter {
                 holder.toolsBtn.setText(holder.toolsBtn.getText() + "-未刷入YC调度，无法使用");
         }
 
+
+        if(!ToolsActivity.fingerprintManager.isHardwareDetected()){
+            if("pwdBtn".equals(listMap.get("btnName").toString())){
+                holder.toolsBtn.setEnabled(false);
+                holder.toolsBtn.setText(holder.toolsBtn.getText() + "-无指纹模块，无法使用");
+            }
+        }else{
+            if(!ToolsActivity.fingerprintManager.hasEnrolledFingerprints()){
+                if("pwdBtn".equals(listMap.get("btnName").toString())){
+                    holder.toolsBtn.setEnabled(false);
+                    holder.toolsBtn.setText(holder.toolsBtn.getText() + "-未启用指纹，无法使用");
+                }
+            }
+        }
+
         holder.toolsBtn.setOnClickListener(new View.OnClickListener(){
 
             @Override
