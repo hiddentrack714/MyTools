@@ -3,27 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/pwdmain">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp">
-        <EditText
-            android:id="@+id/pwdSearch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/ssmc"
-            android:gravity="center"
-            android:singleLine="true"/>
-    </LinearLayout>
-    <ListView
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp">
+
+    <com.baoyz.swipemenulistview.SwipeMenuListView
         android:id="@+id/pwdList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,22 +20,17 @@
         <Button android:id="@+id/pwdAddBtn"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="添加"
-            android:layout_gravity="center"/>
-        <Button android:id="@+id/pwdSaveBtn"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="保存"
+            android:text="@string/tj"
             android:layout_gravity="center"/>
         <Button android:id="@+id/pwdLeadBtn"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="导入"
+            android:text="@string/dr"
             android:layout_gravity="center"/>
         <Button android:id="@+id/pwdExpBtn"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="导出"
+            android:text="@string/dc"
             android:layout_gravity="center"/>
     </LinearLayout>
 

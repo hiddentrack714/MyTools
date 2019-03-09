@@ -127,9 +127,14 @@
     <string name="sz">设置</string>
     <!--密码本-->
     <string name="ssmc">搜索名称</string>
-    <string name="mc">名称</string>
-    <string name="zh">账号</string>
-    <string name="mm">密码</string>
+    <string name="mcm">名称:</string>
+    <string name="zhm">账号:</string>
+    <string name="mmm">密码:</string>
+    <string name="flm">分类:</string>
+    <string name="bc">保存</string>
+    <string name="tj">添加</string>
+    <string name="dr">导入</string>
+    <string name="dc">导出</string>
 
 
     <!--<string name="app_name">Barcode Scanner</string>-->

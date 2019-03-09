@@ -1,24 +1,28 @@
 package com.track.mytools.activity;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
-import android.text.Editable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
 
+import com.baoyz.swipemenulistview.SwipeMenu;
+import com.baoyz.swipemenulistview.SwipeMenuCreator;
+import com.baoyz.swipemenulistview.SwipeMenuItem;
+import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.track.mytools.R;
 import com.track.mytools.adapter.PwdMainAdapter;
 import com.track.mytools.dao.ToolsDao;
@@ -30,7 +34,6 @@ import com.track.mytools.util.ToolsUtil;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -50,9 +53,6 @@ public class PwdActivity extends BaseKeyboardActivity {
     @BindView(R.id.pwdAddBtn)
     Button pwdAddBtn;  //添加
 
-    @BindView(R.id.pwdSaveBtn)
-    Button pwdSaveBtn;//保存
-
     @BindView(R.id.pwdLeadBtn)
     Button pwdLeadBtn;//导入(excel)
 
@@ -60,24 +60,19 @@ public class PwdActivity extends BaseKeyboardActivity {
     Button pwdExpBtn;//导出(excel)
 
     @BindView(R.id.pwdList)
-    ListView pwdList;
-
-    @BindView(R.id.pwdSearch)
-    EditText pwdSearch;
+    SwipeMenuListView pwdList;
 
     public static PwdActivity pwdActivity;
 
     public static List<HashMap<String,Object>> qryList;
 
-    public static List<HashMap<String,Object>> tempQryList;
-
     private final int EX_FILE_PICKER_RESULT = 0xfa01;
     private String startDirectory = null;// 记忆上一次访问的文件目录路径
     private String chooseFlag = "";
 
-    public static boolean isKeybordShow = false;
+    public final static int REQUEST_READ_PHONE_STATE = 0xfa02;
 
-    public static Handler pwdActivityHandler;
+    private PwdMainAdapter pwdMainAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,28 +80,7 @@ public class PwdActivity extends BaseKeyboardActivity {
         setContentView(R.layout.activity_pwdmain);
         ButterKnife.bind(this);
 
-        BaseKeyboardActivity.rooID = R.id.pwdmain;
-        attachKeyboardListeners();
-
         pwdActivity = this;
-
-        pwdList = (ListView)findViewById(R.id.pwdList);
-
-        pwdActivityHandler = new Handler(new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-
-                //删除后重新进入activity
-                if(msg.arg1==1){
-                    finish();
-                    Intent intent = new Intent();
-                    intent.setClass(PwdActivity.this,PwdActivity.class);
-                    startActivity(intent);
-                }
-
-                return false;
-            }
-        });
 
         //检测是否是非法页面跳转
         if(!ToolsUtil.isLegal()){
@@ -114,26 +88,308 @@ public class PwdActivity extends BaseKeyboardActivity {
             finish();
         }
 
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_PHONE_NUMBERS}, REQUEST_READ_PHONE_STATE);
+        }else{
+            pwdActivityMission();
+        }
+    }
+
+    /**
+     * 选择文件或者目录
+     * @param choiceType
+     */
+    private void choose(ExFilePicker.ChoiceType choiceType){
+        ExFilePicker exFilePicker = new ExFilePicker();
+        exFilePicker.setCanChooseOnlyOneItem(true);// 单选
+        exFilePicker.setQuitButtonEnabled(true);
+        exFilePicker.setChoiceType(choiceType);
+
+        if (TextUtils.isEmpty(startDirectory)) {
+            exFilePicker.setStartDirectory(Environment.getExternalStorageDirectory().getPath());
+        } else {
+            exFilePicker.setStartDirectory(startDirectory);
+        }
+
+        exFilePicker.start(PwdActivity.this, EX_FILE_PICKER_RESULT);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == EX_FILE_PICKER_RESULT) {
+            ExFilePickerResult result = ExFilePickerResult.getFromIntent(data);
+            if (result != null && result.getCount() > 0) {
+                String path = result.getPath();
+
+                List<String> names = result.getNames();
+                FileOutputStream out = null;
+                InputStream in = null;
+                for (int i = 0; i < names.size(); i++) {
+                    File f = new File(path, names.get(i));
+                    try {
+                        Uri uri = Uri.fromFile(f); //这里获取了真实可用的文件资源
+                        if("leadDir".equals(chooseFlag)){
+                            //移动模板到选择的文件夹
+                            out = new FileOutputStream(uri.getPath()+"/密码本.xls");
+                            in = PwdActivity.this.getAssets().open("密码本.xls");
+                            byte[] buffer = new byte[512];
+                            int readBytes = 0;
+                            while ((readBytes = in.read(buffer)) != -1) {
+                                out.write(buffer, 0, readBytes);
+                            }
+                            out.flush();
+                            ToolsUtil.showToast(PwdActivity.this,"模板成功保存到:"+uri.getPath()+"/密码本.xls",2000);
+                        }else if("leadFile".equals(chooseFlag)){
+                            //获取编辑好的密码本
+                            List<HashMap<String,Object>> list = null;
+                            try{
+                                list = ExcelUtil.readExcel(uri.getPath());
+
+                                //解析成功后开始加密，然后向数据库添加
+                                for(HashMap<String,Object> map:list){
+                                    SQLiteDatabase sqd = ToolsDao.getDatabase();
+                                    map.put("pwdPsd",DesUtil.desEncrypt(PwdActivity.this,(String)map.get("pwdPsd")));
+                                    ToolsDao.saveOrUpdIgnoreExsit(sqd,map,PwdEntity.class);
+                                }
+
+                                ToolsUtil.setProperties("y");
+                                ToolsActivity.useFP = true;
+                                //默认为识别成功，防止未退出应用再次进入该界面时报错
+                                ToolsActivity.passFP = true;
+
+                                ToolsUtil.showToast(PwdActivity.this,"密码导入成功",2000);
+                                finish();
+                                Intent intent = new Intent();
+                                intent.setClass(PwdActivity.this,PwdActivity.class);
+                                startActivity(intent);
+
+                            }catch(Exception e){
+                                e.printStackTrace();
+                                Log.i("PwdActivity_Log",e.getMessage());
+                                ToolsUtil.showToast(PwdActivity.this,"xls解析失败，请检查格式或是重新下载模板填写",2000);
+                            }
+
+                        }else{
+
+                            SQLiteDatabase sqd = ToolsDao.getDatabase();
+                            List<HashMap<String,Object>> list = ToolsDao.qryTable(sqd,PwdEntity.class,PwdActivity.this);
+
+                            for(HashMap<String,Object> map:list){
+                                if(null != map.get("pwdPsd")){
+                                    map.put("pwdPsd",DesUtil.desDecrypt(PwdActivity.this,map.get("pwdPsd").toString()));
+                                }else{
+                                    map.put("pwdPsd","");
+                                }
+
+                                if(null == map.get("pwdAccount")){
+                                    map.put("pwdAccount","");
+                                }
+
+                                if(null == map.get("pwdName")){
+                                    map.put("pwdName","");
+                                }
+                            }
+
+                            if(ExcelUtil.saveExcel(list,uri.getPath()+"/密码本.xls")){
+                                if("expDir".equals(chooseFlag)){
+                                    SQLiteDatabase sqd1 = ToolsDao.getDatabase();
+                                    ToolsDao.delTable(sqd1,PwdEntity.class);
+                                }
+
+                                finish();
+                                Intent intent = new Intent();
+                                intent.setClass(PwdActivity.this,PwdActivity.class);
+                                startActivity(intent);
+
+                                ToolsUtil.showToast(PwdActivity.this,"密码成功导出到:"+uri.getPath()+"/密码本.xls",2000);
+                            }else{
+                                ToolsUtil.showToast(PwdActivity.this,"密码导出失败",2000);
+                            }
+
+                        }
+                        startDirectory = path;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }finally {
+                        if(in!=null){
+                            try{
+                                out.close();
+                            }catch (Exception e){
+
+                            }
+                        }
+
+                        if(in!=null){
+                            try{
+                                in.close();
+                            }catch (Exception e){
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+
+        if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+            pwdActivityMission();
+        }else{
+            ToolsUtil.showToast(PwdActivity.this,"请授予权限",2000);
+            finish();
+        }
+    }
+
+    /**
+     * 主线任务
+     *
+     */
+    public void pwdActivityMission(){
+
+        SwipeMenuCreator creator = new SwipeMenuCreator() {
+
+            @Override
+            public void create(SwipeMenu menu) {
+                // create "open" item
+                SwipeMenuItem openItem = new SwipeMenuItem(
+                        getApplicationContext());
+                // set item background
+                openItem.setBackground(new ColorDrawable(Color.GREEN));
+                // set item width
+                openItem.setWidth(150);
+                // set item title
+                //openItem.setTitle("编辑");
+                // set item title fontsize
+                //openItem.setTitleSize(18);
+                // set item title font color
+                //openItem.setTitleColor(Color.WHITE);
+                // set a icon
+                openItem.setIcon(R.drawable.bj);
+                // add to menu
+                menu.addMenuItem(openItem);
+
+                // create "delete" item
+                SwipeMenuItem deleteItem = new SwipeMenuItem(
+                        getApplicationContext());
+                // set item background
+                deleteItem.setBackground(new ColorDrawable(Color.RED));
+                // set item width
+                deleteItem.setWidth(150);
+                // set item title
+                //deleteItem.setTitle("删除");
+                // set a icon
+                deleteItem.setIcon(R.drawable.sc);
+                // set item title font color
+                //deleteItem.setTitleColor(Color.WHITE);
+                // set item title fontsize
+                //deleteItem.setTitleSize(18);
+                // add to menu
+                menu.addMenuItem(deleteItem);
+            }
+        };
+
+        pwdList.setMenuCreator(creator);
+
+        pwdList.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+                HashMap<String,Object> item = qryList.get(position);
+                switch (index) {
+                    case 0:
+                        // 编辑
+                        // open(item);
+                        Intent intent = new Intent();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("pwdName",(String)item.get("pwdName"));
+                        bundle.putString("pwdAccount",(String)item.get("pwdAccount"));
+                        bundle.putString("pwdPsd",(String)item.get("pwdPsd"));
+                        bundle.putString("pwdId",(String)item.get("id"));
+                        bundle.putString("pwdIcon",(String)item.get("pwdIcon"));
+                        intent.putExtras(bundle);
+                        intent.setClass(PwdActivity.this, PwdEditActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 1:
+                        // 删除
+                        SQLiteDatabase sqd = ToolsDao.getDatabase();
+                        ToolsDao.delTable(sqd,item,PwdEntity.class);
+                        qryList.remove(position);
+                        pwdMainAdapter.notifyDataSetChanged();
+                        break;
+                }
+                return false;
+            }
+        });
+
+        // set SwipeListener
+        pwdList.setOnSwipeListener(new SwipeMenuListView.OnSwipeListener() {
+
+            @Override
+            public void onSwipeStart(int position) {
+                // swipe start
+            }
+
+            @Override
+            public void onSwipeEnd(int position) {
+                // swipe end
+            }
+        });
+
+        // set MenuStateChangeListener
+        pwdList.setOnMenuStateChangeListener(new SwipeMenuListView.OnMenuStateChangeListener() {
+            @Override
+            public void onMenuOpen(int position) {
+            }
+
+            @Override
+            public void onMenuClose(int position) {
+            }
+        });
+
+        // other setting
+        // listView.setCloseInterpolator(new BounceInterpolator());
+
+        // test item long click
+        pwdList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view,
+                                           int position, long id) {
+                HashMap<String,Object> item = qryList.get(position);
+                String pwdPsd = (String)item.get("pwdPsd");
+                if(pwdPsd!=null){
+                    pwdPsd = DesUtil.desDecrypt(PwdActivity.this,pwdPsd);
+                }else{
+                    pwdPsd = "";
+                }
+                ToolsUtil.showToast(PwdActivity.this,"密码为:["+pwdPsd+"]",3000);
+                return false;
+            }
+        });
+
+        // Right
+        //pwdList.setSwipeDirection(SwipeMenuListView.DIRECTION_RIGHT);
+
+        // Left
+        pwdList.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
+
         SQLiteDatabase sdb = ToolsDao.getDatabase();
 
         qryList = ToolsDao.qryTable(sdb,PwdEntity.class,PwdActivity.this);
 
         if(qryList.size() > 0 && !ToolsActivity.useFP){
-            ToolsUtil.showToast(PwdActivity.this,"密码本存有密码，但是未启用指纹识别",5000);
-            finish();
+            ToolsUtil.showToast(PwdActivity.this,"密码本存有密码，但是未启用指纹识别",2000);
         }
-
-        //解密
-        for(HashMap<String,Object> map:qryList){
-            map.put("pwdPsd",DesUtil.desDecrypt(map.get("pwdPsd").toString()));
-        }
-
-        //深度复制
-        tempQryList = ToolsUtil.deepCopy((ArrayList) qryList);
 
         Log.i("PwdActivity_Log","存储密码数量:" + qryList.size());
 
-        PwdMainAdapter pwdMainAdapter = new PwdMainAdapter(PwdActivity.this,tempQryList);
+        pwdMainAdapter = new PwdMainAdapter(PwdActivity.this,qryList);
 
         pwdList.setAdapter(pwdMainAdapter);
 
@@ -141,86 +397,9 @@ public class PwdActivity extends BaseKeyboardActivity {
         pwdAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HashMap<String,Object> map = new HashMap<String,Object>();
-                map.put("pwdName","");
-                map.put("pwdAccount","");
-                map.put("pwdPsd","");
-                tempQryList.add(map);
-                qryList.add(map);
-                pwdMainAdapter.notifyDataSetChanged();
-            }
-        });
-
-
-        //点击保存修改的密码
-        pwdSaveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if(PwdMainAdapter.updMap.size()!=0){
-
-                    ToolsUtil.showToast(PwdActivity.this,"当前还有未保存的修改，无法保存!",3000);
-
-                }else{
-
-                    List<HashMap<String,Object>> daoList = new ArrayList<HashMap<String,Object>>();
-
-                    daoList = ToolsUtil.deepCopy((ArrayList) qryList);
-
-                    if(daoList.size()>0){
-                        for(int i=0 ;i<daoList.size();i++){
-                            SQLiteDatabase sdb = ToolsDao.getDatabase();
-                            //加密
-                            daoList.get(i).put("pwdPsd",DesUtil.desEncrypt(daoList.get(i).get("pwdPsd").toString()));
-                            ToolsDao.saveOrUpdIgnoreExsit(sdb,daoList.get(i),PwdEntity.class);
-                        }
-
-                        if(!ToolsActivity.useFP){
-                            ToolsUtil.setProperties("y");
-                            //默认为识别成功，防止未退出应用再次进入该界面时报错
-                            ToolsActivity.passFP = true;
-                            ToolsUtil.showToast(PwdActivity.this,"保存完成,并且启用指纹识别!",2000);
-                        }else{
-                            ToolsUtil.showToast(PwdActivity.this,"保存完成!",2000);
-                        }
-                    }else{
-                        ToolsUtil.showToast(PwdActivity.this,"没有新添加的密码数据，未保存!",2000);
-                    }
-                }
-            }
-        });
-
-        //监听搜索名称
-        pwdSearch.addTextChangedListener(new TextWatcher(){
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String str = s.toString();
-
-                List<HashMap<String,Object>> tempList = new ArrayList<HashMap<String,Object>>();
-                for(HashMap<String,Object> map :qryList){
-                    String pwdNameStr = map.get("pwdName").toString();
-
-                    if(pwdNameStr.indexOf(str) >-1){
-                        tempList.add(map);
-                    }
-                }
-
-                tempQryList.clear();
-
-                tempQryList.addAll(tempList);
-
-                pwdMainAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
+                Intent intent = new Intent();
+                intent.setClass(PwdActivity.this, PwdEditActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -308,203 +487,8 @@ public class PwdActivity extends BaseKeyboardActivity {
                         });
                 // 显示
                 normalDialog.show();
-
-
             }
         });
-
-
-        pwdList.setOnTouchListener(new View.OnTouchListener(){
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_DOWN|| event.getAction() == MotionEvent.ACTION_MOVE) {
-
-                    if(PwdMainAdapter.updMap.size() > 0){
-                        ToolsUtil.showToast(PwdActivity.this,"请先完成当前的修改!",2000);
-                        return true;
-                    }else{
-                        return false;
-                    }
-
-                }
-
-                return false;
-            }
-        });
-
-    }
-
-    /**
-     * 选择文件或者目录
-     * @param choiceType
-     */
-    private void choose(ExFilePicker.ChoiceType choiceType){
-        ExFilePicker exFilePicker = new ExFilePicker();
-        exFilePicker.setCanChooseOnlyOneItem(true);// 单选
-        exFilePicker.setQuitButtonEnabled(true);
-        exFilePicker.setChoiceType(choiceType);
-
-        if (TextUtils.isEmpty(startDirectory)) {
-            exFilePicker.setStartDirectory(Environment.getExternalStorageDirectory().getPath());
-        } else {
-            exFilePicker.setStartDirectory(startDirectory);
-        }
-
-        exFilePicker.start(PwdActivity.this, EX_FILE_PICKER_RESULT);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == EX_FILE_PICKER_RESULT) {
-            ExFilePickerResult result = ExFilePickerResult.getFromIntent(data);
-            if (result != null && result.getCount() > 0) {
-                String path = result.getPath();
-
-                List<String> names = result.getNames();
-                FileOutputStream out = null;
-                InputStream in = null;
-                for (int i = 0; i < names.size(); i++) {
-                    File f = new File(path, names.get(i));
-                    try {
-                        Uri uri = Uri.fromFile(f); //这里获取了真实可用的文件资源
-                        if("leadDir".equals(chooseFlag)){
-                            //移动模板到选择的文件夹
-                            out = new FileOutputStream(uri.getPath()+"/密码本.xls");
-                            in = PwdActivity.this.getAssets().open("密码本.xls");
-                            byte[] buffer = new byte[512];
-                            int readBytes = 0;
-                            while ((readBytes = in.read(buffer)) != -1) {
-                                out.write(buffer, 0, readBytes);
-                            }
-                            out.flush();
-                            ToolsUtil.showToast(PwdActivity.this,"模板成功保存到:"+uri.getPath()+"/密码本.xls",2000);
-                        }else if("leadFile".equals(chooseFlag)){
-                            //获取编辑好的密码本
-                            List<HashMap<String,Object>> list = null;
-                            try{
-                                list = ExcelUtil.readExcel(uri.getPath());
-
-                                //解析成功后开始加密，然后向数据库添加
-                                for(HashMap<String,Object> map:list){
-                                    SQLiteDatabase sqd = ToolsDao.getDatabase();
-                                    map.put("pwdPsd",DesUtil.desEncrypt((String)map.get("pwdPsd")));
-                                    ToolsDao.saveOrUpdIgnoreExsit(sqd,map,PwdEntity.class);
-                                }
-
-                                ToolsUtil.setProperties("y");
-                                ToolsActivity.useFP = true;
-                                //默认为识别成功，防止未退出应用再次进入该界面时报错
-                                ToolsActivity.passFP = true;
-
-                                ToolsUtil.showToast(PwdActivity.this,"密码导入成功",2000);
-                                finish();
-                                Intent intent = new Intent();
-                                intent.setClass(PwdActivity.this,PwdActivity.class);
-                                startActivity(intent);
-
-                            }catch(Exception e){
-                                e.printStackTrace();
-                                Log.i("PwdActivity_Log",e.getMessage());
-                                ToolsUtil.showToast(PwdActivity.this,"xls解析失败，请检查格式或是重新下载模板填写",2000);
-                            }
-
-                        }else{
-
-                            SQLiteDatabase sqd = ToolsDao.getDatabase();
-                            List<HashMap<String,Object>> list = ToolsDao.qryTable(sqd,PwdEntity.class,PwdActivity.this);
-
-                            for(HashMap<String,Object> map:list){
-                                if(null != map.get("pwdPsd")){
-                                    map.put("pwdPsd",DesUtil.desDecrypt(map.get("pwdPsd").toString()));
-                                }else{
-                                    map.put("pwdPsd","");
-                                }
-
-                                if(null == map.get("pwdAccount")){
-                                    map.put("pwdAccount","");
-                                }
-
-                                if(null == map.get("pwdName")){
-                                    map.put("pwdName","");
-                                }
-                            }
-
-                            if(ExcelUtil.saveExcel(list,uri.getPath()+"/密码本.xls")){
-                                if("expDir".equals(chooseFlag)){
-                                    SQLiteDatabase sqd1 = ToolsDao.getDatabase();
-                                    ToolsDao.delTable(sqd1,PwdEntity.class);
-                                }
-
-                                finish();
-                                Intent intent = new Intent();
-                                intent.setClass(PwdActivity.this,PwdActivity.class);
-                                startActivity(intent);
-
-                                ToolsUtil.showToast(PwdActivity.this,"密码成功导出到:"+uri.getPath()+"/密码本.xls",2000);
-                            }else{
-                                ToolsUtil.showToast(PwdActivity.this,"密码导出失败",2000);
-                            }
-
-                        }
-                        startDirectory = path;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }finally {
-                        if(in!=null){
-                            try{
-                                out.close();
-                            }catch (Exception e){
-
-                            }
-                        }
-
-                        if(in!=null){
-                            try{
-                                in.close();
-                            }catch (Exception e){
-
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
-    protected void onShowKeyboard(int keyboardHeight) {
-        // do things when keyboard is shown
-        //bottomContainer.setVisibility(View.GONE);
-        Log.i("PwdActivity_Log","显示键盘");
-        //isKeybordShow = true;
-    }
-
-    @Override
-    protected void onHideKeyboard() {
-        // do things when keyboard is hidden
-        //bottomContainer.setVisibility(View.VISIBLE);
-        Log.i("PwdActivity_Log","隐藏键盘");
-        //isKeybordShow = false;
-
-        HashMap<String,String> temp = PwdMainAdapter.edMap.get(new Integer(PwdMainAdapter.updWidInt));
-
-        if(temp != null){
-            Log.i("PwdActivity_Log",temp.toString());
-
-            if((temp).get("pwdName")!=null&&PwdMainAdapter.updWidMap.get("pwdName")!=null){
-                PwdMainAdapter.updWidMap.get("pwdName").setText((temp).get("pwdName"));
-            }
-
-            if((temp).get("pwdAccount")!=null&&PwdMainAdapter.updWidMap.get("pwdAccount")!=null){
-                PwdMainAdapter.updWidMap.get("pwdAccount").setText((temp).get("pwdAccount"));
-            }
-
-            if((temp).get("pwdPsd")!=null&&PwdMainAdapter.updWidMap.get("pwdPsd")!=null){
-                PwdMainAdapter.updWidMap.get("pwdPsd").setText((temp).get("pwdPsd"));
-            }
-        }
 
     }
 }

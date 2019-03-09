@@ -1,5 +1,9 @@
 package com.track.mytools.util;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.telephony.TelephonyManager;
+
 public class DesUtil {
 //	public static void main(String args[]){
 //		DesUtil td = new DesUtil();
@@ -8,11 +12,23 @@ public class DesUtil {
 	/**
 	 * 加密
 	 */
-	public static String desEncrypt(String srcData){
+	public static String desEncrypt(Context context, String srcData){
 		String mK;
 		String baseK;
 		String key;
 		String desdata = "";
+
+		//SerialNumber
+		String SerialNumber = android.os.Build.SERIAL;
+
+		TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(context.TELEPHONY_SERVICE);
+
+		@SuppressLint("MissingPermission")
+		String number = telephonyManager.getLine1Number();
+
+		//Log.i("DesUtil_Log","SerialNumber:"+SerialNumber);
+		//Log.i("DesUtil_Log","number:"+number);
+
 		try {
 			//主机密钥解密
 			mK = DESKey.desDecrypt("c26666070451fe81649b6dc5cd2f5aba9943f252a133a04d","1231231212abc324");
@@ -25,7 +41,7 @@ public class DesUtil {
 			desdata = DESKey.desEncrypt(srcData, key);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 		return desdata;
@@ -33,11 +49,23 @@ public class DesUtil {
 	/**
 	 * 解密
 	 */
-	public static String desDecrypt(String srcData){
+	public static String desDecrypt(Context context, String srcData){
 		String mK;
 		String baseK;
 		String key;
 		String desdata = "";
+
+		//SerialNumber
+		String SerialNumber = android.os.Build.SERIAL;
+
+		TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(context.TELEPHONY_SERVICE);
+
+		@SuppressLint("MissingPermission")
+		String number = telephonyManager.getLine1Number();
+
+		//Log.i("DesUtil_Log","SerialNumber:"+SerialNumber);
+		//Log.i("DesUtil_Log","number:"+number);
+
 		try {
 			//主机密钥解密
 			mK = DESKey.desDecrypt("c26666070451fe81649b6dc5cd2f5aba9943f252a133a04d","1231231212abc324");
@@ -50,7 +78,7 @@ public class DesUtil {
 			desdata = DESKey.desDecrypt(srcData, key);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 		return desdata;

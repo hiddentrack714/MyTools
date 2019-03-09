@@ -74,7 +74,7 @@ public class FTPActivity extends Activity {
     @BindView(R.id.ftpProText)
     TextView ftpProText;
 
-    public static Handler handler;
+    public static Handler ftpActivityhandler;
 
     public static String remoteFileSize; // ftp远端文件大小;
 
@@ -113,7 +113,7 @@ public class FTPActivity extends Activity {
         Intent intent = new Intent(FTPActivity.this,FTPService.class);
 
         //运行在主线程的Handler,它将监听所有的消息（Message）
-        handler = new Handler(new Handler.Callback() {
+        ftpActivityhandler = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message arg0) {
                 String viewText = arg0.obj +"/"+ remoteFileSize;
@@ -152,6 +152,12 @@ public class FTPActivity extends Activity {
                     ftpPro.setProgress(0);
                     FTPService.isFinish = true;
                 }
+
+                //ftp登陆失败，重新启用下载按键
+                if(arg0.arg1 == 3){
+                    ftpDownBtn.setEnabled(true);
+                }
+
                 return false;
             }
         });
@@ -330,9 +336,9 @@ public class FTPActivity extends Activity {
      */
     private void dialogRes(Intent intent){
 
-        Message msg = FTPActivity.handler.obtainMessage();
+        Message msg = FTPActivity.ftpActivityhandler.obtainMessage();
         msg.arg1 = 4;
-        FTPActivity.handler.sendMessage(msg);
+        FTPActivity.ftpActivityhandler.sendMessage(msg);
 
         startService(intent);
 

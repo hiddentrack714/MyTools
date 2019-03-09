@@ -50,9 +50,9 @@ public class FTPService extends Service {
                 if(fTPUtil.ftpLogin()){
                     //获取文件大小
                     FTPActivity.remoteFileSize = fTPUtil.getFileSeize(serverPath,fileName);
-                    Message msg = FTPActivity.handler.obtainMessage();
+                    Message msg = FTPActivity.ftpActivityhandler.obtainMessage();
                     msg.arg1 = 0;
-                    FTPActivity.handler.sendMessage(msg);
+                    FTPActivity.ftpActivityhandler.sendMessage(msg);
                     //开启通知
                     FTPActivity.mBuilder = new NotificationCompat.Builder(FTPActivity.fTPActivity);
 
@@ -81,7 +81,10 @@ public class FTPService extends Service {
 
                 }else{
                     Log.e("FTPService_Log","FTP Login Fail");
-                    ToolsUtil.showToast(FTPActivity.fTPActivity,"FTP登陆失败",2000);
+                    ToolsUtil.showToast(FTPActivity.fTPActivity,"FTP登陆失败,请检查IP或端口号是否正确",2000);
+                    Message msg = FTPActivity.ftpActivityhandler.obtainMessage();
+                    msg.arg1=3;
+                    FTPActivity.ftpActivityhandler.sendMessage(msg);
                 }
             }
         }.start();
@@ -103,7 +106,7 @@ public class FTPService extends Service {
                 while(isFinish){
                     if(file.exists()){
                         Long fileSize = file.length();
-                        Message msg = FTPActivity.handler.obtainMessage();
+                        Message msg = FTPActivity.ftpActivityhandler.obtainMessage();
 
                         if(Long.parseLong(FTPActivity.remoteFileSize) == fileSize){
                             isFinish = false;
@@ -114,7 +117,7 @@ public class FTPService extends Service {
                             msg.arg1 = 2;
                             msg.obj = fileSize;
                         }
-                        FTPActivity.handler.sendMessage(msg);
+                        FTPActivity.ftpActivityhandler.sendMessage(msg);
                         //每隔100毫秒更新一次，不然视图无法正常刷新
                         Thread.sleep(100);
                     }

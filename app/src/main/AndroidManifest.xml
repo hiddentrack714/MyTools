@@ -19,6 +19,8 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_NUMBERS"/>
 
     <application
         android:allowBackup="true"
@@ -92,8 +94,7 @@
         <activity
             android:name=".activity.PwdActivity"
             android:label="PwdActivity"
-            android:theme="@android:style/Theme.Material.Light.NoActionBar"
-            android:windowSoftInputMode="adjustResize"></activity>
+            android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
         <activity
             android:name=".activity.QRCodeActivity"
             android:label="QRCodeActivity"
@@ -102,6 +103,10 @@
             android:name="com.google.zxing.client.android.CaptureActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" />
+        <activity
+            android:name=".activity.PwdEditActivity"
+            android:label="PwdEditActivity"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
 
         <service android:name=".service.CopyService"></service>
         <service android:name=".service.FTPService"></service>
