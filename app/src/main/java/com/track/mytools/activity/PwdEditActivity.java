@@ -1,6 +1,7 @@
 package com.track.mytools.activity;
 
 import android.app.Activity;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import com.track.mytools.R;
 import com.track.mytools.dao.ToolsDao;
 import com.track.mytools.entity.PwdEntity;
 import com.track.mytools.util.DesUtil;
+import com.track.mytools.util.ToolsUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,8 +44,11 @@ public class PwdEditActivity extends Activity {
     @BindView(R.id.pwdEditPsd)
     EditText pwdEditPsd;  //密码
 
-    @BindView(R.id.pwdEditBtn)
-    Button pwdEditBtn;  //确定
+    @BindView(R.id.pwdEditSave)
+    Button pwdEditSave;  //确定
+
+    @BindView(R.id.pwdEditCopy)
+    Button pwdEditCopy;  //复制
 
     @BindView(R.id.pwdEditSee)
     ImageView pwdEditSee;  //显示/隐藏密码
@@ -82,14 +87,18 @@ public class PwdEditActivity extends Activity {
         }
 
         //监听保存按钮
-        pwdEditBtn.setOnClickListener(new View.OnClickListener(){
+        pwdEditSave.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
-                //String pwdIconStr = pwdEditName.getText().toString();
                 String pwdNameStr = pwdEditName.getText().toString();
                 String pwdAccountStr = pwdEditAccount.getText().toString();
                 String pwdPsdStr = pwdEditPsd.getText().toString();
+
+                if("".equals(pwdNameStr)){
+                    ToolsUtil.showToast(PwdEditActivity.this,"名称不能为空",1000);
+                    return;
+                }
 
                 Log.i("PwdEditActivity_Log",pwdNameStr+":"+pwdAccountStr+":"+pwdPsdStr);
 
@@ -125,6 +134,20 @@ public class PwdEditActivity extends Activity {
                     isShowPwd = true;
                 }
 
+            }
+        });
+
+        //监听复制
+        pwdEditCopy.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                String pwdPsdStr = pwdEditPsd.getText().toString();
+
+                ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                cm.setText(pwdPsdStr);
+
+                ToolsUtil.showToast(PwdEditActivity.this,"密码已复制到剪切板",1000);
             }
         });
 

@@ -13,11 +13,14 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -34,6 +37,7 @@ import com.track.mytools.util.ToolsUtil;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -62,6 +66,9 @@ public class PwdActivity extends BaseKeyboardActivity {
     @BindView(R.id.pwdList)
     SwipeMenuListView pwdList;
 
+    @BindView(R.id.pwdSearch)
+    EditText pwdSearch;
+
     public static PwdActivity pwdActivity;
 
     public static List<HashMap<String,Object>> qryList;
@@ -73,6 +80,10 @@ public class PwdActivity extends BaseKeyboardActivity {
     public final static int REQUEST_READ_PHONE_STATE = 0xfa02;
 
     private PwdMainAdapter pwdMainAdapter;
+
+    public static int locationIndex = 0;
+
+    private ArrayList<HashMap<String,Object>> tempList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -383,6 +394,8 @@ public class PwdActivity extends BaseKeyboardActivity {
 
         qryList = ToolsDao.qryTable(sdb,PwdEntity.class,PwdActivity.this);
 
+        tempList = ToolsUtil.deepCopy((ArrayList)qryList);
+
         if(qryList.size() > 0 && !ToolsActivity.useFP){
             ToolsUtil.showToast(PwdActivity.this,"密码本存有密码，但是未启用指纹识别",2000);
         }
@@ -393,6 +406,17 @@ public class PwdActivity extends BaseKeyboardActivity {
 
         pwdList.setAdapter(pwdMainAdapter);
 
+        //修改或添加后，滑动到指定位置
+        if(locationIndex != 0 ){
+            Log.i("PwdActivity_Log","滑动位置:" + locationIndex);
+            if(locationIndex == -1){
+                pwdList.setSelection(qryList.size() - 1);
+            }else {
+                pwdList.setSelection(locationIndex);
+            }
+            locationIndex = 0;
+        }
+
         //点击添加密码区域
         pwdAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -400,6 +424,7 @@ public class PwdActivity extends BaseKeyboardActivity {
                 Intent intent = new Intent();
                 intent.setClass(PwdActivity.this, PwdEditActivity.class);
                 startActivity(intent);
+                locationIndex = -1;
             }
         });
 
@@ -487,6 +512,40 @@ public class PwdActivity extends BaseKeyboardActivity {
                         });
                 // 显示
                 normalDialog.show();
+            }
+        });
+
+
+        pwdSearch.addTextChangedListener(new TextWatcher(){
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String pwdNameStr = s.toString();
+
+                if(!"".equals(pwdNameStr)){
+                    List<HashMap<String,Object>> temp = new ArrayList<HashMap<String,Object>>();
+                    for(HashMap<String,Object> map:tempList){
+                        if(map.get("pwdName").toString().toUpperCase().indexOf(s.toString().toUpperCase())>-1){
+                            temp.add(map);
+                        }
+                    }
+                    qryList.clear();
+                    qryList.addAll(temp);
+                }else{
+                    qryList.clear();
+                    qryList.addAll(tempList);
+                }
+
+                pwdMainAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 

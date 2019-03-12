@@ -80,9 +80,15 @@
         android:layout_height="wrap_content"
         android:gravity="center">
         <Button
-            android:id="@+id/pwdEditBtn"
+            android:id="@+id/pwdEditSave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/bc"/>
+
+        <Button
+            android:id="@+id/pwdEditCopy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fz"/>
     </LinearLayout>
 </LinearLayout>

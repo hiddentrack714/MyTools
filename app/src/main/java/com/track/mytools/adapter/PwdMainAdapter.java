@@ -109,6 +109,7 @@ public class PwdMainAdapter extends BaseAdapter {
                 intent.putExtras(bundle);
                 intent.setClass(PwdActivity.pwdActivity, PwdEditActivity.class);
                 PwdActivity.pwdActivity.startActivity(intent);
+                PwdActivity.locationIndex = position;
             }
         });
 
