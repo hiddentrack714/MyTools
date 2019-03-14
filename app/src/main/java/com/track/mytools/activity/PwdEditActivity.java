@@ -19,7 +19,7 @@ import android.widget.Spinner;
 import com.track.mytools.R;
 import com.track.mytools.dao.ToolsDao;
 import com.track.mytools.entity.PwdEntity;
-import com.track.mytools.util.DesUtil;
+import com.track.mytools.util.AesUtil;
 import com.track.mytools.util.ToolsUtil;
 
 import java.util.ArrayList;
@@ -82,7 +82,7 @@ public class PwdEditActivity extends Activity {
 
             pwdEditName.setText(pwdNameStr);
             pwdEditAccount.setText(pwdAccountStr);
-            pwdEditPsd.setText(DesUtil.desDecrypt(PwdEditActivity.this,pwdPsdStr));
+            pwdEditPsd.setText(AesUtil.aesDecrypt(pwdPsdStr));
             pwdEditIcon.setSelection(getIconIndex(pwdIconStr));
         }
 
@@ -106,7 +106,7 @@ public class PwdEditActivity extends Activity {
                 HashMap<String,Object> map = new HashMap<String,Object>();
                 map.put("pwdName",pwdNameStr);
                 map.put("pwdAccount",pwdAccountStr);
-                map.put("pwdPsd",DesUtil.desEncrypt(PwdEditActivity.this,pwdPsdStr));
+                map.put("pwdPsd", AesUtil.aesEncrypt(pwdPsdStr));
                 map.put("id",id);
                 map.put("pwdIcon",getIconName(pwdEditIcon.getSelectedItemPosition()));
                 ToolsDao.saveOrUpdIgnoreExsit(sqd,map, PwdEntity.class);

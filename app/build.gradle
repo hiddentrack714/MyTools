@@ -7,7 +7,7 @@ android {
         applicationId "com.track.mytools"
         minSdkVersion 25
         targetSdkVersion 27
-        versionCode 51
+        versionCode 52
         versionName "1.14"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -48,4 +48,6 @@ dependencies {
     compile 'com.yanzhenjie:permission:1.0.3'
 
     compile 'com.baoyz.swipemenulistview:library:1.3.0'
+
+    compile group: 'commons-codec', name: 'commons-codec', version: '1.12'
 }

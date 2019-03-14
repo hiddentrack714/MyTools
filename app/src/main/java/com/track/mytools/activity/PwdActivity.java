@@ -30,7 +30,7 @@ import com.track.mytools.R;
 import com.track.mytools.adapter.PwdMainAdapter;
 import com.track.mytools.dao.ToolsDao;
 import com.track.mytools.entity.PwdEntity;
-import com.track.mytools.util.DesUtil;
+import com.track.mytools.util.AesUtil;
 import com.track.mytools.util.ExcelUtil;
 import com.track.mytools.util.ToolsUtil;
 
@@ -62,6 +62,10 @@ public class PwdActivity extends BaseKeyboardActivity {
 
     @BindView(R.id.pwdExpBtn)
     Button pwdExpBtn;//导出(excel)
+
+
+    @BindView(R.id.pwdDelBtn)
+    Button pwdDelBtn;//全删
 
     @BindView(R.id.pwdList)
     SwipeMenuListView pwdList;
@@ -161,7 +165,7 @@ public class PwdActivity extends BaseKeyboardActivity {
                                 //解析成功后开始加密，然后向数据库添加
                                 for(HashMap<String,Object> map:list){
                                     SQLiteDatabase sqd = ToolsDao.getDatabase();
-                                    map.put("pwdPsd",DesUtil.desEncrypt(PwdActivity.this,(String)map.get("pwdPsd")));
+                                    map.put("pwdPsd", AesUtil.aesEncrypt((String)map.get("pwdPsd")));
                                     ToolsDao.saveOrUpdIgnoreExsit(sqd,map,PwdEntity.class);
                                 }
 
@@ -189,7 +193,7 @@ public class PwdActivity extends BaseKeyboardActivity {
 
                             for(HashMap<String,Object> map:list){
                                 if(null != map.get("pwdPsd")){
-                                    map.put("pwdPsd",DesUtil.desDecrypt(PwdActivity.this,map.get("pwdPsd").toString()));
+                                    map.put("pwdPsd",AesUtil.aesDecrypt((String)map.get("pwdPsd")));
                                 }else{
                                     map.put("pwdPsd","");
                                 }
@@ -252,7 +256,7 @@ public class PwdActivity extends BaseKeyboardActivity {
         if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
             pwdActivityMission();
         }else{
-            ToolsUtil.showToast(PwdActivity.this,"请授予权限",2000);
+            ToolsUtil.showToast(PwdActivity.this,"为确保密码加密安全，请授予权限",2000);
             finish();
         }
     }
@@ -375,7 +379,7 @@ public class PwdActivity extends BaseKeyboardActivity {
                 HashMap<String,Object> item = qryList.get(position);
                 String pwdPsd = (String)item.get("pwdPsd");
                 if(pwdPsd!=null){
-                    pwdPsd = DesUtil.desDecrypt(PwdActivity.this,pwdPsd);
+                    pwdPsd = AesUtil.aesDecrypt(pwdPsd);
                 }else{
                     pwdPsd = "";
                 }
@@ -515,7 +519,7 @@ public class PwdActivity extends BaseKeyboardActivity {
             }
         });
 
-
+        //监听搜索内容
         pwdSearch.addTextChangedListener(new TextWatcher(){
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -546,6 +550,40 @@ public class PwdActivity extends BaseKeyboardActivity {
             @Override
             public void afterTextChanged(Editable s) {
 
+            }
+        });
+
+        //监听全部删除
+        pwdDelBtn.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+
+
+                final AlertDialog.Builder normalDialog =
+                        new AlertDialog.Builder(PwdActivity.this);
+                normalDialog.setTitle("选项");
+                normalDialog.setMessage("是否确认全部删除?");
+                normalDialog.setPositiveButton("是",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                SQLiteDatabase sqd = ToolsDao.getDatabase();
+                                ToolsDao.delTable(sqd,PwdEntity.class);
+                                qryList.clear();
+                                pwdMainAdapter.notifyDataSetChanged();
+                            }
+                        });
+                normalDialog.setNegativeButton("否",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+                // 显示
+                normalDialog.show();
             }
         });
 
