@@ -65,8 +65,13 @@ public class ExcelUtil {
 									rowMap.put("pwdAccount", cellValue);
 									break;
 
-								default:
+								case 2:
+
 									rowMap.put("pwdPsd", cellValue);
+									break;
+
+								default:
+									rowMap.put("pwdIcon", getRealVal(cellValue,1));
 									break;
 							}
 						}
@@ -99,12 +104,15 @@ public class ExcelUtil {
 			sheet.addCell(new jxl.write.Label(0, 0, "名称"));
 			sheet.addCell(new jxl.write.Label(1, 0, "账号"));
 			sheet.addCell(new jxl.write.Label(2, 0, "密码"));
+			sheet.addCell(new jxl.write.Label(3, 0, "分类"));
+
 
 			for (int i = 0; i < list.size(); i++) {
 				HashMap<String, Object> map = list.get(i);
 				sheet.addCell(new jxl.write.Label(0, i+1, map.get("pwdName").toString()));
 				sheet.addCell(new jxl.write.Label(1, i+1, map.get("pwdAccount").toString()));
 				sheet.addCell(new jxl.write.Label(2, i+1, map.get("pwdPsd").toString()));
+				sheet.addCell(new jxl.write.Label(3, i+1, getRealVal(map.get("pwdIcon").toString(),0)));
 			}
 			book.write();
 			book.close();
@@ -113,6 +121,37 @@ public class ExcelUtil {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * 根据字母或者汉字获取对应的反向值
+	 *
+	 * @param str
+	 *
+	 * @param flag 0:字母,1:汉字
+	 *
+	 * @return
+	 */
+	public static String getRealVal(String str,int flag){
+		if("出行".equals(str) || "cx".equals(str)){
+			str = flag == 0 ? "出行" : "cx";
+		}else if("购物".equals(str) || "gw".equals(str)){
+			str = flag == 0 ? "购物" : "gw";
+		}else if("金融".equals(str) || "jr".equals(str)){
+			str = flag == 0 ? "金融" : "jr";
+		}else if("游戏".equals(str) || "yx".equals(str)){
+			str = flag == 0 ? "游戏" : "yx";
+		}else if("生活".equals(str) || "sh".equals(str)){
+			str = flag == 0 ? "生活" : "sh";
+		}else if("社交".equals(str) || "sj".equals(str)){
+			str = flag == 0 ? "社交" : "sj";
+		}else if("影视".equals(str) || "ys".equals(str)){
+			str = flag == 0 ? "影视" : "ys";
+		}else{
+			str = flag == 0 ? "其他" : "qt";
+		}
+
+		return str;
 	}
 
 	public static void main(String[] args) {

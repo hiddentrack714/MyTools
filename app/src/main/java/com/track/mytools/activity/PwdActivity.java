@@ -205,6 +205,10 @@ public class PwdActivity extends BaseKeyboardActivity {
                                 if(null == map.get("pwdName")){
                                     map.put("pwdName","");
                                 }
+
+                                if(null == map.get("pwdIcon")){
+                                    map.put("pwdIcon","qt");
+                                }
                             }
 
                             if(ExcelUtil.saveExcel(list,uri.getPath()+"/密码本.xls")){
