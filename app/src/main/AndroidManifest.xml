@@ -37,8 +37,8 @@
         </activity>
         <activity
             android:name=".activity.ToolsActivity"
-            android:label="@string/title_activity_tools"
-            android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
+            android:label="Mytools"
+            android:theme="@android:style/Theme.Material.Light"></activity>
         <activity
             android:name=".activity.SuffixActivity"
             android:label="SuffixActivity"

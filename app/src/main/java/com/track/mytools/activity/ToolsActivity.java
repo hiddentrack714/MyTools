@@ -2,20 +2,29 @@ package com.track.mytools.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.didikee.donate.AlipayDonate;
+import android.didikee.donate.WeiXinDonate;
+import android.graphics.BitmapFactory;
 import android.hardware.fingerprint.FingerprintManager;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.ViewConfiguration;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Switch;
@@ -27,6 +36,9 @@ import com.track.mytools.dao.ToolsDao;
 import com.track.mytools.entity.ToolsEntity;
 import com.track.mytools.util.ToolsUtil;
 
+import java.io.File;
+import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -145,6 +157,22 @@ public class ToolsActivity extends Activity{
         setContentView(R.layout.activity_tools);
 
         ButterKnife.bind(this);
+
+
+        try {
+            ViewConfiguration config = ViewConfiguration.get(this);//得到一个已经设置好设备的显示密度的对象
+            Field menuKeyField = ViewConfiguration.class
+                    .getDeclaredField("sHasPermanentMenuKey");//反射获取其中的方法sHasPermanentMenuKey()，他的作用是报告设备的菜单是否对用户可用，如果不可用可强制可视化。
+            if (menuKeyField != null) {
+                //强制设置参数,让其重绘三个点
+                menuKeyField.setAccessible(true);
+                menuKeyField.setBoolean(config, false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
 
         fingerprintManager = (FingerprintManager) getSystemService(Context.FINGERPRINT_SERVICE);
 
@@ -309,5 +337,85 @@ public class ToolsActivity extends Activity{
     protected void onResume() {
         super.onResume();
         toolsFP.setChecked(useFP);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // 填充menu的main.xml文件; 给action bar添加条目
+        //getMenuInflater().inflate(R.menu.main, menu);
+        menu.add(0, 0, 1, "捐赠");// 相当于在res/menu/main.xml文件中，给menu增加一个新的条目item，这个条目会显示title标签的文字（如备注1）
+        menu.add(0, 1, 2, "说明");//第二个参数代表唯一的item ID.
+        menu.add(0, 2, 3, "关于");
+        return true;
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case 0://捐赠
+
+                final AlertDialog.Builder normalDialog =
+                        new AlertDialog.Builder(this);
+                normalDialog.setTitle("捐赠");
+                normalDialog.setMessage("请选择捐赠渠道");
+//                normalDialog.setPositiveButton("微信",
+//                        new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                donateWeixin();
+//                            }
+//                        });
+                normalDialog.setNegativeButton("支付宝",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                donateAlipay();
+                            }
+                        });
+                // 显示
+                normalDialog.show();
+                return true;
+            case 1://说明
+                AlertDialog.Builder builder2  = new AlertDialog.Builder(this);
+                builder2.setTitle("说明" ) ;
+                builder2.setMessage("xxxxxx\nxxxxxxx\nxxxxxxx\nxxxxxx" ) ;
+                builder2.setPositiveButton("OK" ,  null );
+                builder2.show();
+
+                return true;
+            default://关于
+                AlertDialog.Builder builder3  = new AlertDialog.Builder(this);
+                builder3.setTitle("关于" ) ;
+                builder3.setMessage("当前版本:1.14" ) ;
+                builder3.setPositiveButton("OK" ,  null );
+                builder3.show();
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * 支付宝支付
+     * 收款码后面的字符串；例如：收款二维码里面的字符串为 https://qr.alipay.com/stx00187oxldjvyo3ofaw60 ，则
+     *                payCode = stx00187oxldjvyo3ofaw60
+     *                注：不区分大小写
+     */
+    private void donateAlipay() {
+        boolean hasInstalledAlipayClient = AlipayDonate.hasInstalledAlipayClient(this);
+        if (hasInstalledAlipayClient) {
+            AlipayDonate.startAlipayClient(this, "tsx04946kz1tzqznvwqh3bd");
+        }
+    }
+
+    /**
+     * 需要提前准备好 微信收款码 照片，可通过微信客户端生成
+     */
+    private void donateWeixin() {
+        InputStream weixinQrIs = getResources().openRawResource(R.raw.wechat);
+        String qrPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "AndroidDonateSample" + File.separator +
+                "wechat.png";
+        WeiXinDonate.saveDonateQrImage2SDCard(qrPath, BitmapFactory.decodeStream(weixinQrIs));
+        WeiXinDonate.donateViaWeiXin(this, qrPath);
     }
 }
