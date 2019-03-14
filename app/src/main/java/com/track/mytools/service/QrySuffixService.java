@@ -60,7 +60,7 @@ public class QrySuffixService extends Service {
 
         List<HashMap<String,String>> listType = ToolsUtil.qrySuffixNum(dataMap.get("suffixPath").toString(),dataMap.get("suffixType").toString());
 
-        Log.i("QrySuffixActivity_Log","后缀类型数量:" + listType.size());
+        Log.i("QrySuffixService_Log","后缀类型数量:" + listType.size());
         typeName = new String[listType.size()];
         typeNum = new String[listType.size()];
 
