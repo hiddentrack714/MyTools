@@ -279,7 +279,7 @@ public class FTPActivity extends Activity {
                     dataMap.put("id",map.get("id"));
 
                     ToolsDao.saveOrUpdIgnoreExsit(sdb,dataMap,FTPEntity.class);
-                    ftpUpdBtn.setText("修改");
+                    ftpUpdBtn.setText("修改参数");
                 }
             }
         });

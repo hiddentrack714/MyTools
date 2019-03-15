@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.didikee.donate.AlipayDonate;
@@ -36,8 +37,11 @@ import com.track.mytools.dao.ToolsDao;
 import com.track.mytools.entity.ToolsEntity;
 import com.track.mytools.util.ToolsUtil;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -337,6 +341,9 @@ public class ToolsActivity extends Activity{
     protected void onResume() {
         super.onResume();
         toolsFP.setChecked(useFP);
+        if(AppExtractActivity.intentService != null){
+            stopService(AppExtractActivity.intentService);
+        }
     }
 
 
@@ -359,7 +366,7 @@ public class ToolsActivity extends Activity{
                 final AlertDialog.Builder normalDialog =
                         new AlertDialog.Builder(this);
                 normalDialog.setTitle("捐赠");
-                normalDialog.setMessage("请选择捐赠渠道");
+                normalDialog.setMessage("目前只支持支付宝,谢谢");
 //                normalDialog.setPositiveButton("微信",
 //                        new DialogInterface.OnClickListener() {
 //                            @Override
@@ -379,16 +386,46 @@ public class ToolsActivity extends Activity{
                 return true;
             case 1://说明
                 AlertDialog.Builder builder2  = new AlertDialog.Builder(this);
-                builder2.setTitle("说明" ) ;
-                builder2.setMessage("xxxxxx\nxxxxxxx\nxxxxxxx\nxxxxxx" ) ;
+                builder2.setTitle("说明" );
+
+                BufferedReader br = null;
+                StringBuilder sb = new StringBuilder();
+                try {
+                    br = new BufferedReader(new InputStreamReader(getAssets().open("explain.txt")));
+                    String str;
+                    while((str=br.readLine()) != null) {
+                        sb.append(str);
+                        sb.append("\n");
+                        sb.append("\n");
+                    }
+                }catch (Exception e) {
+                    // TODO: handle exception
+                }finally {
+                    try {
+                        br.close();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+
+                builder2.setMessage(sb.toString()) ;
                 builder2.setPositiveButton("OK" ,  null );
                 builder2.show();
 
                 return true;
             default://关于
                 AlertDialog.Builder builder3  = new AlertDialog.Builder(this);
-                builder3.setTitle("关于" ) ;
-                builder3.setMessage("当前版本:1.14" ) ;
+                builder3.setTitle("关于") ;
+
+                PackageManager pm = getPackageManager();
+                try {
+                    PackageInfo info = pm.getPackageInfo(getPackageName(), 0);
+                    builder3.setMessage(info.versionName);
+                } catch (PackageManager.NameNotFoundException e) {
+
+                }
+
                 builder3.setPositiveButton("OK" ,  null );
                 builder3.show();
                 return super.onOptionsItemSelected(item);

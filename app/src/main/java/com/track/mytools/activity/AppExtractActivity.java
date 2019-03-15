@@ -99,6 +99,9 @@ public class AppExtractActivity extends Activity {
     private final int EX_FILE_PICKER_RESULT = 0xfa01;
     private String startDirectory = null;// 记忆上一次访问的文件目录路径
 
+
+    public static Intent intentService = null;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -160,7 +163,7 @@ public class AppExtractActivity extends Activity {
                     appPath.setEnabled(false);
                     isUpd = false;
                     extractBtn.setEnabled(true);
-                    appUpdBtn.setText("修改");
+                    appUpdBtn.setText("修改参数");
 
                     HashMap<String,Object> m = new HashMap<String,Object>();
                     SQLiteDatabase sqd = ToolsDao.getDatabase();

@@ -102,6 +102,7 @@
     <string name="qxx">取消</string>
     <string name="fx">反选</string>
     <string name="sc">删除</string>
+    <string name="cx">查询</string>
     <!--app提取-->
     <string name="sstj">筛选条件:</string>
     <string name="fxt">非系统</string>

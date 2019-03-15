@@ -223,7 +223,7 @@ public class SuffixActivity extends Activity {
                     dataMap.put("id",map.get("id"));
 
                     ToolsDao.saveOrUpdIgnoreExsit(sdb,dataMap,SuffixEntity.class);
-                    suffixEditBtn.setText("修改");
+                    suffixEditBtn.setText("修改参数");
                     suffixAddBtn.setEnabled(true);
                     suffixDelBtn.setEnabled(true);
                 }
@@ -269,7 +269,9 @@ public class SuffixActivity extends Activity {
             pathMap.put(suffixArrayFilter[i],list);//占位
         }
         List<String> list = new ArrayList<String>();
-        pathMap.put(suffixType,list);
+        if(suffixType != null){
+            pathMap.put(suffixType,list);
+        }
         List<String> list1 = new ArrayList<String>();
         pathMap.put("未知",list1);
     }

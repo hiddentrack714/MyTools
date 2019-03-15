@@ -12,7 +12,7 @@ import com.track.mytools.R;
 import com.track.mytools.activity.QrySuffixActivity;
 import com.track.mytools.activity.SuffixActivity;
 import com.track.mytools.dao.ToolsDao;
-import com.track.mytools.entity.SuffixEntity;
+import com.track.mytools.entity.QrySuffixEntity;
 import com.track.mytools.util.ToolsUtil;
 
 import java.util.ArrayList;
@@ -54,11 +54,11 @@ public class QrySuffixService extends Service {
         }
 
         SQLiteDatabase sdb = ToolsDao.getDatabase();
-        HashMap<String,Object> dataMap = ToolsDao.qryTable(sdb, SuffixEntity.class, QrySuffixActivity.qrySuffixActivity).get(0);
+        HashMap<String,Object> dataMap = ToolsDao.qryTable(sdb, QrySuffixEntity.class, QrySuffixActivity.qrySuffixActivity).get(0);
 
-        SuffixActivity.preMethod(dataMap.get("suffixFilter").toString(),dataMap.get("suffixType").toString());
+        SuffixActivity.preMethod(dataMap.get("qrySuffixStr").toString(),null);
 
-        List<HashMap<String,String>> listType = ToolsUtil.qrySuffixNum(dataMap.get("suffixPath").toString(),dataMap.get("suffixType").toString());
+        List<HashMap<String,String>> listType = ToolsUtil.qrySuffixNum(dataMap.get("qrySuffixPath").toString(),dataMap.get("qrySuffixStr").toString());
 
         Log.i("QrySuffixService_Log","后缀类型数量:" + listType.size());
         typeName = new String[listType.size()];
@@ -74,8 +74,8 @@ public class QrySuffixService extends Service {
         int count = 0;
 
         map=new HashMap<String,String>();       //为避免产生空指针异常，有几列就创建几个map对象
-        map.put("typeName", "当前目录:");
-        map.put("typeNum", dataMap.get("suffixPath").toString());
+        map.put("typeName", "名称");
+        map.put("typeNum", "数量");
         list.add(map);
 
         for(int j=0; j<listType.size(); j++){

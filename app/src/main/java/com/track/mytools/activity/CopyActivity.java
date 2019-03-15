@@ -119,7 +119,7 @@ public class CopyActivity extends Activity {
                     ToolsDao.saveOrUpdIgnoreExsit(sdb,dataMap,CopyEntity.class);
 
                     isUpd = false;
-                    copyUpdBtn.setText("修改");
+                    copyUpdBtn.setText("修改参数");
                     copyUseBtn.setEnabled(true);
                 }
             }

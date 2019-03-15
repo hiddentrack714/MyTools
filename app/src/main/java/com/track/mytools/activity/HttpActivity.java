@@ -364,7 +364,7 @@ public class HttpActivity extends BaseKeyboardActivity{
 
                     isUpd = false;
 
-                    httpUpdBtn.setText("修改");
+                    httpUpdBtn.setText("修改参数");
                     httpDownBtn.setEnabled(true);
                 }
             }

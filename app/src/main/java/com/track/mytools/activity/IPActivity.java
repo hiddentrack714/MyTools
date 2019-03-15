@@ -432,7 +432,7 @@ public class IPActivity extends Activity {
                     staticIp.setEnabled(false);//静态IP
                     staticGateWay.setEnabled(false);//网关
                     staticSuffix.setEnabled(false);//网络前置长度
-                    ipUpdBtn.setText("修改");
+                    ipUpdBtn.setText("修改参数");
 
                     HashMap<String,Object> updMap = new  HashMap<String,Object>();
                     updMap.put("staticIp",staticIp.getText().toString());

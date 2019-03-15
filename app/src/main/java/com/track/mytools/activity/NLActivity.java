@@ -280,7 +280,7 @@ public class NLActivity extends Activity {
 
                     nlClick.setEnabled(false); //只读模式
 
-                    nlUpdBtn.setText("修改");
+                    nlUpdBtn.setText("修改参数");
 
                     isUpd = false;
 
