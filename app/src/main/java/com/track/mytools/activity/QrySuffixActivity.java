@@ -112,11 +112,18 @@ public class QrySuffixActivity extends ListActivity {
 
             @Override
             public void onClick(View v) {
-                Intent intentService = new Intent(QrySuffixActivity.this, QrySuffixService.class);
-
-                startService(intentService);
 
                 suffixMainLayout.setVisibility(View.VISIBLE);
+
+                new Thread(){
+                    @Override
+                    public void run() {
+                        Intent intentService = new Intent(QrySuffixActivity.this, QrySuffixService.class);
+
+                        startService(intentService);
+                    }
+                }.start();
+
             }
         });
 

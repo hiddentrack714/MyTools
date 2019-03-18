@@ -17,7 +17,9 @@ import com.track.mytools.adapter.SuffixMainAdapter;
 import com.track.mytools.util.ToolsUtil;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -259,61 +261,28 @@ public class QrySuffixDetailActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 pos = position;
-                //点击后弹出提示框，是否需要删除当前
-                AlertDialog.Builder ad = new AlertDialog.Builder(qsda);
-                ad.setTitle("确认");
-                ad.setMessage("确定删除[" + SuffixActivity.pathMap.get(useKey).get(pos) + "]吗?");
-                ad.setPositiveButton("是",
-                        new DialogInterface.OnClickListener() {
 
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                Log.i("QrySuffixDetailActivity_Log", "y" + SuffixActivity.pathMap.get(useKey).get(pos));
-                                File file = new File(SuffixActivity.pathMap.get(useKey).get(pos));
-                                file.delete();
-                                if (!file.exists()) {
-                                    Log.i("QrySuffixDetailActivity_Log", "DEL_SUCCESS");
-                                    ToolsUtil.showToast(qsda, "删除成功:" + SuffixActivity.pathMap.get(useKey).get(pos), 2000);
-                                    //删除完成后，刷新当前listview
-                                    //ToolsUtil.pathMap.get(useKey).remove(pos);
-                                    ArrayList tempL = (ArrayList) tempList.clone();//克隆一个新的集合
-                                    tempL.remove(pos);
-                                    tempList.clear();
-                                    tempList.addAll(tempL);
-                                    mainAdapter.notifyDataSetChanged();
+                String filePath = SuffixActivity.pathMap.get(useKey).get(pos);
 
-                                    //fix 删除当前的listview的集合后，还要删除之前全集合
-                                    SuffixActivity.pathMap.get(useKey).remove(pos);
+                File f = new File(filePath);
 
-                                    //fix 删除当前的子集合刷新后，还要刷新母集合显示的数量
-                                    ArrayList<HashMap<String, String>> mainTempL = (ArrayList<HashMap<String, String>>) QrySuffixActivity.list.clone();//克隆一个新的集合
-                                    for (HashMap<String, String> map : mainTempL) {
-                                        String tempKey = map.get("typeName");
-                                        if (key.equalsIgnoreCase(tempKey) || "合计".equalsIgnoreCase(tempKey)) {
-                                            //找到当前后缀的数量集合
-                                            int tempI = Integer.parseInt(map.get("typeNum"));
-                                            Log.i("QrySuffixDetailActivity_Log", key + ":" + tempI);
-                                            map.put("typeNum", (tempI - 1) + "");
-                                            // break;
-                                        }
-                                    }
-                                    QrySuffixActivity.list.clear();
-                                    QrySuffixActivity.list.addAll(mainTempL);
-                                    QrySuffixActivity.adapter.notifyDataSetChanged();
-                                } else {
-                                    Log.i("QrySuffixDetailActivity_Log", "DEL_FAIL");
-                                    ToolsUtil.showToast(qsda, "删除失败:" + SuffixActivity.pathMap.get(useKey).get(pos), 2000);
-                                }
-                            }
-                        });
-                ad.setNegativeButton("否", new DialogInterface.OnClickListener() {
+                Calendar cal = Calendar.getInstance();
 
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        Log.i("QrySuffixDetailActivity_Log", "n" + SuffixActivity.pathMap.get(useKey).get(pos));
-                    }
-                });
-                ad.show();
+                cal.setTimeInMillis(f.lastModified());
+
+                AlertDialog.Builder builder  = new AlertDialog.Builder(QrySuffixDetailActivity.this);
+
+                builder.setTitle("文件详情");
+
+                String content = "文件大小: " + AppExtractActivity.countFileSize(filePath) + "\n\n" +
+                                 "修改时间: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime()) + "\n\n" +
+                                 "是否隐藏: " + (f.isHidden() == false ? "否" : "是") + "\n\n" +
+                                 "是否可读: " + (f.canRead() == false ? "否" : "是") + "\n\n" +
+                                 "是否可写: " + (f.canWrite() == false ? "否" : "是") + "\n\n";
+
+                builder.setMessage(content) ;
+                builder.setPositiveButton("OK" ,  null );
+                builder.show();
             }
         });
 
