@@ -13,6 +13,7 @@
             android:orientation="horizontal"
             android:layout_marginTop="5dp">
              <TextView
+                 android:id="@+id/qrTitle"
                  android:layout_width="wrap_content"
                  android:layout_height="wrap_content"
                  android:text="内容:"/>
@@ -49,9 +50,11 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/qrLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center">
+            android:gravity="center"
+            android:layout_gravity="center">
             <ImageView
                 android:id="@+id/qrImg"
                 android:layout_width="230dp"

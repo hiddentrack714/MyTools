@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -19,9 +20,13 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.Result;
@@ -62,6 +67,12 @@ public class QRCodeActivity extends Activity {
     @BindView(R.id.qrSaveBtn)
     Button qrSaveBtn;
 
+    @BindView(R.id.qrTitle)
+    TextView qrTitle;
+
+    @BindView(R.id.qrLayout)
+    LinearLayout qrLayout;
+
     private final int EX_FILE_PICKER_RESULT = 0xfa01;
     private String startDirectory = null;// 记忆上一次访问的文件目录路径
 
@@ -75,6 +86,13 @@ public class QRCodeActivity extends Activity {
     private static final String DECODED_BITMAP_KEY = "codedBitmap";
 
     private boolean flag;
+
+    private boolean isClick = false;
+
+    private static int width = 0;
+    private static int height = 0;
+
+    private static int lightNum;  //屏幕亮度
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -198,6 +216,59 @@ public class QRCodeActivity extends Activity {
             }
         });
 
+        //监听点击二维码图片
+        qrImg.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+
+                if(isClick == false){
+                    qrGenBtn.setVisibility(View.GONE);
+                    qrAnaBtn.setVisibility(View.GONE);
+                    qrScanBtn.setVisibility(View.GONE);
+                    qrSaveBtn.setVisibility(View.GONE);
+                    qrTitle.setVisibility(View.GONE);
+                    qrContent.setVisibility(View.GONE);
+
+                    width = qrImg.getWidth();
+                    height = qrImg.getHeight();
+
+                    qrLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.MATCH_PARENT));
+
+                    qrImg.setLayoutParams(new LinearLayout.LayoutParams(width/100*150,
+                            height/100*150));
+
+                    isClick = true;
+
+                    lightNum = getScreenBrightness();
+
+                    setScreenBrightness(255);
+
+                }else{
+                    qrGenBtn.setVisibility(View.VISIBLE);
+                    qrAnaBtn.setVisibility(View.VISIBLE);
+                    qrScanBtn.setVisibility(View.VISIBLE);
+                    qrSaveBtn.setVisibility(View.VISIBLE);
+                    qrTitle.setVisibility(View.VISIBLE);
+                    qrContent.setVisibility(View.VISIBLE);
+
+                    Log.i("123",width+":"+height);
+
+                    qrLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT));
+
+                    qrImg.setLayoutParams(new LinearLayout.LayoutParams(width,
+                            height));
+
+                    isClick = false;
+
+                    setScreenBrightness(lightNum);
+                }
+
+            }
+        });
+
     }
 
     @Override
@@ -300,5 +371,30 @@ public class QRCodeActivity extends Activity {
                 break;
             default:
         }
+    }
+
+    /**
+     * 获得当前屏幕亮度值  0--255
+     */
+    private int getScreenBrightness(){
+        int screenBrightness=255;
+        try{
+            screenBrightness = Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
+        }
+        catch (Exception localException){
+
+        }
+        return screenBrightness;
+    }
+
+    /**
+     * 保存当前的屏幕亮度值，并使之生效
+     */
+    private void setScreenBrightness(int paramInt){
+        Window localWindow = getWindow();
+        WindowManager.LayoutParams localLayoutParams = localWindow.getAttributes();
+        float f = paramInt / 255.0F;
+        localLayoutParams.screenBrightness = f;
+        localWindow.setAttributes(localLayoutParams);
     }
 }

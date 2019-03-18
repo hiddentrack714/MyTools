@@ -46,8 +46,7 @@
         <activity
             android:name=".activity.QrySuffixActivity"
             android:label="QrySuffixActivity"
-            android:theme="@android:style/Theme.Material.Light.NoActionBar"
-            android:windowSoftInputMode = "stateAlwaysHidden | adjustPan"></activity>
+            android:theme="@android:style/Theme.Material.Light.NoActionBar"></activity>
         <activity
             android:name=".activity.QrySuffixDetailActivity"
             android:label="QrySuffixDetailActivity"
