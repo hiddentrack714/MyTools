@@ -72,7 +72,8 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:src="@drawable/hp"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:contentDescription="@string/nr"/>
     </LinearLayout>
 
     <LinearLayout
@@ -83,12 +84,13 @@
             android:id="@+id/pwdEditSave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/bc"/>
-
+            android:text="@string/bc"
+            style="?android:attr/buttonStyle"/>
         <Button
             android:id="@+id/pwdEditCopy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/fz"/>
+            android:text="@string/fz"
+            style="?android:attr/buttonStyle"/>
     </LinearLayout>
 </LinearLayout>

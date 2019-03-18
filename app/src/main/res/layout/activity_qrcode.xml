@@ -16,7 +16,7 @@
                  android:id="@+id/qrTitle"
                  android:layout_width="wrap_content"
                  android:layout_height="wrap_content"
-                 android:text="内容:"/>
+                 android:text="@string/nr"/>
              <EditText
                  android:id="@+id/qrContent"
                  android:layout_width="match_parent"
@@ -25,7 +25,8 @@
                  android:scrollbars="vertical"
                  android:minLines="7"
                  android:maxLines="7"
-                 android:gravity="top"/>
+                 android:gravity="top"
+                 android:inputType="text"/>
         </LinearLayout>
 
         <LinearLayout
@@ -36,17 +37,20 @@
                 android:id="@+id/qrScanBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="扫描二维码"/>
+                android:text="@string/smewm"
+                style="?android:attr/buttonStyle"/>
             <Button
                 android:id="@+id/qrGenBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="生成二维码"/>
+                android:text="@string/scewm"
+                style="?android:attr/buttonStyle"/>
             <Button
                 android:id="@+id/qrAnaBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="解析二维码"/>
+                android:text="@string/jxewm"
+                style="?android:attr/buttonStyle"/>
         </LinearLayout>
 
         <LinearLayout
@@ -59,7 +63,8 @@
                 android:id="@+id/qrImg"
                 android:layout_width="230dp"
                 android:layout_height="230dp"
-                android:src="@drawable/android_robot"/>
+                android:src="@drawable/android_robot"
+                android:contentDescription="@string/nr"/>
         </LinearLayout>
 
     <LinearLayout
@@ -70,8 +75,9 @@
             android:id="@+id/qrSaveBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="保存二维码"
-            android:enabled="false"/>
+            android:text="@string/bcewm"
+            android:enabled="false"
+            style="?android:attr/buttonStyle"/>
     </LinearLayout>
 
 </LinearLayout>

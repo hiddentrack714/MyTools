@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_marginLeft="5dp">
+    android:layout_marginStart="5dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,7 +16,8 @@
             android:layout_height="wrap_content"
             android:hint="@string/ssmc"
             android:gravity="center"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            android:inputType="text"/>
     </LinearLayout>
 
     <com.baoyz.swipemenulistview.SwipeMenuListView
@@ -34,22 +35,26 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:text="@string/tj"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            style="?android:attr/buttonStyle"/>
         <Button android:id="@+id/pwdLeadBtn"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:text="@string/dr"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            style="?android:attr/buttonStyle"/>
         <Button android:id="@+id/pwdExpBtn"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:text="@string/dc"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            style="?android:attr/buttonStyle"/>
         <Button android:id="@+id/pwdDelBtn"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:text="@string/qs"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            style="?android:attr/buttonStyle"/>
     </LinearLayout>
 
 </LinearLayout>

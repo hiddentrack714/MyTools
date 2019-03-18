@@ -137,6 +137,12 @@
     <string name="dr">导入</string>
     <string name="dc">导出</string>
     <string name="qs">全删</string>
+    <!--二维码-->
+    <string name="nr">内容:</string>
+    <string name="smewm">扫描二维码</string>
+    <string name="scewm">生成二维码</string>
+    <string name="jxewm">解析二维码</string>
+    <string name="bcewm">保存二维码</string>
 
 
     <!--<string name="app_name">Barcode Scanner</string>-->
