@@ -38,8 +38,9 @@
             android:enabled="false"
             android:background="@drawable/shape"
             android:scrollbars="vertical"
-            android:minLines="3"
-            android:maxLines="3"/>
+            android:minLines="4"
+            android:maxLines="4"
+            android:gravity="top"/>
     </LinearLayout>
 
     <LinearLayout
