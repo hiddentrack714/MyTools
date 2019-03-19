@@ -101,9 +101,9 @@ public class HttpActivity extends BaseKeyboardActivity{
 
     private static List<ConcurrentHashMap<String,Object>> l = new ArrayList<ConcurrentHashMap<String,Object>>();
 
-    private static Boolean isSingle = false; // 是否采用单文件下载标识，默认为不采用
+    private Boolean isSingle = false; // 是否采用单文件下载标识，默认为不采用
 
-    private static boolean isUpd = false;
+    private boolean isUpd = false;
 
     private final int EX_FILE_PICKER_RESULT = 0xfa01;
     private String startDirectory = null;// 记忆上一次访问的文件目录路径

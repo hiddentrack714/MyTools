@@ -19,8 +19,11 @@
     <string name="t12">App提取</string>
     <string name="t13">密码本</string>
     <string name="t14">二维码</string>
-    <string name="f1">指纹验证关闭</string>
-    <string name="f2">指纹验证启动</string>
+    <string name="f1">是否启用指纹</string>
+    <string name="f2"></string>
+    <string name="f3">是否隐藏无法使用的功能</string>
+    <string name="f4"></string>
+
     <!--公共-->
     <string name="xg">修改参数</string>
     <string name="off">off</string>

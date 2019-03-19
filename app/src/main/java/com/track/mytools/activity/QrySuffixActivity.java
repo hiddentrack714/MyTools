@@ -69,7 +69,7 @@ public class QrySuffixActivity extends ListActivity {
 
     public static Handler qrySuffixActivityHandler;
 
-    private static boolean isUpd = false;
+    private boolean isUpd = false;
 
     private final int EX_FILE_PICKER_RESULT = 0xfa01;
     private String startDirectory = null;// 记忆上一次访问的文件目录路径
@@ -139,6 +139,8 @@ public class QrySuffixActivity extends ListActivity {
 
                     qrySuffixUpd.setText("修改参数");
 
+                    qrySuffixBtn.setEnabled(true);
+
                     SQLiteDatabase sqd = ToolsDao.getDatabase();
                     HashMap<String,Object> map = new HashMap<String,Object>();
                     map.put("id",dataMap.get("id"));
@@ -153,6 +155,8 @@ public class QrySuffixActivity extends ListActivity {
                     isUpd = true;
 
                     qrySuffixUpd.setText("完成");
+
+                    qrySuffixBtn.setEnabled(false);
                 }
 
             }

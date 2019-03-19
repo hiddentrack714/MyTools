@@ -69,7 +69,7 @@ public class SuffixActivity extends Activity {
 
     public static String[] suffixArrayFilter;   //过滤的后缀名数组
 
-    private static boolean isUpd = false; //是否在修改中
+    private boolean isUpd = false; //是否在修改中
 
     public static int dealFileNum = 0;   //处理文件总数量
     public static int finshFileNum = 0;  //处理完成的数量

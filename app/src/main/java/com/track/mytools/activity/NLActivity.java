@@ -80,7 +80,7 @@ public class NLActivity extends Activity {
 
     private static boolean isStart = false; // 服务是否启动
     private static boolean isNow;   // 是否是成熟日当天
-    private static boolean isUpd= false;   // 是否修改中
+    private boolean isUpd= false;   // 是否修改中
 
     private int hourInt;
     private int minuteInt;

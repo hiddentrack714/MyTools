@@ -25,7 +25,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewConfiguration;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Switch;
@@ -42,7 +41,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -60,12 +58,17 @@ public class ToolsActivity extends Activity{
     @BindView(R.id.toolsFP)
     Switch toolsFP;
 
+    @BindView(R.id.toolsUse)
+    Switch toolsUse;
+
     @BindView(R.id.toolsList)
     ListView toolsList;
 
     public static boolean useFP;//是否开启指纹
 
     public static boolean passFP = false;//是否通过指纹验证
+
+    private static String isRoot = null;
 
     //两个危险权限需要动态申请
     private static final String[] NEEDED_PERMISSIONS = new String[]{
@@ -162,22 +165,6 @@ public class ToolsActivity extends Activity{
 
         ButterKnife.bind(this);
 
-
-        try {
-            ViewConfiguration config = ViewConfiguration.get(this);//得到一个已经设置好设备的显示密度的对象
-            Field menuKeyField = ViewConfiguration.class
-                    .getDeclaredField("sHasPermanentMenuKey");//反射获取其中的方法sHasPermanentMenuKey()，他的作用是报告设备的菜单是否对用户可用，如果不可用可强制可视化。
-            if (menuKeyField != null) {
-                //强制设置参数,让其重绘三个点
-                menuKeyField.setAccessible(true);
-                menuKeyField.setBoolean(config, false);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-
         fingerprintManager = (FingerprintManager) getSystemService(Context.FINGERPRINT_SERVICE);
 
         //检测是否存在指纹模块
@@ -189,6 +176,15 @@ public class ToolsActivity extends Activity{
             ToolsUtil.showToast(ToolsActivity.this,"当前手机未启用指纹，无法使用指纹验证",2000);
         }else{
             toolsFP.setChecked(useFP);
+        }
+
+
+        String isHide = ToolsUtil.getProperties("isHide");
+
+        if(isHide == null || "n".equalsIgnoreCase(isHide)){
+            toolsUse.setChecked(false);
+        }else{
+            toolsUse.setChecked(true);
         }
 
         //检测是否是非法页面跳转
@@ -230,17 +226,37 @@ public class ToolsActivity extends Activity{
 
             map.put("btnValue",resMap.get(btnName).get("btnValue"));
             map.put("btnId",resMap.get(btnName).get("btnId"));
-            map.put("id",i);
+
+            //删除未启用的功能
             if("n".equalsIgnoreCase(btnUse)){
                 passList.add(j);
                 Log.i("ToolsActivity_Log","去除功能:" + btnName);
-            }else {
-                i++;
+            }
+
+            //删除不可用的功能
+            if("y".equalsIgnoreCase(isHide)){
+
+                String needRoot = map.get("needRoot").toString();
+                String needYC = map.get("needYC").toString();
+
+                if(isRoot == null){
+                    isRoot = (ToolsUtil.hasRoot() == true ? "y" : "n");
+                }
+
+                if("n".equals(isRoot) && "y".equalsIgnoreCase(needRoot)){
+                    passList.add(j);
+                }
+
+                if(!ToolsUtil.hasYC()  && "y".equalsIgnoreCase(needYC)){
+                    passList.add(j);
+                }
             }
         }
 
+        //倒叙，防止删除时，集合顺序改变
         Collections.reverse(passList);
 
+        //删除不展示的功能
         for(Integer x:passList){
             list.remove(x.intValue());
         }
@@ -265,7 +281,21 @@ public class ToolsActivity extends Activity{
                     useFP = false;
                     strVal = "n";
                 }
-                ToolsUtil.setProperties(strVal);
+                ToolsActivity.useFP = "y".equalsIgnoreCase(strVal) ? true : false;
+                ToolsUtil.setProperties("isUseFinIdMou",strVal);
+            }
+        });
+
+
+        //监听是否隐藏
+        toolsUse.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if(isChecked){
+                        ToolsUtil.setProperties("isHide","y");
+                    }else{
+                        ToolsUtil.setProperties("isHide","n");
+                    }
             }
         });
     }
@@ -421,7 +451,7 @@ public class ToolsActivity extends Activity{
                 PackageManager pm = getPackageManager();
                 try {
                     PackageInfo info = pm.getPackageInfo(getPackageName(), 0);
-                    builder3.setMessage(info.versionName);
+                    builder3.setMessage(info.versionName+" ("+info.versionCode+")");
                 } catch (PackageManager.NameNotFoundException e) {
 
                 }

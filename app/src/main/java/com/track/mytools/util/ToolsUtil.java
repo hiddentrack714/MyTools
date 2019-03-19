@@ -17,8 +17,10 @@ import com.track.mytools.exception.HttpException;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
@@ -647,15 +649,18 @@ public class ToolsUtil {
 
     /**
      * 设置properties
+     * @param strKey
      * @param strVal
      */
-    public static void setProperties(String strVal){
+    public static void setProperties(String strKey,String strVal){
         FileOutputStream oFile = null;
-        ToolsActivity.useFP = "y".equalsIgnoreCase(strVal) ? true : false;
         try{
-            oFile = new FileOutputStream(new File(String.valueOf(AssetsEnum.ASSETS_PROPERTIES_PATH)));
             Properties p = new Properties();
-            p.setProperty("isUseFinIdMou", strVal);
+            Reader s = new FileReader(String.valueOf(AssetsEnum.ASSETS_PROPERTIES_PATH));
+            p.load(s);
+
+            oFile = new FileOutputStream(new File(String.valueOf(AssetsEnum.ASSETS_PROPERTIES_PATH)));
+            p.setProperty(strKey, strVal);
             p.store(oFile, "");
         }catch(Exception e){
 
@@ -668,6 +673,23 @@ public class ToolsUtil {
                 }
             }
         }
+    }
+
+    /**
+     * 获取properties中的值
+     * @param strVal
+     */
+    public static String getProperties(String strVal){
+        Properties properties = new Properties();
+        try {
+            //以字符流的返回时读取properties
+            Reader s = new FileReader(String.valueOf(AssetsEnum.ASSETS_PROPERTIES_PATH));
+            properties.load(s);
+            return (String)properties.get(strVal);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

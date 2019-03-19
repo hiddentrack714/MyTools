@@ -49,11 +49,11 @@ public class CopyActivity extends Activity {
 
     public static String saveFile;//文件保存位置
 
-    private static boolean isStart = false; //是否开始监听服务
+    private boolean isStart = false; //是否开始监听服务
 
     public static ClipboardManager cm;
 
-    private static boolean isUpd = false; //判断是否修改中
+    private boolean isUpd = false; //判断是否修改中
 
     private final int EX_FILE_PICKER_RESULT = 0xfa01;
     private String startDirectory = null;// 记忆上一次访问的文件目录路径

@@ -12,3 +12,4 @@
 12,密码本:密码采用AES手机信息密钥加密，存储在应用数据库中。相同密码不同手机，加密结果不同。手机必须支持指纹识别才可以使用该功能
 13,二维码:扫描，生成和解析二维码
 文件选择器采用开源软件:https://github.com/bartwell/ExFilePicker
+列表滑动采用开源软件:https://github.com/baoyongzhang/SwipeMenuListView

@@ -86,7 +86,7 @@ public class FTPActivity extends Activity {
 
     public static NotificationCompat.Builder mBuilder;
 
-    private static boolean isUpd = false; // 是否修改中
+    private boolean isUpd = false; // 是否修改中
 
     private final int EX_FILE_PICKER_RESULT = 0xfa01;
     private String startDirectory = null;// 记忆上一次访问的文件目录路径

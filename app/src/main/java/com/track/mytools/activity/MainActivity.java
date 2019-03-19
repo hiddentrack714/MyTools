@@ -29,10 +29,8 @@ import com.track.mytools.util.ToolsUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -70,9 +68,7 @@ public class MainActivity extends Activity {
         //加载初始文件
         Properties pro = new Properties();
         try{
-            pro = loadConfig(this, String.valueOf(AssetsEnum.ASSETS_PROPERTIES_PATH));
-
-            String isUseFinIdMou = pro.getProperty("isUseFinIdMou");
+            String isUseFinIdMou = ToolsUtil.getProperties("isUseFinIdMou");
 
             Log.i("MainActivity_Log","是否开启指纹:" + isUseFinIdMou);
 
@@ -94,7 +90,7 @@ public class MainActivity extends Activity {
                     setContentView(R.layout.activity_main);
                     ButterKnife.bind(this);
                     checkFiger();
-                    ToolsUtil.setProperties("y");
+                    ToolsUtil.setProperties("isUseFinIdMou","y");
 
                     ToolsUtil.showToast(this,"密码本存有密码,为保障安全,需要进行指纹识别!",2000);
                 }else{
@@ -165,24 +161,6 @@ public class MainActivity extends Activity {
 
         }
 
-    }
-
-    /**
-     * 加载properties
-     * @param context
-     * @param file
-     * @return
-     */
-    public Properties loadConfig(Context context, String file) {
-        Properties properties = new Properties();
-        try {
-            //以字符流的返回时读取properties
-            Reader s = new FileReader(file);
-            properties.load(s);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return properties;
     }
 
     /**

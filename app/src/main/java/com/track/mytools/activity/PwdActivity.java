@@ -169,7 +169,7 @@ public class PwdActivity extends BaseKeyboardActivity {
                                     ToolsDao.saveOrUpdIgnoreExsit(sqd,map,PwdEntity.class);
                                 }
 
-                                ToolsUtil.setProperties("y");
+                                ToolsUtil.setProperties("isUseFinIdMou","y");
                                 ToolsActivity.useFP = true;
                                 //默认为识别成功，防止未退出应用再次进入该界面时报错
                                 ToolsActivity.passFP = true;
