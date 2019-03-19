@@ -288,10 +288,12 @@ public class ToolsActivity extends Activity{
                     //开启
                     useFP = true;
                     strVal = "y" ;
+                    passFP = true;
                 }else {
                     //关闭
                     useFP = false;
                     strVal = "n";
+                    passFP = false;
                 }
                 ToolsActivity.useFP = "y".equalsIgnoreCase(strVal) ? true : false;
                 ToolsUtil.setProperties("isUseFinIdMou",strVal);
