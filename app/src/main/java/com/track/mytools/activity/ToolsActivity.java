@@ -250,6 +250,18 @@ public class ToolsActivity extends Activity{
                 if(!ToolsUtil.hasYC()  && "y".equalsIgnoreCase(needYC)){
                     passList.add(j);
                 }
+
+                if(!ToolsActivity.fingerprintManager.isHardwareDetected()){
+                    if("pwdBtn".equals(btnName)){
+                        passList.add(j);
+                    }
+                }else{
+                    if(!ToolsActivity.fingerprintManager.hasEnrolledFingerprints()){
+                        if("pwdBtn".equals(btnName)){
+                            passList.add(j);
+                        }
+                    }
+                }
             }
         }
 
