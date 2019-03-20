@@ -58,41 +58,46 @@ public class QrySuffixService extends Service {
 
         SuffixActivity.preMethod(dataMap.get("qrySuffixStr").toString(),null);
 
-        List<HashMap<String,String>> listType = ToolsUtil.qrySuffixNum(dataMap.get("qrySuffixPath").toString(),dataMap.get("qrySuffixStr").toString());
+        QrySuffixActivity.qrySuffixActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                List<HashMap<String,String>> listType = ToolsUtil.qrySuffixNum(dataMap.get("qrySuffixPath").toString(),dataMap.get("qrySuffixStr").toString());
 
-        Log.i("QrySuffixService_Log","后缀类型数量:" + listType.size());
-        typeName = new String[listType.size()];
-        typeNum = new String[listType.size()];
+                Log.i("QrySuffixService_Log","后缀类型数量:" + listType.size());
+                typeName = new String[listType.size()];
+                typeNum = new String[listType.size()];
 
-        for (int i = 0; i<listType.size(); i++){
-            typeName[i] = listType.get(i).get("TYPE");
-            typeNum[i] = listType.get(i).get("NUM");
-        }
+                for (int i = 0; i<listType.size(); i++){
+                    typeName[i] = listType.get(i).get("TYPE");
+                    typeNum[i] = listType.get(i).get("NUM");
+                }
 
-        list=new ArrayList<HashMap<String,String>>();
+                list=new ArrayList<HashMap<String,String>>();
 
-        int count = 0;
+                int count = 0;
 
-        map=new HashMap<String,String>();       //为避免产生空指针异常，有几列就创建几个map对象
-        map.put("typeName", "名称");
-        map.put("typeNum", "数量");
-        list.add(map);
+                map=new HashMap<String,String>();       //为避免产生空指针异常，有几列就创建几个map对象
+                map.put("typeName", "名称");
+                map.put("typeNum", "数量");
+                list.add(map);
 
-        for(int j=0; j<listType.size(); j++){
-            map=new HashMap<String,String>();       //为避免产生空指针异常，有几列就创建几个map对象
-            map.put("typeName", typeName[j]);
-            map.put("typeNum", typeNum[j]);
-            count = count + Integer.parseInt(typeNum[j]);
-            list.add(map);
-        }
+                for(int j=0; j<listType.size(); j++){
+                    map=new HashMap<String,String>();       //为避免产生空指针异常，有几列就创建几个map对象
+                    map.put("typeName", typeName[j]);
+                    map.put("typeNum", typeNum[j]);
+                    count = count + Integer.parseInt(typeNum[j]);
+                    list.add(map);
+                }
 
-        map=new HashMap<String,String>();       //为避免产生空指针异常，有几列就创建几个map对象
-        map.put("typeName", "合计");
-        map.put("typeNum", count+"");
-        list.add(map);
+                map=new HashMap<String,String>();       //为避免产生空指针异常，有几列就创建几个map对象
+                map.put("typeName", "合计");
+                map.put("typeNum", count+"");
+                list.add(map);
 
-        Message msg = QrySuffixActivity.qrySuffixActivityHandler.obtainMessage();
-        QrySuffixActivity.qrySuffixActivityHandler.sendMessage(msg);
-        stopSelf();
+                Message msg = QrySuffixActivity.qrySuffixActivityHandler.obtainMessage();
+                QrySuffixActivity.qrySuffixActivityHandler.sendMessage(msg);
+                stopSelf();
+            }
+        });
     }
 }

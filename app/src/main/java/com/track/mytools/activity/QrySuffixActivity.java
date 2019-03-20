@@ -55,6 +55,9 @@ public class QrySuffixActivity extends ListActivity {
     @BindView(R.id.suffixMainLayout)
     LinearLayout suffixMainLayout;
 
+    @BindView(R.id.suffixListLayout)
+    LinearLayout suffixListLayout;
+
     @BindView(R.id.qrySuffixPath)
     EditText qrySuffixPath;
 
@@ -92,6 +95,12 @@ public class QrySuffixActivity extends ListActivity {
 
                 suffixMainLayout.setVisibility(View.GONE);
 
+                suffixListLayout.setVisibility(View.VISIBLE);
+
+                qrySuffixBtn.setEnabled(true);
+
+                qrySuffixUpd.setEnabled(true);
+
                 list = QrySuffixService.list;
 
                 //创建一个SimpleAdapter对象
@@ -113,17 +122,17 @@ public class QrySuffixActivity extends ListActivity {
             @Override
             public void onClick(View v) {
 
+                qrySuffixBtn.setEnabled(false);
+
+                qrySuffixUpd.setEnabled(false);
+
                 suffixMainLayout.setVisibility(View.VISIBLE);
 
-                new Thread(){
-                    @Override
-                    public void run() {
-                        Intent intentService = new Intent(QrySuffixActivity.this, QrySuffixService.class);
+                suffixListLayout.setVisibility(View.GONE);
 
-                        startService(intentService);
-                    }
-                }.start();
+                Intent intentService = new Intent(QrySuffixActivity.this, QrySuffixService.class);
 
+                startService(intentService);
             }
         });
 

@@ -281,18 +281,18 @@ public class ToolsUtil {
                         if(temp){
                             HashMap<String,Object> map = checkTypeIn(SuffixActivity.list,suType);
 
-                            Log.i("xxxxxxxx",fileName +"---"+map.get("FLAG"));
+                            //Log.i("xxxxxxxx",fileName +"---"+map.get("FLAG"));
 
                             if((Boolean) map.get("FLAG")){
                                 //已存在，直接拿出来+1,在塞回去
-                                Log.i("ch","更新:" + suType);
+                                //Log.i("ch","更新:" + suType);
                                 int listNo = Integer.parseInt(map.get("NO")+"");
                                 int nowNum = Integer.parseInt(SuffixActivity.list.get(listNo).get("NUM")) + 1;
-                                Log.i("ch",suType+"更新后:" + nowNum);
+                                //Log.i("ch",suType+"更新后:" + nowNum);
                                 SuffixActivity.list.get(listNo).put("NUM",nowNum+"");
                             }else{
                                 //还不存在,新建MAP
-                                Log.i("ch","新建:" + suType.toLowerCase());
+                                //Log.i("ch","新建:" + suType.toLowerCase());
                                 HashMap<String,String> newMap = new  HashMap<String,String>();
                                 newMap.put("TYPE",suType.toLowerCase());
                                 newMap.put("NUM",1+"");
@@ -307,7 +307,7 @@ public class ToolsUtil {
                                 //存在
                                 int listNo = Integer.parseInt(map.get("NO")+"");
                                 int nowNum = Integer.parseInt(SuffixActivity.list.get(listNo).get("NUM")) + 1;
-                                Log.i("ch","未知.更新后:" + nowNum);
+                                //Log.i("ch","未知.更新后:" + nowNum);
                                 SuffixActivity.list.get(listNo).put("NUM",nowNum+"");
                             }else{
                                 //不存在
@@ -327,7 +327,7 @@ public class ToolsUtil {
                             //存在
                             int listNo = Integer.parseInt(map.get("NO")+"");
                             int nowNum = Integer.parseInt(SuffixActivity.list.get(listNo).get("NUM")) + 1;
-                            Log.i("ch","更新后:" + nowNum);
+                            //Log.i("ch","更新后:" + nowNum);
                             SuffixActivity.list.get(listNo).put("NUM",nowNum+"");
                         }else{
                             //不存在
@@ -342,7 +342,7 @@ public class ToolsUtil {
                 }
             }
         }else{
-            Log.i("su1","当前路径不是目录");
+            //Log.i("su1","当前路径不是目录");
         }
 
         return SuffixActivity.list;
