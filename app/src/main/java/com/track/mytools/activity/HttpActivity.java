@@ -197,6 +197,15 @@ public class HttpActivity extends BaseKeyboardActivity{
                     return;
                 }
 
+                if("".equals(httpSuff.getText().toString())){
+                    ToolsUtil.showToast(HttpActivity.this,"文件后缀不能为空",2000);
+                    return;
+                }
+
+                if("".equals(httpPath.getText().toString())){
+                    ToolsUtil.showToast(HttpActivity.this,"下载地址不能为空",2000);
+                    return;
+                }
 
                 URL = httpUrl.getText().toString();   //http连接
                 THREAD_NUM = Integer.parseInt(httpThread.getText().toString());//线程数量

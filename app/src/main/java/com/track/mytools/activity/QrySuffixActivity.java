@@ -22,6 +22,7 @@ import com.track.mytools.R;
 import com.track.mytools.dao.ToolsDao;
 import com.track.mytools.entity.QrySuffixEntity;
 import com.track.mytools.service.QrySuffixService;
+import com.track.mytools.util.ToolsUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -121,6 +122,21 @@ public class QrySuffixActivity extends ListActivity {
 
             @Override
             public void onClick(View v) {
+
+                String qrySuffixPathStr = qrySuffixPath.getText() + "";
+
+                String qrySuffixStrStr = qrySuffixStr.getText() + "";
+
+                if("".equals(qrySuffixPathStr)){
+                    ToolsUtil.showToast(QrySuffixActivity.this,"目录不能为空",2000);
+                    return;
+                }
+
+                if("".equals(qrySuffixStrStr)){
+                    ToolsUtil.showToast(QrySuffixActivity.this,"后缀不能为空",2000);
+                    return;
+                }
+
 
                 qrySuffixBtn.setEnabled(false);
 

@@ -118,6 +118,23 @@ public class SuffixActivity extends Activity {
 
                 fianlType = suffixType.getText() + "";  //获取最终后缀
 
+                String suffixFilterStr = suffixFilter.getText() + "";
+
+                if("".equals(fianlPath)){
+                    ToolsUtil.showToast(SuffixActivity.this,"目录不能为空",2000);
+                    return;
+                }
+
+                if("".equals(fianlType)){
+                    ToolsUtil.showToast(SuffixActivity.this,"后缀不能为空",2000);
+                    return;
+                }
+
+                if("".equals(suffixFilterStr)){
+                    ToolsUtil.showToast(SuffixActivity.this,"过滤不能为空",2000);
+                    return;
+                }
+
                 //开始添加, 1,首先获取数量，2，然后在开始遍历添加
 
                 finshFileNum = 1;
@@ -162,6 +179,24 @@ public class SuffixActivity extends Activity {
                 fianlPath = suffixPath.getText() + "";  //获取最终位置
 
                 fianlType = suffixType.getText() + "";  //获取最终后缀
+
+                String suffixFilterStr = suffixFilter.getText() + "";
+
+                if("".equals(fianlPath)){
+                    ToolsUtil.showToast(SuffixActivity.this,"请输入目录",1000);
+                    return;
+                }
+
+                if("".equals(fianlType)){
+                    ToolsUtil.showToast(SuffixActivity.this,"请输入后缀",1000);
+                    return;
+                }
+
+                if("".equals(suffixFilterStr)){
+                    ToolsUtil.showToast(SuffixActivity.this,"请输入过滤",1000);
+                    return;
+                }
+
 
                 finshFileNum = 1;
 

@@ -297,7 +297,7 @@ public class IPActivity extends Activity {
                 String staticPasswordStr = staticPassword.getText().toString();       //password
                 Log.i("IPActivity_Log","WIFILIST:" + staticWifiIdStr);
                 if("".equals(staticPasswordStr)){
-                    ToolsUtil.showToast(IPActivity.this,"请输入密码",2000);
+                    ToolsUtil.showToast(IPActivity.this,"password不能为空",2000);
                     return;
                 }
 
@@ -347,6 +347,22 @@ public class IPActivity extends Activity {
                     //静态
                     String staticIpStr = staticIp.getText().toString();
                     String staticGateWayStr = staticGateWay.getText().toString();
+
+                    if("".equals(staticIpStr)){
+                        ToolsUtil.showToast(IPActivity.this,"静态IP地址不能为空",2000);
+                        return;
+                    }
+
+                    if("".equals(staticGateWayStr)){
+                        ToolsUtil.showToast(IPActivity.this,"网关不能为空",2000);
+                        return;
+                    }
+
+                    if("".equals(staticSuffix.getText().toString())){
+                        ToolsUtil.showToast(IPActivity.this,"网络前置长度不能为空",2000);
+                        return;
+                    }
+
                     int staticSuffixInt = Integer.parseInt(staticSuffix.getText().toString());
 
 
@@ -433,6 +449,7 @@ public class IPActivity extends Activity {
                     staticGateWay.setEnabled(false);//网关
                     staticSuffix.setEnabled(false);//网络前置长度
                     ipUpdBtn.setText("修改参数");
+                    ipSetBtn.setEnabled(true);
 
                     HashMap<String,Object> updMap = new  HashMap<String,Object>();
                     updMap.put("staticIp",staticIp.getText().toString());
@@ -450,6 +467,7 @@ public class IPActivity extends Activity {
                     staticGateWay.setEnabled(true);//网关
                     staticSuffix.setEnabled(true);//网络前置长度
                     ipUpdBtn.setText("完成");
+                    ipSetBtn.setEnabled(false);
                 }
             }
         });

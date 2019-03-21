@@ -184,6 +184,14 @@ public class AppExtractActivity extends Activity {
 
             @Override
             public void onClick(View v) {
+
+                String appPathStr = appPath.getText() + "";
+
+                if("".equals(appPathStr)){
+                    ToolsUtil.showToast(AppExtractActivity.this,"保存位置不能为空",2000);
+                    return;
+                }
+
                 nowSize = 0;
                 totalSize = 0;
                 finallyList = new ArrayList<HashMap<String,Object>>();
@@ -325,7 +333,7 @@ public class AppExtractActivity extends Activity {
 
                ArrayList<HashMap<String,Object>> realTempList = new ArrayList<HashMap<String,Object>>();
                for(HashMap<String,Object> map : ssTempList){
-                   if(map.get("appName").toString().toUpperCase().indexOf(s.toString().toUpperCase())>-1){
+                   if(map.get("appName").toString().toUpperCase().indexOf(s.toString().toUpperCase())>-1 || map.get("appPackageName").toString().toUpperCase().indexOf(s.toString().toUpperCase())>-1){
                        realTempList.add(map);
                    }
                }

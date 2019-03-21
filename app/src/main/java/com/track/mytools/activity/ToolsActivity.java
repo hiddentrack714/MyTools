@@ -165,6 +165,19 @@ public class ToolsActivity extends Activity{
 
         ButterKnife.bind(this);
 
+
+        String isFirst = ToolsUtil.getProperties("isFirst");
+        if("y".equalsIgnoreCase(isFirst)){
+            AlertDialog.Builder builder  = new AlertDialog.Builder(this);
+            builder.setTitle("说明") ;
+
+            builder.setMessage("欢迎您首次使用该应用，请先查看右上角选项按钮中的说明，谢谢");
+
+            builder.setPositiveButton("确定" ,  null );
+            builder.show();
+            ToolsUtil.setProperties("isFirst","n");
+        }
+
         fingerprintManager = (FingerprintManager) getSystemService(Context.FINGERPRINT_SERVICE);
 
         //检测是否存在指纹模块
@@ -177,7 +190,6 @@ public class ToolsActivity extends Activity{
         }else{
             toolsFP.setChecked(useFP);
         }
-
 
         String isHide = ToolsUtil.getProperties("isHide");
 
@@ -301,12 +313,13 @@ public class ToolsActivity extends Activity{
         });
 
 
-        //监听是否隐藏
+        //监听是否隐藏功能按键
         toolsUse.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if(isChecked){
                         ToolsUtil.setProperties("isHide","y");
+                        ToolsUtil.showToast(ToolsActivity.this,"下次进入后，默认隐藏无法使用按键",2000);
                     }else{
                         ToolsUtil.setProperties("isHide","n");
                     }
@@ -410,7 +423,7 @@ public class ToolsActivity extends Activity{
                 final AlertDialog.Builder normalDialog =
                         new AlertDialog.Builder(this);
                 normalDialog.setTitle("捐赠");
-                normalDialog.setMessage("目前只支持支付宝,谢谢");
+                normalDialog.setMessage("目前只支持支付宝，谢谢");
 //                normalDialog.setPositiveButton("微信",
 //                        new DialogInterface.OnClickListener() {
 //                            @Override
@@ -454,7 +467,7 @@ public class ToolsActivity extends Activity{
                 }
 
                 builder2.setMessage(sb.toString()) ;
-                builder2.setPositiveButton("OK" ,  null );
+                builder2.setPositiveButton("确定" ,  null );
                 builder2.show();
 
                 return true;
@@ -470,7 +483,7 @@ public class ToolsActivity extends Activity{
 
                 }
 
-                builder3.setPositiveButton("OK" ,  null );
+                builder3.setPositiveButton("确定" ,  null );
                 builder3.show();
                 return super.onOptionsItemSelected(item);
         }

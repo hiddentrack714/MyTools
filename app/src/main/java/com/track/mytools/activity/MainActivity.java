@@ -185,7 +185,10 @@ public class MainActivity extends Activity {
         ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
 
         //这样就可以通过长按图标显示出快捷方式了
-        shortcutManager.setDynamicShortcuts(li);
+        if(ToolsUtil.hasYC()){
+            shortcutManager.setDynamicShortcuts(li);
+        }
+
     }
 
     /**

@@ -116,7 +116,7 @@
     <string name="pxtj">排序条件:</string>
     <string name="dx">大->小</string>
     <string name="xd">小->大</string>
-    <string name="ssyy">搜索应用</string>
+    <string name="ssyy">搜索应用(名称/包名)</string>
     <string name="tqjd">提取进度:</string>
     <string name="zb">0.00%</string>
     <!--wifi密码-->

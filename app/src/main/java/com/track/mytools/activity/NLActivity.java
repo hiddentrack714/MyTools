@@ -132,6 +132,49 @@ public class NLActivity extends Activity {
             @Override
             public void onClick(View v) {
 
+                String nlXStr = nlX.getText().toString();
+                String nlYStr = nlY.getText().toString();
+                String ballXStr = ballX.getText().toString();
+                String ballYStr = ballY.getText().toString();
+                String nlHourStr = nlHour.getText().toString();
+                String nlMinuteStr = nlMinute.getText().toString();
+                String nlClickStr = nlClick.getText().toString();
+
+                if("".equals(nlXStr)){
+                    ToolsUtil.showToast(NLActivity.this,"蚂蚁森林X不能为空",2000);
+                    return;
+                }
+
+                if("".equals(nlYStr)){
+                    ToolsUtil.showToast(NLActivity.this,"蚂蚁森林Y不能为空",2000);
+                    return;
+                }
+
+                if("".equals(ballXStr)){
+                    ToolsUtil.showToast(NLActivity.this,"能量球X不能为空",2000);
+                    return;
+                }
+
+                if("".equals(ballYStr)){
+                    ToolsUtil.showToast(NLActivity.this,"能量球Y不能为空",2000);
+                    return;
+                }
+
+                if("".equals(nlHourStr)){
+                    ToolsUtil.showToast(NLActivity.this,"成熟时间小时不能为空",2000);
+                    return;
+                }
+
+                if("".equals(nlMinuteStr)){
+                    ToolsUtil.showToast(NLActivity.this,"成熟时间分钟不能为空",2000);
+                    return;
+                }
+
+                if("".equals(nlClickStr)){
+                    ToolsUtil.showToast(NLActivity.this,"点击次数不能为空",2000);
+                    return;
+                }
+
                 //由于能量球位置可能变化，所以列出球可能出现的位置；
 
                 int xLen = map.get("ballX").toString().split(",").length;
@@ -263,6 +306,8 @@ public class NLActivity extends Activity {
 
                     nlUpdBtn.setText("完成");
 
+                    nlStartBtn.setEnabled(false);
+
                     isUpd = true;
                 }else{
                     //修改完成
@@ -281,6 +326,8 @@ public class NLActivity extends Activity {
                     nlClick.setEnabled(false); //只读模式
 
                     nlUpdBtn.setText("修改参数");
+
+                    nlStartBtn.setEnabled(true);
 
                     isUpd = false;
 

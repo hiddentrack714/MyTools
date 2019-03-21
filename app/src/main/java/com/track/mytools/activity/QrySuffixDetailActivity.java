@@ -281,7 +281,7 @@ public class QrySuffixDetailActivity extends Activity {
                                  "是否可写: " + (f.canWrite() == false ? "否" : "是") + "\n\n";
 
                 builder.setMessage(content) ;
-                builder.setPositiveButton("OK" ,  null );
+                builder.setPositiveButton("确定" ,  null );
                 builder.show();
             }
         });

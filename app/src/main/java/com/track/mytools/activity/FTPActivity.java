@@ -167,13 +167,49 @@ public class FTPActivity extends Activity {
             @Override
             public void onClick(View v) {
                 String ip = ftpIP.getText().toString();
-                int port = Integer.parseInt(ftpPORT.getText().toString());
                 String user = ftpUser.getText().toString();
                 String password = ftpPassword.getText().toString();
 
                 String serverPath = ftpServerPath.getText().toString();
                 String localPath = ftpLocalPath.getText().toString();
                 String fileName = ftpFileName.getText().toString();
+
+                if("".equals(ip)){
+                    ToolsUtil.showToast(FTPActivity.this,"IP不能为空",2000);
+                    return;
+                }
+
+                if("".equals(ftpPORT.getText().toString())){
+                    ToolsUtil.showToast(FTPActivity.this,"port不能为空",2000);
+                    return;
+                }
+
+                int port = Integer.parseInt(ftpPORT.getText().toString());
+
+                if("".equals(user)){
+                    ToolsUtil.showToast(FTPActivity.this,"user不能为空",2000);
+                    return;
+                }
+
+                if("".equals(password)){
+                    ToolsUtil.showToast(FTPActivity.this,"password不能为空",2000);
+                    return;
+                }
+
+                if("".equals(serverPath)){
+                    ToolsUtil.showToast(FTPActivity.this,"serverPath不能为空",2000);
+                    return;
+                }
+
+                if("".equals(localPath)){
+                    ToolsUtil.showToast(FTPActivity.this,"localPath不能为空",2000);
+                    return;
+                }
+
+                if("".equals(fileName)){
+                    ToolsUtil.showToast(FTPActivity.this,"fileName不能为空",2000);
+                    return;
+                }
 
                 ftpVal[0] = ip;
                 ftpVal[1] = port + "";

@@ -75,11 +75,22 @@ public class CopyActivity extends Activity {
         copyUseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if("".equals(copyFile.getText().toString())){
+                    ToolsUtil.showToast(CopyActivity.this,"保存名称不能为空",2000);
+                    return;
+                }
+
+                if("".equals(copyPath.getText().toString())){
+                    ToolsUtil.showToast(CopyActivity.this,"文件位置不能为空",2000);
+                    return;
+                }
+
                 Intent intent = new Intent(CopyActivity.this,CopyService.class);
                 if(isStart == false){
                     isStart = true;
                     saveFile = copyPath.getText().toString() + copyFile.getText().toString();
-                    ToolsUtil.showToast(CopyActivity.this,"保存路径:" + saveFile,2000);
+                    ToolsUtil.showToast(CopyActivity.this,"服务正常启动，可以将该应用切换到后台",2000);
                     startService(intent);
                     copyUseBtn.setText("关闭服务");
                 }else{

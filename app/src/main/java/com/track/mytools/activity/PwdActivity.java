@@ -260,7 +260,7 @@ public class PwdActivity extends BaseKeyboardActivity {
         if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
             pwdActivityMission();
         }else{
-            ToolsUtil.showToast(PwdActivity.this,"为确保密码加密安全，请授予权限",2000);
+            ToolsUtil.showToast(PwdActivity.this,"需要获取手机号码参与加密运算，请授予权限",2000);
             finish();
         }
     }
