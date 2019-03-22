@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:enabled="false"
             android:singleLine="true"
-            android:inputType="number"/>
+            android:inputType="text"/>
     </LinearLayout>
 
     <LinearLayout
