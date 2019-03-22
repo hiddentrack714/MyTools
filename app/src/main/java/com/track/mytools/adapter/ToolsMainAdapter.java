@@ -121,7 +121,7 @@ public class ToolsMainAdapter extends BaseAdapter {
         }
 
 
-        if(!ToolsActivity.fingerprintManager.isHardwareDetected()){
+        if(ToolsActivity.fingerprintManager == null || !ToolsActivity.fingerprintManager.isHardwareDetected()){
             if("pwdBtn".equals(listMap.get("btnName").toString())){
                 holder.toolsBtn.setEnabled(false);
                 holder.toolsBtn.setText(holder.toolsBtn.getText() + "-无指纹模块，无法使用");

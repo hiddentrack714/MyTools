@@ -181,7 +181,7 @@ public class ToolsActivity extends Activity{
         fingerprintManager = (FingerprintManager) getSystemService(Context.FINGERPRINT_SERVICE);
 
         //检测是否存在指纹模块
-        if(!fingerprintManager.isHardwareDetected()){
+        if(fingerprintManager == null || !fingerprintManager.isHardwareDetected()){
             toolsFP.setEnabled(false);
             ToolsUtil.showToast(ToolsActivity.this,"当前手机没有指纹模块,无法使用指纹验证",2000);
         }else if(!fingerprintManager.hasEnrolledFingerprints()){
@@ -263,7 +263,7 @@ public class ToolsActivity extends Activity{
                     passList.add(j);
                 }
 
-                if(!ToolsActivity.fingerprintManager.isHardwareDetected()){
+                if(ToolsActivity.fingerprintManager == null || !ToolsActivity.fingerprintManager.isHardwareDetected()){
                     if("pwdBtn".equals(btnName)){
                         passList.add(j);
                     }
