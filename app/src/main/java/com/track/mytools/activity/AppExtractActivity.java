@@ -185,7 +185,7 @@ public class AppExtractActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                String appPathStr = appPath.getText() + "";
+                appPathStr = appPath.getText().toString();
 
                 if("".equals(appPathStr)){
                     ToolsUtil.showToast(AppExtractActivity.this,"保存位置不能为空",2000);
@@ -210,8 +210,10 @@ public class AppExtractActivity extends Activity {
                 }else{
                     ToolsUtil.showToast(AppExtractActivity.this,"开始复制["+finallyList.size()+"]款应用",500);
 
-                    appPathStr = appPath.getText().toString();
                     File file = new File(appPathStr);
+                    Log.i("AppExtractActivity_Log","是否存在:" + file.exists());
+                    Log.i("AppExtractActivity_Log","是否是目录:" + file.isDirectory());
+
                     if(!file.exists() || !file.isDirectory()){
                         file.mkdirs();
                     }

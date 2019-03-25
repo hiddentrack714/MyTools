@@ -66,6 +66,8 @@ public class AppExtractCopyService extends Service {
                     }
                     os.flush();
                 }catch(Exception e){
+                    e.printStackTrace();
+                    Log.e("AppExtractCopyService_Log",e.getMessage());
                     try{
                         if(is!=null){
                             is.close();
