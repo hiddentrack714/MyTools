@@ -28,7 +28,6 @@ import android.view.MenuItem;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import com.track.mytools.R;
 import com.track.mytools.adapter.ToolsMainAdapter;
@@ -164,7 +163,6 @@ public class ToolsActivity extends Activity{
         setContentView(R.layout.activity_tools);
 
         ButterKnife.bind(this);
-
 
         String isFirst = ToolsUtil.getProperties("isFirst");
         if("y".equalsIgnoreCase(isFirst)){
@@ -370,7 +368,7 @@ public class ToolsActivity extends Activity{
                 //判断是否需要向用户解释为什么需要申请该权限
                 if (ActivityCompat.shouldShowRequestPermissionRationale(ToolsActivity.this,
                         Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                    Toast.makeText(ToolsActivity.this, "自Android 6.0开始需要打开位置权限才可以搜索到WIFI设备", Toast.LENGTH_SHORT);
+                        ToolsUtil.showToast(ToolsActivity.this, "自Android 6.0开始需要打开位置权限才可以搜索到WIFI设备", 2000);
 
                 }
                 //请求权限
