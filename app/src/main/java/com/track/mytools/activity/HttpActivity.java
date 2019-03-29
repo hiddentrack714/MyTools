@@ -214,11 +214,66 @@ public class HttpActivity extends BaseKeyboardActivity{
                 File file = new File(DIR_NAME);
 
                 //要下载的文件目录存在同名文件,如果是目录的直接覆盖里面的内容
-                if(file.exists()){
+                if(file.exists() && file.isDirectory()){
                     AlertDialog.Builder normalDialog =
                             new AlertDialog.Builder(HttpActivity.this);
                     //normalDialog.setIcon(R.drawable.icon_dialog);
-                    normalDialog.setTitle("选择").setMessage("本地存在同名文件或文件夹，请选择?");
+                    normalDialog.setTitle("选择").setMessage("本地存在同名文件夹，请选择?");
+
+                    normalDialog.setPositiveButton("取消",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // ...To-do
+                                }
+                            });
+
+                    normalDialog.setNeutralButton("删除本地文件夹",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    if(file.list().length > 0){
+                                        try{
+                                            for(String str : file.list()){
+                                                File f = new File(DIR_NAME + "/" + str);
+                                                f.delete();
+                                            }
+                                            file.delete();
+                                            ToolsUtil.showToast(HttpActivity.this,file.getName() + " 删除成功，继续下载",1000);
+                                            dialogRes();
+                                        }catch(Exception e){
+                                            ToolsUtil.showToast(HttpActivity.this,file.getName() + " 删除失败",1000);
+                                        }
+                                    }else{
+                                        if(file.delete()){
+                                            ToolsUtil.showToast(HttpActivity.this,file.getName() + " 删除成功，继续下载",1000);
+                                            dialogRes();
+                                        } else{
+                                            ToolsUtil.showToast(HttpActivity.this,file.getName() + " 删除失败",1000);
+                                        }
+                                    }
+                                }
+                            });
+
+                    normalDialog.setNegativeButton("修改本地文件夹名称", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if(file.renameTo(new File(DIR_NAME+"["+((Math.random() * 10)+"").substring(2, 9)+"]"))){
+                                ToolsUtil.showToast(HttpActivity.this,file.getName() + " 修改成功，继续下载",1000);
+                                dialogRes();
+                            } else{
+                                ToolsUtil.showToast(HttpActivity.this,file.getName() + " 修改失败",1000);
+                            }
+                        }
+                    });
+                    // 创建实例并显示
+                    normalDialog.show();
+                }else if(file.exists() && file.isFile()){
+                    AlertDialog.Builder normalDialog =
+                            new AlertDialog.Builder(HttpActivity.this);
+                    //normalDialog.setIcon(R.drawable.icon_dialog);
+                    normalDialog.setTitle("选择").setMessage("本地存在同名文件，请选择?");
 
                     normalDialog.setPositiveButton("取消",
                             new DialogInterface.OnClickListener() {
@@ -241,10 +296,10 @@ public class HttpActivity extends BaseKeyboardActivity{
                                 }
                             });
 
-                    normalDialog.setNegativeButton("修改本地文件名", new DialogInterface.OnClickListener() {
+                    normalDialog.setNegativeButton("修改本地文件名称", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            if(file.renameTo(new File(DIR_NAME+"[1]"))){
+                            if(file.renameTo(new File(DIR_NAME+"["+((Math.random() * 10)+"").substring(2, 9)+"]"))){
                                 ToolsUtil.showToast(HttpActivity.this,file.getName() + " 修改成功，继续下载",1000);
                                 dialogRes();
                             } else{
@@ -255,7 +310,9 @@ public class HttpActivity extends BaseKeyboardActivity{
                     // 创建实例并显示
                     normalDialog.show();
                 }else{
-                    dialogRes();
+                     file.mkdirs();
+
+                     dialogRes();
                 }
 
             }
