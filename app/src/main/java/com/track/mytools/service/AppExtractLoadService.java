@@ -52,7 +52,7 @@ public class AppExtractLoadService extends Service {
                 tempMap.put("appVersionName",appVersionNamee);
                 tempMap.put("appVersionCode",appVersionCode);
                 tempMap.put("appIcon",appIcon);
-                tempMap.put("appSize", AppExtractActivity.countFileSize(appInfo.sourceDir)); // 以MB为单位
+                tempMap.put("appSize", AppExtractActivity.countFileSize(appInfo.sourceDir,true)); // 以MB为单位
                 tempMap.put("appRealSize",new File(appInfo.sourceDir).length()); // 实际app大小
                 tempMap.put("isCheck",false); // 默认为不选中
                 tempMap.put("appDir",appDir);

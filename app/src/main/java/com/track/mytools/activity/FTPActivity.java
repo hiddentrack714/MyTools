@@ -156,6 +156,7 @@ public class FTPActivity extends Activity {
                 //ftp登陆失败，重新启用下载按键
                 if(arg0.arg1 == 3){
                     ftpDownBtn.setEnabled(true);
+                    ftpUpdBtn.setEnabled(true);
                 }
 
                 return false;

@@ -274,7 +274,7 @@ public class QrySuffixDetailActivity extends Activity {
 
                 builder.setTitle("文件详情");
 
-                String content = "文件大小: " + AppExtractActivity.countFileSize(filePath) + "\n\n" +
+                String content = "文件大小: " + AppExtractActivity.countFileSize(filePath,true) + "\n\n" +
                                  "修改时间: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime()) + "\n\n" +
                                  "是否隐藏: " + (f.isHidden() == false ? "否" : "是") + "\n\n" +
                                  "是否可读: " + (f.canRead() == false ? "否" : "是") + "\n\n" +

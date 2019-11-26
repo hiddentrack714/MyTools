@@ -7,7 +7,7 @@ android {
         applicationId "com.track.mytools"
         minSdkVersion 25
         targetSdkVersion 27
-        versionCode 71
+        versionCode 72
         versionName "1.14"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -38,6 +38,8 @@ dependencies {
     implementation files('libs/pinyin4j-2.5.0.jar')
     //implementation files('libs/android-core-3.3.0.jar')
     implementation files('libs/jxl.jar')
+    implementation files('libs/dom4j-2.1.1.jar')
+
 
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'

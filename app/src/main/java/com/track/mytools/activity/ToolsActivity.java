@@ -70,15 +70,24 @@ public class ToolsActivity extends Activity{
     private static String isRoot = null;
 
     //两个危险权限需要动态申请
-    private static final String[] NEEDED_PERMISSIONS = new String[]{
+    private static final String[] NEEDED_IP_PERMISSIONS = new String[]{
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION
+    };
+
+    //两个危险权限需要动态申请
+    private static final String[] NEEDED_BLUETOOTH_PERMISSIONS = new String[]{
+            Manifest.permission.BLUETOOTH,
+            Manifest.permission.BLUETOOTH_ADMIN
     };
 
     private boolean mHasPermission;
 
     //权限请求码
-    private static final int PERMISSION_REQUEST_CODE = 0;
+    private static final int PERMISSION_REQUEST_CODE = 01;
+
+    //权限请求码
+    private static final int REQUEST_ENABLE_BT = 02;
 
     public static Handler toolsActivityHandler = null;
 
@@ -209,10 +218,10 @@ public class ToolsActivity extends Activity{
                 super.handleMessage(msg);
 
                 if(msg.obj == IPActivity.class){
-                    mHasPermission = checkPermission();
+                    mHasPermission = checkPermission(NEEDED_IP_PERMISSIONS);
                     if (!mHasPermission) {
                         Log.i("ToolsActivity_Log","没有权限");
-                        requestLocationPermission();
+                        requestLocationPermission(PERMISSION_REQUEST_CODE);
                     }else{
                         Log.i("ToolsActivity_Log","拥有权限");
                         checkLocation();
@@ -346,8 +355,8 @@ public class ToolsActivity extends Activity{
      * 检查是否已经授予定位权限
      * @return
      */
-    private boolean checkPermission() {
-        for (String permission : NEEDED_PERMISSIONS) {
+    private boolean checkPermission(String []permissions) {
+        for (String permission : permissions) {
             if (ActivityCompat.checkSelfPermission(this, permission)
                     != PackageManager.PERMISSION_GRANTED) {
                 return false;
@@ -360,7 +369,7 @@ public class ToolsActivity extends Activity{
      * 请求定位权限
      *
      */
-    public void requestLocationPermission(){
+    public void requestLocationPermission(int reqCode){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {//如果 API level 是大于等于 23(Android 6.0) 时
             //判断是否具有权限
             if (ContextCompat.checkSelfPermission(ToolsActivity.this,
@@ -374,7 +383,7 @@ public class ToolsActivity extends Activity{
                 //请求权限
                 ActivityCompat.requestPermissions(ToolsActivity.this,
                         new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                        PERMISSION_REQUEST_CODE);
+                        reqCode);
             }
         }
     }
@@ -385,10 +394,12 @@ public class ToolsActivity extends Activity{
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         Log.i("ToolsActivity_Log","定位权限回调");
-        if(grantResults[0] == PackageManager.PERMISSION_GRANTED){//用户同意权限,执行我们的操作
-            checkLocation();
-        }else{//用户拒绝之后,当然我们也可以弹出一个窗口,直接跳转到系统设置页面
-            ToolsUtil.showToast(ToolsActivity.this,"未开启定位权限,请手动到设置去开启权限",2000);
+        if(requestCode == 01){
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){//用户同意权限,执行我们的操作
+                checkLocation();
+            }else{//用户拒绝之后,当然我们也可以弹出一个窗口,直接跳转到系统设置页面
+                ToolsUtil.showToast(ToolsActivity.this,"未开启定位权限,请手动到设置去开启权限",2000);
+            }
         }
     }
 
@@ -510,4 +521,5 @@ public class ToolsActivity extends Activity{
         WeiXinDonate.saveDonateQrImage2SDCard(qrPath, BitmapFactory.decodeStream(weixinQrIs));
         WeiXinDonate.donateViaWeiXin(this, qrPath);
     }
+
 }

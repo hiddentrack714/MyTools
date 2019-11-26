@@ -402,7 +402,7 @@ public class AppExtractActivity extends Activity {
      * @param filePath
      * @return  模板 xx.xx MB(xxxxxx字节)
      */
-    public static String countFileSize(String filePath) {
+    public static String countFileSize(String filePath,boolean needDeatil) {
         File file = new File(filePath);
         String fileSize = "0";
         try {
@@ -413,9 +413,11 @@ public class AppExtractActivity extends Activity {
             if (little.length() > 2) {
                 little = little.substring(0, 2);
             }
-            fileSize = big + "." + little + "MB (";
+            fileSize = big + "." + little + "MB";
 
-            fileSize = fileSize+splitThree(file.length()+"")+" 字节)";
+            if(needDeatil){
+                fileSize = fileSize +"  ("+ splitThree(file.length()+"")+" 字节)";
+            }
 
         } catch (Exception e) {
             Log.e("AppExtractActivity2", filePath + "-" + e.getMessage());
