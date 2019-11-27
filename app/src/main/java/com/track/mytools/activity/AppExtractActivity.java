@@ -455,7 +455,7 @@ public class AppExtractActivity extends Activity {
     }
 
     /**
-     * 按APP大小排序
+     * 按APP大小排序1
      * @param tempList 待排序集合
      * @param sortMode 排序模式 true:从小到大；false:从大到小
      * @return
