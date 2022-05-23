@@ -12,7 +12,7 @@ public class XposedTest implements IXposedHookLoadPackage {
         //XposedBridge.log("===包名===" + loadPackageParam.packageName);
 
         if (loadPackageParam.packageName.equals("io.dushu.fandengreader")) {
-            XposedBridge.log("开始hook");
+            XposedBridge.log("开始 hook");
             //混淆后方法名也变化了
             XposedHelpers.findAndHookMethod("io.dushu.fandengreader.fragment.AudioFragment", loadPackageParam.classLoader, "onClickDownload", new XC_MethodHook() {
                 @Override
